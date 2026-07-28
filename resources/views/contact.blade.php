@@ -14,7 +14,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('contact.store') }}" class="space-y-5 bg-white border border-stone-200 rounded-xl p-6 sm:p-8">
+            <form method="POST" action="{{ route('contact.store') }}" class="space-y-5 bg-white border border-stone-200 rounded-xl p-6 sm:p-8" x-data="{ submitting: false }" @submit="submitting = true">
                 @csrf
 
                 <div>
@@ -71,8 +71,12 @@
                     @error('message') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
-                <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-charcoal px-8 py-3 text-sm font-semibold text-cream hover:bg-charcoal-700 transition-colors">
-                    {{ __('site.common.send_message') }}
+                <button type="submit" :disabled="submitting" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md bg-charcoal px-8 py-3 text-sm font-semibold text-cream hover:bg-charcoal-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                    <svg x-show="submitting" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    <span x-text="submitting ? '{{ __('site.common.sending') }}' : '{{ __('site.common.send_message') }}'"></span>
                 </button>
             </form>
         </div>

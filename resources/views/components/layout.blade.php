@@ -18,16 +18,33 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="bg-cream text-charcoal {{ app()->getLocale() === 'ar' ? 'font-arabic' : 'font-sans' }} antialiased">
+<body class="bg-cream text-charcoal {{ app()->getLocale() === 'ar' ? 'font-arabic' : 'font-sans' }} antialiased scroll-smooth">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-[60] focus:rounded-md focus:bg-charcoal focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-cream">
+        {{ __('site.common.skip_to_content') }}
+    </a>
+
     <div class="min-h-screen flex flex-col">
         @include('partials.header')
 
-        <main class="flex-1">
+        <main id="main-content" class="flex-1">
             {{ $slot }}
         </main>
 
         @include('partials.footer')
     </div>
+
+    <button
+        x-data="{ visible: false }"
+        x-show="visible"
+        x-cloak
+        x-transition.opacity.duration.200ms
+        @scroll.window="visible = window.scrollY > 480"
+        @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        aria-label="{{ __('site.common.back_to_top') }}"
+        class="fixed bottom-6 end-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-charcoal text-cream shadow-lg transition-colors hover:bg-charcoal-700 focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2"
+    >
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+    </button>
 
     @livewireScripts
 </body>

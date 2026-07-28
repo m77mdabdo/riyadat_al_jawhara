@@ -27,6 +27,7 @@ return [
         'call_us' => 'اتصل بنا',
         'submit' => 'إرسال',
         'send_message' => 'إرسال الرسالة',
+        'sending' => 'جارٍ الإرسال...',
         'back' => 'رجوع',
         'filter' => 'تصفية',
         'all' => 'الكل',
@@ -36,6 +37,8 @@ return [
         'imported' => 'مستورد',
         'menu' => 'القائمة',
         'close' => 'إغلاق',
+        'back_to_top' => 'العودة للأعلى',
+        'skip_to_content' => 'تخطَّ إلى المحتوى',
     ],
 
     'home' => [

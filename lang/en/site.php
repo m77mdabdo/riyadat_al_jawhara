@@ -27,6 +27,7 @@ return [
         'call_us' => 'Call Us',
         'submit' => 'Submit',
         'send_message' => 'Send Message',
+        'sending' => 'Sending...',
         'back' => 'Back',
         'filter' => 'Filter',
         'all' => 'All',
@@ -36,6 +37,8 @@ return [
         'imported' => 'Imported',
         'menu' => 'Menu',
         'close' => 'Close',
+        'back_to_top' => 'Back to top',
+        'skip_to_content' => 'Skip to content',
     ],
 
     'home' => [
