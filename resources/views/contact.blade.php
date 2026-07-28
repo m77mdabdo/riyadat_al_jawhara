@@ -79,19 +79,19 @@
 
         <div class="lg:col-span-2 space-y-6">
             <div class="rounded-xl border border-stone-200 bg-white p-6">
-                <h2 class="font-semibold text-charcoal mb-4">{{ __('site.contact.get_in_touch') }}</h2>
+                <h2 class="text-xl font-bold text-charcoal mb-4">{{ __('site.contact.get_in_touch') }}</h2>
                 <ul class="space-y-3 text-sm text-stone-600">
                     @if ($settings->phone)
-                        <li class="flex items-center gap-2"><x-heroicon-o-phone class="h-4 w-4 text-charcoal shrink-0" /> {{ $settings->phone }}</li>
+                        <li class="flex items-center gap-2"><x-heroicon-o-phone class="h-4 w-4 text-charcoal shrink-0" /> <bdi>{{ $settings->phone }}</bdi></li>
                     @endif
                     @if ($settings->email)
-                        <li class="flex items-center gap-2"><x-heroicon-o-envelope class="h-4 w-4 text-charcoal shrink-0" /> {{ $settings->email }}</li>
+                        <li class="flex items-center gap-2"><x-heroicon-o-envelope class="h-4 w-4 text-charcoal shrink-0" /> <bdi>{{ $settings->email }}</bdi></li>
                     @endif
                     @if ($settings->address)
                         <li class="flex items-center gap-2"><x-heroicon-o-map-pin class="h-4 w-4 text-charcoal shrink-0" /> {{ $settings->address }}</li>
                     @endif
                     @if ($settings->working_hours)
-                        <li class="flex items-center gap-2"><x-heroicon-o-clock class="h-4 w-4 text-charcoal shrink-0" /> {{ $settings->working_hours }}</li>
+                        <li class="flex items-center gap-2"><x-heroicon-o-clock class="h-4 w-4 text-charcoal shrink-0" /> <bdi>{{ $settings->working_hours }}</bdi></li>
                     @endif
                 </ul>
                 @if ($settings->whatsapp)

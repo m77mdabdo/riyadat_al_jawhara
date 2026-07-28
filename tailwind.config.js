@@ -48,7 +48,6 @@ export default {
             fontFamily: {
                 sans: ['Inter', ...defaultTheme.fontFamily.sans],
                 arabic: ['Cairo', ...defaultTheme.fontFamily.sans],
-                tajawal: ['Tajawal', ...defaultTheme.fontFamily.sans],
             },
         },
     },

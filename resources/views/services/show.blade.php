@@ -11,7 +11,7 @@
 
     @if ($projects->isNotEmpty())
         <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl font-bold text-charcoal mb-8">{{ __('site.services.related_projects') }}</h2>
+            <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-8">{{ __('site.services.related_projects') }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($projects as $project)
                     <a href="{{ route('projects.show', $project) }}" class="group block rounded-xl overflow-hidden border border-stone-200">

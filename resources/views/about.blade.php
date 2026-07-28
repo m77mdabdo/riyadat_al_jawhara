@@ -3,7 +3,7 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-3xl sm:text-4xl font-bold text-charcoal">{{ __('site.about.title') }}</h1>
             @if ($settings->about)
-                <p class="mt-6 text-stone-600 leading-relaxed">{{ $settings->about }}</p>
+                <p class="mt-6 text-stone-600 leading-relaxed rtl:leading-loose">{{ $settings->about }}</p>
             @endif
         </div>
     </section>
@@ -16,7 +16,7 @@
                         <x-heroicon-o-eye class="h-5 w-5 text-cream" />
                     </div>
                     <h2 class="text-xl font-bold text-charcoal mb-2">{{ __('site.about.our_vision') }}</h2>
-                    <p class="text-stone-600 leading-relaxed">{{ $settings->vision }}</p>
+                    <p class="text-stone-600 leading-relaxed rtl:leading-loose">{{ $settings->vision }}</p>
                 </div>
             @endif
             @if ($settings->mission)
@@ -25,7 +25,7 @@
                         <x-heroicon-o-flag class="h-5 w-5 text-cream" />
                     </div>
                     <h2 class="text-xl font-bold text-charcoal mb-2">{{ __('site.about.our_mission') }}</h2>
-                    <p class="text-stone-600 leading-relaxed">{{ $settings->mission }}</p>
+                    <p class="text-stone-600 leading-relaxed rtl:leading-loose">{{ $settings->mission }}</p>
                 </div>
             @endif
         </section>

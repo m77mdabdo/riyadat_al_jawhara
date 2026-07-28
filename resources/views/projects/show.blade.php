@@ -12,7 +12,7 @@
                     <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" class="h-full w-full object-cover">
                 @endif
             </div>
-            <h1 class="text-3xl font-bold text-charcoal">{{ $project->title }}</h1>
+            <h1 class="text-3xl sm:text-4xl font-bold text-charcoal">{{ $project->title }}</h1>
             <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-600">
                 @if ($project->location)
                     <span><span class="font-semibold text-charcoal">{{ __('site.projects.location') }}:</span> {{ $project->location }}</span>
@@ -24,16 +24,16 @@
                     <span><span class="font-semibold text-charcoal">{{ __('site.projects.stone_type') }}:</span> {{ $project->stoneType->name }}</span>
                 @endif
                 @if ($project->completed_at)
-                    <span><span class="font-semibold text-charcoal">{{ __('site.projects.completed_at') }}:</span> {{ $project->completed_at->format('Y-m-d') }}</span>
+                    <span><span class="font-semibold text-charcoal">{{ __('site.projects.completed_at') }}:</span> <bdi>{{ $project->completed_at->format('Y-m-d') }}</bdi></span>
                 @endif
             </div>
-            <p class="mt-6 text-stone-600 leading-relaxed">{{ $project->description }}</p>
+            <p class="mt-6 text-stone-600 leading-relaxed rtl:leading-loose">{{ $project->description }}</p>
         </div>
     </section>
 
     @if ($project->getFirstMediaUrl('before') && $project->getFirstMediaUrl('after'))
         <section class="py-16 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl font-bold text-charcoal mb-8">{{ __('site.projects.before') }} / {{ __('site.projects.after') }}</h2>
+            <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-8">{{ __('site.projects.before') }} / {{ __('site.projects.after') }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                     <p class="text-sm font-semibold text-stone-500 mb-2">{{ __('site.projects.before') }}</p>
@@ -54,7 +54,7 @@
     @if ($allMedia->isNotEmpty())
         <section class="py-16 bg-white" x-data="{ open: false, active: 0 }">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-2xl font-bold text-charcoal mb-8">{{ __('site.projects.gallery') }}</h2>
+                <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-8">{{ __('site.projects.gallery') }}</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                     @foreach ($allMedia as $index => $media)
                         <button @click="active = {{ $index }}; open = true" class="aspect-square rounded-lg overflow-hidden bg-stone-200">

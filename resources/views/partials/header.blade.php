@@ -15,7 +15,7 @@
             <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
                 <span class="relative inline-flex h-11 w-11 items-center justify-center rounded-lg bg-charcoal">
                     <svg class="absolute -top-1.5 start-1/2 -translate-x-1/2 h-3 w-3 text-cream" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6-3 14-3-14 3-6z"/></svg>
-                    <span class="font-arabic text-cream font-extrabold text-lg tracking-wide">JRA</span>
+                    <span class="font-sans text-cream font-extrabold text-lg tracking-wide">JRA</span>
                 </span>
                 <span class="hidden sm:flex flex-col leading-tight">
                     <span class="font-bold text-charcoal text-base">{{ __('site.meta.site_name') }}</span>

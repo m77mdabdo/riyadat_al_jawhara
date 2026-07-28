@@ -8,15 +8,15 @@
             <div class="flex items-center gap-3 mb-4">
                 <span class="relative inline-flex h-10 w-10 items-center justify-center rounded-lg bg-stone-700">
                     <svg class="absolute -top-1.5 start-1/2 -translate-x-1/2 h-3 w-3 text-cream" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6-3 14-3-14 3-6z"/></svg>
-                    <span class="font-arabic text-cream font-extrabold text-base">JRA</span>
+                    <span class="font-sans text-cream font-extrabold text-base tracking-wide">JRA</span>
                 </span>
                 <span class="font-bold">{{ __('site.meta.site_name') }}</span>
             </div>
-            <p class="text-sm text-stone-300 leading-relaxed">{{ __('site.meta.tagline') }}</p>
+            <p class="text-sm text-stone-300 leading-relaxed rtl:leading-loose">{{ __('site.meta.tagline') }}</p>
         </div>
 
         <div>
-            <h3 class="font-semibold mb-4">{{ __('site.footer.quick_links') }}</h3>
+            <h3 class="text-base font-semibold mb-4">{{ __('site.footer.quick_links') }}</h3>
             <ul class="space-y-2 text-sm text-stone-300">
                 <li><a href="{{ route('services.index') }}" class="hover:text-cream">{{ __('site.nav.services') }}</a></li>
                 <li><a href="{{ route('stones.index') }}" class="hover:text-cream">{{ __('site.nav.stones') }}</a></li>
@@ -27,25 +27,25 @@
         </div>
 
         <div>
-            <h3 class="font-semibold mb-4">{{ __('site.footer.contact_info') }}</h3>
+            <h3 class="text-base font-semibold mb-4">{{ __('site.footer.contact_info') }}</h3>
             <ul class="space-y-2 text-sm text-stone-300">
                 @if ($settings->phone)
-                    <li>{{ $settings->phone }}</li>
+                    <li><bdi>{{ $settings->phone }}</bdi></li>
                 @endif
                 @if ($settings->email)
-                    <li>{{ $settings->email }}</li>
+                    <li><bdi>{{ $settings->email }}</bdi></li>
                 @endif
                 @if ($settings->address)
                     <li>{{ $settings->address }}</li>
                 @endif
                 @if ($settings->working_hours)
-                    <li class="pt-1 text-stone-400">{{ $settings->working_hours }}</li>
+                    <li class="pt-1 text-stone-400"><bdi>{{ $settings->working_hours }}</bdi></li>
                 @endif
             </ul>
         </div>
 
         <div>
-            <h3 class="font-semibold mb-4">{{ __('site.footer.follow_us') }}</h3>
+            <h3 class="text-base font-semibold mb-4">{{ __('site.footer.follow_us') }}</h3>
             <div class="flex items-center gap-3">
                 @if ($settings->facebook_url)
                     <a href="{{ $settings->facebook_url }}" target="_blank" rel="noopener" class="h-9 w-9 flex items-center justify-center rounded-full bg-stone-700 hover:bg-stone-600" aria-label="Facebook">

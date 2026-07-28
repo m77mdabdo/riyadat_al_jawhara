@@ -5,7 +5,7 @@
 
         @forelse ($sliders as $index => $slider)
             <div x-show="active === {{ $index }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-cloak="{{ $index > 0 ? 'true' : 'false' }}" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center">
-                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight">{{ $slider->title }}</h1>
+                <h1 class="text-3xl sm:text-5xl font-extrabold ltr:tracking-tight">{{ $slider->title }}</h1>
                 @if ($slider->subtitle)
                     <p class="mt-5 text-lg text-stone-300 max-w-2xl mx-auto">{{ $slider->subtitle }}</p>
                 @endif
@@ -17,7 +17,7 @@
             </div>
         @empty
             <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center">
-                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight">{{ __('site.meta.site_name') }}</h1>
+                <h1 class="text-3xl sm:text-5xl font-extrabold ltr:tracking-tight">{{ __('site.meta.site_name') }}</h1>
                 <p class="mt-5 text-lg text-stone-300">{{ __('site.meta.tagline') }}</p>
             </div>
         @endforelse
@@ -93,7 +93,7 @@
                             @endif
                         </div>
                         <div class="p-4">
-                            <h3 class="font-medium text-charcoal text-sm">{{ $stoneType->name }}</h3>
+                            <h3 class="font-semibold text-charcoal text-sm">{{ $stoneType->name }}</h3>
                         </div>
                     </a>
                 @endforeach
@@ -114,7 +114,7 @@
                                     <svg class="h-4 w-4 {{ $i < $testimonial->rating ? 'text-cream' : 'text-stone-600' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M10 15l-5.9 3.1 1.1-6.6L.4 6.9l6.6-1L10 0l3 5.9 6.6 1-4.8 4.6 1.1 6.6z"/></svg>
                                 @endfor
                             </div>
-                            <p class="text-stone-200 text-sm leading-relaxed">&ldquo;{{ $testimonial->comment }}&rdquo;</p>
+                            <p class="text-stone-200 text-sm leading-relaxed rtl:leading-loose">&ldquo;{{ $testimonial->comment }}&rdquo;</p>
                             <p class="mt-4 font-semibold text-sm">{{ $testimonial->client_name }}</p>
                         </div>
                     @endforeach
@@ -134,7 +134,7 @@
                             <span class="font-medium text-charcoal">{{ $faq->question }}</span>
                             <svg class="h-5 w-5 text-stone-500 shrink-0 transition-transform" :class="open && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
-                        <div x-show="open" x-cloak x-transition class="px-5 pb-5 text-sm text-stone-600 leading-relaxed">
+                        <div x-show="open" x-cloak x-transition class="px-5 pb-5 text-sm text-stone-600 leading-relaxed rtl:leading-loose">
                             {{ $faq->answer }}
                         </div>
                     </div>
