@@ -32,7 +32,7 @@
             </div>
 
             <div x-show="open" x-cloak class="fixed inset-0 z-50 bg-charcoal/90 flex items-center justify-center p-4" @click.self="open = false">
-                <button @click="open = false" class="absolute top-6 end-6 text-cream" aria-label="Close">
+                <button @click="open = false" class="absolute top-6 end-6 text-cream" aria-label="{{ __('site.common.close') }}">
                     <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
                 @foreach ($stoneType->getMedia('gallery') as $index => $media)

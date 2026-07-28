@@ -8,8 +8,6 @@ define('LARAVEL_START', microtime(true));
 // Register the Composer autoloader...
 require __DIR__.'/vendor/autoload.php';
 
-require __DIR__.'/bootstrap/deprecations.php';
-
 // Bootstrap Laravel and handle the command...
 $status = (require_once __DIR__.'/bootstrap/app.php')
     ->handleCommand(new ArgvInput);

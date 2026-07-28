@@ -34,6 +34,8 @@ return [
         'featured' => 'Featured',
         'local' => 'Local',
         'imported' => 'Imported',
+        'menu' => 'Menu',
+        'close' => 'Close',
     ],
 
     'home' => [
