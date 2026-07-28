@@ -34,6 +34,8 @@ return [
         'featured' => 'مميز',
         'local' => 'محلي',
         'imported' => 'مستورد',
+        'menu' => 'القائمة',
+        'close' => 'إغلاق',
     ],
 
     'home' => [

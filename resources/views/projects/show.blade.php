@@ -38,13 +38,13 @@
                 <div>
                     <p class="text-sm font-semibold text-stone-500 mb-2">{{ __('site.projects.before') }}</p>
                     <div class="aspect-[4/3] rounded-xl bg-stone-200 overflow-hidden">
-                        <img src="{{ $project->getFirstMediaUrl('before', 'medium') }}" alt="Before" class="h-full w-full object-cover">
+                        <img src="{{ $project->getFirstMediaUrl('before', 'medium') }}" alt="{{ __('site.projects.before') }}" class="h-full w-full object-cover">
                     </div>
                 </div>
                 <div>
                     <p class="text-sm font-semibold text-stone-500 mb-2">{{ __('site.projects.after') }}</p>
                     <div class="aspect-[4/3] rounded-xl bg-stone-200 overflow-hidden">
-                        <img src="{{ $project->getFirstMediaUrl('after', 'medium') }}" alt="After" class="h-full w-full object-cover">
+                        <img src="{{ $project->getFirstMediaUrl('after', 'medium') }}" alt="{{ __('site.projects.after') }}" class="h-full w-full object-cover">
                     </div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
             </div>
 
             <div x-show="open" x-cloak class="fixed inset-0 z-50 bg-charcoal/90 flex items-center justify-center p-4" @click.self="open = false">
-                <button @click="open = false" class="absolute top-6 end-6 text-cream" aria-label="Close">
+                <button @click="open = false" class="absolute top-6 end-6 text-cream" aria-label="{{ __('site.common.close') }}">
                     <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
                 @foreach ($allMedia as $index => $media)
