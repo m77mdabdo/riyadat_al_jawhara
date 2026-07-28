@@ -14,7 +14,7 @@
                     </div>
                     <h3 class="font-semibold text-charcoal mb-2">{{ $service->name }}</h3>
                     <p class="text-sm text-stone-600">{{ $service->description }}</p>
-                    <span class="mt-4 inline-flex text-sm font-semibold text-charcoal group-hover:underline">{{ __('site.common.read_more') }} &rarr;</span>
+                    <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-charcoal group-hover:underline">{{ __('site.common.read_more') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" /></span>
                 </a>
             @empty
                 <p class="text-stone-600 col-span-full text-center">{{ __('site.common.no_results') }}</p>

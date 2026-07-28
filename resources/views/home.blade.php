@@ -56,7 +56,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between mb-12">
                     <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.featured_projects') }}</h2>
-                    <a href="{{ route('projects.index') }}" class="text-sm font-semibold text-charcoal hover:underline">{{ __('site.common.view_all') }} &rarr;</a>
+                    <a href="{{ route('projects.index') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-charcoal hover:underline">{{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" /></a>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($featuredProjects as $project)
@@ -82,7 +82,7 @@
         <section class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-12">
                 <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.stone_collection') }}</h2>
-                <a href="{{ route('stones.index') }}" class="text-sm font-semibold text-charcoal hover:underline">{{ __('site.common.view_all') }} &rarr;</a>
+                <a href="{{ route('stones.index') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-charcoal hover:underline">{{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" /></a>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
                 @foreach ($stoneTypes as $stoneType)
