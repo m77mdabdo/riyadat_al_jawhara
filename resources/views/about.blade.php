@@ -41,6 +41,8 @@
                             <div class="aspect-square rounded-full bg-stone-200 overflow-hidden mx-auto max-w-[160px]">
                                 @if ($member->getFirstMediaUrl('photo'))
                                     <img src="{{ $member->getFirstMediaUrl('photo', 'thumb') }}" alt="{{ $member->name }}" loading="lazy" class="h-full w-full object-cover">
+                                @else
+                                    <x-image-placeholder :icon="false" class="h-full w-full" />
                                 @endif
                             </div>
                             <h3 class="mt-4 font-semibold text-charcoal">{{ $member->name }}</h3>

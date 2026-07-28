@@ -64,6 +64,8 @@
                             <div class="aspect-[4/3] bg-stone-200 overflow-hidden">
                                 @if ($project->getFirstMediaUrl('cover'))
                                     <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                @else
+                                    <x-image-placeholder class="h-full w-full" />
                                 @endif
                             </div>
                             <div class="p-5">
@@ -90,6 +92,8 @@
                         <div class="aspect-square bg-stone-200 overflow-hidden">
                             @if ($stoneType->getFirstMediaUrl('cover'))
                                 <img src="{{ $stoneType->getFirstMediaUrl('cover', 'thumb') }}" alt="{{ $stoneType->name }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            @else
+                                <x-image-placeholder class="h-full w-full" />
                             @endif
                         </div>
                         <div class="p-4">
@@ -115,7 +119,16 @@
                                 @endfor
                             </div>
                             <p class="text-stone-200 text-sm leading-relaxed rtl:leading-loose">&ldquo;{{ $testimonial->comment }}&rdquo;</p>
-                            <p class="mt-4 font-semibold text-sm">{{ $testimonial->client_name }}</p>
+                            <div class="mt-4 flex items-center gap-3">
+                                <div class="h-9 w-9 rounded-full overflow-hidden shrink-0">
+                                    @if ($testimonial->getFirstMediaUrl('client_photo'))
+                                        <img src="{{ $testimonial->getFirstMediaUrl('client_photo', 'thumb') }}" alt="{{ $testimonial->client_name }}" loading="lazy" class="h-full w-full object-cover">
+                                    @else
+                                        <x-image-placeholder :icon="false" class="h-full w-full" />
+                                    @endif
+                                </div>
+                                <p class="font-semibold text-sm">{{ $testimonial->client_name }}</p>
+                            </div>
                         </div>
                     @endforeach
                 </div>

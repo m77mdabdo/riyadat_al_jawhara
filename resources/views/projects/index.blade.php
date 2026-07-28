@@ -30,6 +30,8 @@
                     <div class="aspect-[4/3] bg-stone-200 overflow-hidden relative">
                         @if ($project->getFirstMediaUrl('cover'))
                             <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        @else
+                            <x-image-placeholder class="h-full w-full" />
                         @endif
                         @if ($project->is_featured)
                             <span class="absolute top-3 start-3 bg-charcoal text-cream text-xs font-semibold px-3 py-1 rounded-full">{{ __('site.common.featured') }}</span>

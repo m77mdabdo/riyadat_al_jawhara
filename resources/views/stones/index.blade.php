@@ -23,6 +23,8 @@
                     <div class="aspect-square bg-stone-200 overflow-hidden">
                         @if ($stoneType->getFirstMediaUrl('cover'))
                             <img src="{{ $stoneType->getFirstMediaUrl('cover', 'thumb') }}" alt="{{ $stoneType->name }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        @else
+                            <x-image-placeholder class="h-full w-full" />
                         @endif
                     </div>
                     <div class="p-4">
