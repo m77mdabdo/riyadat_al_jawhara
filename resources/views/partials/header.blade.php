@@ -12,15 +12,9 @@
 <header class="bg-cream/95 backdrop-blur border-b border-stone-200 sticky top-0 z-40" x-data="{ open: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20">
-            <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
-                <span class="relative inline-flex h-11 w-11 items-center justify-center rounded-lg bg-charcoal">
-                    <svg class="absolute -top-1.5 start-1/2 -translate-x-1/2 h-3 w-3 text-cream" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6-3 14-3-14 3-6z"/></svg>
-                    <span class="font-sans text-cream font-extrabold text-lg tracking-wide">JRA</span>
-                </span>
-                <span class="hidden sm:flex flex-col leading-tight">
-                    <span class="font-bold text-charcoal text-base">{{ __('site.meta.site_name') }}</span>
-                    <span class="text-xs text-stone-600">{{ __('site.meta.tagline') }}</span>
-                </span>
+            <a href="{{ route('home') }}" class="flex items-center shrink-0">
+                <img src="{{ asset('logo-header-black@2x.png') }}" alt="{{ __('site.meta.site_name') }}" class="hidden sm:block h-14 w-auto">
+                <img src="{{ asset('logo-monogram-header-black@2x.png') }}" alt="{{ __('site.meta.site_name') }}" class="block sm:hidden h-10 w-auto">
             </a>
 
             <nav class="hidden lg:flex items-center gap-8">

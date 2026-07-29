@@ -5,13 +5,7 @@
 <footer class="bg-charcoal text-cream mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         <div>
-            <div class="flex items-center gap-3 mb-4">
-                <span class="relative inline-flex h-10 w-10 items-center justify-center rounded-lg bg-stone-700">
-                    <svg class="absolute -top-1.5 start-1/2 -translate-x-1/2 h-3 w-3 text-cream" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6-3 14-3-14 3-6z"/></svg>
-                    <span class="font-sans text-cream font-extrabold text-base tracking-wide">JRA</span>
-                </span>
-                <span class="font-bold">{{ __('site.meta.site_name') }}</span>
-            </div>
+            <img src="{{ asset('logo-header-white@2x.png') }}" alt="{{ __('site.meta.site_name') }}" class="h-12 w-auto mb-3">
             <p class="text-sm text-stone-300 leading-relaxed rtl:leading-loose">{{ __('site.meta.tagline') }}</p>
         </div>
 
