@@ -99,7 +99,7 @@
                     @endif
                 </ul>
                 @if ($settings->whatsapp)
-                    <a href="https://wa.me/{{ $settings->whatsapp }}" target="_blank" rel="noopener" class="mt-6 flex items-center justify-center gap-2 rounded-md bg-green-600 hover:bg-green-700 transition-colors text-white text-sm font-semibold px-5 py-3">
+                    <a href="https://wa.me/{{ $settings->whatsapp }}" target="_blank" rel="noopener" class="mt-6 flex items-center justify-center gap-2 rounded-md bg-green-700 hover:bg-green-800 transition-colors text-white text-sm font-semibold px-5 py-3">
                         <x-heroicon-o-chat-bubble-left-right class="h-4 w-4" /> {{ __('site.common.whatsapp_us') }}
                     </a>
                 @endif
@@ -111,6 +111,7 @@
                         class="w-full h-full"
                         loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"
+                        title="{{ __('site.contact.our_location') }}"
                         src="https://maps.google.com/maps?q={{ $settings->map_lat }},{{ $settings->map_lng }}&z=14&output=embed">
                     </iframe>
                 </div>

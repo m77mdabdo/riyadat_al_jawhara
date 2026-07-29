@@ -9,8 +9,8 @@
     </svg>
     @if ($icon)
         <span class="relative inline-flex h-10 w-10 items-center justify-center rounded-lg bg-stone-200">
-            <svg class="absolute -top-1.5 start-1/2 -translate-x-1/2 h-3 w-3 text-stone-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6-3 14-3-14 3-6z"/></svg>
-            <span class="font-sans text-stone-400 font-extrabold text-sm tracking-wide">JRA</span>
+            <svg class="absolute -top-1.5 start-1/2 -translate-x-1/2 h-3 w-3 text-charcoal" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6-3 14-3-14 3-6z"/></svg>
+            <span class="font-sans text-charcoal font-extrabold text-sm tracking-wide">JRA</span>
         </span>
     @endif
 </div>

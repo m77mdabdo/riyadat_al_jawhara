@@ -25,7 +25,7 @@
         @if ($sliders->count() > 1)
             <div class="relative flex items-center justify-center gap-2 pb-8">
                 @foreach ($sliders as $index => $slider)
-                    <button @click="active = {{ $index }}" class="h-2 w-2 rounded-full" :class="active === {{ $index }} ? 'bg-cream' : 'bg-stone-500'"></button>
+                    <button @click="active = {{ $index }}" class="h-2 w-2 rounded-full focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal" :class="active === {{ $index }} ? 'bg-cream' : 'bg-stone-500'" aria-label="{{ __('site.common.go_to_slide', ['number' => $index + 1]) }}"></button>
                 @endforeach
             </div>
         @endif
@@ -160,7 +160,7 @@
     <section class="bg-stone-100 py-16">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.cta_title') }}</h2>
-            <p class="mt-3 text-stone-600">{{ __('site.home.cta_subtitle') }}</p>
+            <p class="mt-3 text-stone-700">{{ __('site.home.cta_subtitle') }}</p>
             <x-button :href="route('contact')" class="mt-8">
                 {{ __('site.common.request_quote') }}
             </x-button>

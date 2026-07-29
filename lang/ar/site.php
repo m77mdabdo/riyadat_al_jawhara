@@ -38,6 +38,10 @@ return [
         'menu' => 'القائمة',
         'close' => 'إغلاق',
         'back_to_top' => 'العودة للأعلى',
+        'view_image' => 'عرض صورة أكبر',
+        'go_to_slide' => 'الانتقال إلى الشريحة رقم :number',
+        'switch_to_arabic' => 'التبديل إلى العربية',
+        'switch_to_english' => 'التبديل إلى الإنجليزية',
         'skip_to_content' => 'تخطَّ إلى المحتوى',
     ],
 

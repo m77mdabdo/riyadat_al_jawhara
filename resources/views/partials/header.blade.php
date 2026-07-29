@@ -34,8 +34,8 @@
 
             <div class="hidden lg:flex items-center gap-4">
                 <div class="flex items-center gap-1 text-sm font-semibold border border-stone-300 rounded-full overflow-hidden">
-                    <a href="{{ route('locale.switch', 'ar') }}" class="px-3 py-1.5 {{ app()->getLocale() === 'ar' ? 'bg-charcoal text-cream' : 'text-stone-600 hover:bg-stone-100' }}">AR</a>
-                    <a href="{{ route('locale.switch', 'en') }}" class="px-3 py-1.5 {{ app()->getLocale() === 'en' ? 'bg-charcoal text-cream' : 'text-stone-600 hover:bg-stone-100' }}">EN</a>
+                    <a href="{{ route('locale.switch', 'ar') }}" aria-label="{{ __('site.common.switch_to_arabic') }}" class="px-3 py-1.5 {{ app()->getLocale() === 'ar' ? 'bg-charcoal text-cream' : 'text-stone-700 hover:bg-stone-100' }}">AR</a>
+                    <a href="{{ route('locale.switch', 'en') }}" aria-label="{{ __('site.common.switch_to_english') }}" class="px-3 py-1.5 {{ app()->getLocale() === 'en' ? 'bg-charcoal text-cream' : 'text-stone-700 hover:bg-stone-100' }}">EN</a>
                 </div>
                 <x-button :href="route('contact')" size="sm">
                     {{ __('site.common.request_quote') }}
@@ -55,8 +55,8 @@
                 </a>
             @endforeach
             <div class="flex items-center gap-2 pt-3 px-3">
-                <a href="{{ route('locale.switch', 'ar') }}" class="px-3 py-1.5 text-sm font-semibold rounded-full border border-stone-300 {{ app()->getLocale() === 'ar' ? 'bg-charcoal text-cream' : 'text-stone-600' }}">AR</a>
-                <a href="{{ route('locale.switch', 'en') }}" class="px-3 py-1.5 text-sm font-semibold rounded-full border border-stone-300 {{ app()->getLocale() === 'en' ? 'bg-charcoal text-cream' : 'text-stone-600' }}">EN</a>
+                <a href="{{ route('locale.switch', 'ar') }}" aria-label="{{ __('site.common.switch_to_arabic') }}" class="px-3 py-1.5 text-sm font-semibold rounded-full border border-stone-300 {{ app()->getLocale() === 'ar' ? 'bg-charcoal text-cream' : 'text-stone-600' }}">AR</a>
+                <a href="{{ route('locale.switch', 'en') }}" aria-label="{{ __('site.common.switch_to_english') }}" class="px-3 py-1.5 text-sm font-semibold rounded-full border border-stone-300 {{ app()->getLocale() === 'en' ? 'bg-charcoal text-cream' : 'text-stone-600' }}">EN</a>
             </div>
             <x-button :href="route('contact')" size="sm" class="mx-3 mt-3 w-[calc(100%-1.5rem)]">
                 {{ __('site.common.request_quote') }}

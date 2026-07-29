@@ -30,7 +30,7 @@
                     <div class="p-4">
                         <h3 class="font-semibold text-charcoal text-sm">{{ $stoneType->name }}</h3>
                         @if ($stoneType->origin)
-                            <p class="text-xs text-stone-500 mt-1">{{ $stoneType->origin }}</p>
+                            <p class="text-xs text-stone-600 mt-1">{{ $stoneType->origin }}</p>
                         @endif
                     </div>
                 </a>

@@ -7,13 +7,13 @@
 
     <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <form method="GET" class="flex flex-wrap gap-4 mb-10">
-            <select name="service" onchange="this.form.submit()" class="rounded-md border-stone-300 text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
+            <select name="service" onchange="this.form.submit()" aria-label="{{ __('site.projects.service') }}" class="rounded-md border-stone-300 text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
                 <option value="">{{ __('site.projects.service') }}: {{ __('site.common.all') }}</option>
                 @foreach ($services as $service)
                     <option value="{{ $service->slug }}" @selected($activeService === $service->slug)>{{ $service->name }}</option>
                 @endforeach
             </select>
-            <select name="stone_type" onchange="this.form.submit()" class="rounded-md border-stone-300 text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
+            <select name="stone_type" onchange="this.form.submit()" aria-label="{{ __('site.projects.stone_type') }}" class="rounded-md border-stone-300 text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
                 <option value="">{{ __('site.projects.stone_type') }}: {{ __('site.common.all') }}</option>
                 @foreach ($stoneTypes as $stoneType)
                     <option value="{{ $stoneType->slug }}" @selected($activeStoneType === $stoneType->slug)>{{ $stoneType->name }}</option>

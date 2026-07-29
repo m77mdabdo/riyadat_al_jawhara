@@ -9,7 +9,7 @@
                 @endif
             </div>
             <div>
-                <p class="text-sm font-semibold text-stone-500">{{ $stoneType->stoneCategory->name }}</p>
+                <p class="text-sm font-semibold text-stone-600">{{ $stoneType->stoneCategory->name }}</p>
                 <h1 class="text-3xl sm:text-4xl font-bold text-charcoal mt-1">{{ $stoneType->name }}</h1>
                 @if ($stoneType->origin)
                     <p class="mt-3 text-sm text-stone-600"><span class="font-semibold">{{ __('site.stones.origin') }}:</span> {{ $stoneType->origin }}</p>
@@ -27,7 +27,7 @@
             <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-8">{{ __('site.projects.gallery') }}</h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach ($stoneType->getMedia('gallery') as $index => $media)
-                    <button @click="active = {{ $index }}; open = true" class="aspect-square rounded-lg overflow-hidden bg-stone-200">
+                    <button @click="active = {{ $index }}; open = true" class="aspect-square rounded-lg overflow-hidden bg-stone-200" aria-label="{{ __('site.common.view_image') }}: {{ $stoneType->name }}">
                         <img src="{{ $media->getUrl('thumb') }}" alt="{{ $stoneType->name }}" loading="lazy" class="h-full w-full object-cover hover:scale-105 transition-transform duration-300">
                     </button>
                 @endforeach

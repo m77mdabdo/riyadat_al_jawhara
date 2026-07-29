@@ -38,13 +38,13 @@
             <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-8">{{ __('site.projects.before') }} / {{ __('site.projects.after') }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                    <p class="text-sm font-semibold text-stone-500 mb-2">{{ __('site.projects.before') }}</p>
+                    <p class="text-sm font-semibold text-stone-600 mb-2">{{ __('site.projects.before') }}</p>
                     <div class="aspect-[4/3] rounded-xl bg-stone-200 overflow-hidden">
                         <img src="{{ $project->getFirstMediaUrl('before', 'medium') }}" alt="{{ __('site.projects.before') }}" loading="lazy" class="h-full w-full object-cover">
                     </div>
                 </div>
                 <div>
-                    <p class="text-sm font-semibold text-stone-500 mb-2">{{ __('site.projects.after') }}</p>
+                    <p class="text-sm font-semibold text-stone-600 mb-2">{{ __('site.projects.after') }}</p>
                     <div class="aspect-[4/3] rounded-xl bg-stone-200 overflow-hidden">
                         <img src="{{ $project->getFirstMediaUrl('after', 'medium') }}" alt="{{ __('site.projects.after') }}" loading="lazy" class="h-full w-full object-cover">
                     </div>
@@ -59,7 +59,7 @@
                 <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-8">{{ __('site.projects.gallery') }}</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                     @foreach ($allMedia as $index => $media)
-                        <button @click="active = {{ $index }}; open = true" class="aspect-square rounded-lg overflow-hidden bg-stone-200">
+                        <button @click="active = {{ $index }}; open = true" class="aspect-square rounded-lg overflow-hidden bg-stone-200" aria-label="{{ __('site.common.view_image') }}: {{ $project->title }}">
                             <img src="{{ $media->getUrl('thumb') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover hover:scale-105 transition-transform duration-300">
                         </button>
                     @endforeach

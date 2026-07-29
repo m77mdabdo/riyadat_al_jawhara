@@ -38,6 +38,10 @@ return [
         'menu' => 'Menu',
         'close' => 'Close',
         'back_to_top' => 'Back to top',
+        'view_image' => 'View larger image',
+        'go_to_slide' => 'Go to slide :number',
+        'switch_to_arabic' => 'Switch to Arabic',
+        'switch_to_english' => 'Switch to English',
         'skip_to_content' => 'Skip to content',
     ],
 
