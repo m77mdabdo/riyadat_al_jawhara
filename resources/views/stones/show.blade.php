@@ -15,9 +15,9 @@
                     <p class="mt-3 text-sm text-stone-600"><span class="font-semibold">{{ __('site.stones.origin') }}:</span> {{ $stoneType->origin }}</p>
                 @endif
                 <p class="mt-4 text-stone-600 leading-relaxed rtl:leading-loose">{{ $stoneType->description }}</p>
-                <a href="{{ route('contact') }}" class="mt-6 inline-flex items-center rounded-md bg-charcoal px-6 py-3 text-sm font-semibold text-cream hover:bg-charcoal-700 transition-colors">
+                <x-button :href="route('contact')" class="mt-6">
                     {{ __('site.common.request_quote') }}
-                </a>
+                </x-button>
             </div>
         </div>
     </section>
@@ -50,7 +50,7 @@
                 <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-8">{{ __('site.services.related_projects') }}</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($projects as $project)
-                        <a href="{{ route('projects.show', $project) }}" class="group block rounded-xl overflow-hidden border border-stone-200">
+                        <a href="{{ route('projects.show', $project) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                             <div class="aspect-[4/3] bg-stone-200 overflow-hidden">
                                 @if ($project->getFirstMediaUrl('cover'))
                                     <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">

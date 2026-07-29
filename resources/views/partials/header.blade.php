@@ -37,9 +37,9 @@
                     <a href="{{ route('locale.switch', 'ar') }}" class="px-3 py-1.5 {{ app()->getLocale() === 'ar' ? 'bg-charcoal text-cream' : 'text-stone-600 hover:bg-stone-100' }}">AR</a>
                     <a href="{{ route('locale.switch', 'en') }}" class="px-3 py-1.5 {{ app()->getLocale() === 'en' ? 'bg-charcoal text-cream' : 'text-stone-600 hover:bg-stone-100' }}">EN</a>
                 </div>
-                <a href="{{ route('contact') }}" class="inline-flex items-center rounded-md bg-charcoal px-5 py-2.5 text-sm font-semibold text-cream hover:bg-charcoal-700 transition-colors">
+                <x-button :href="route('contact')" size="sm">
                     {{ __('site.common.request_quote') }}
-                </a>
+                </x-button>
             </div>
 
             <button @click="open = !open" class="lg:hidden inline-flex items-center justify-center rounded-md p-2 text-charcoal transition-colors hover:bg-stone-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2" aria-label="{{ __('site.common.menu') }}">
@@ -58,9 +58,9 @@
                 <a href="{{ route('locale.switch', 'ar') }}" class="px-3 py-1.5 text-sm font-semibold rounded-full border border-stone-300 {{ app()->getLocale() === 'ar' ? 'bg-charcoal text-cream' : 'text-stone-600' }}">AR</a>
                 <a href="{{ route('locale.switch', 'en') }}" class="px-3 py-1.5 text-sm font-semibold rounded-full border border-stone-300 {{ app()->getLocale() === 'en' ? 'bg-charcoal text-cream' : 'text-stone-600' }}">EN</a>
             </div>
-            <a href="{{ route('contact') }}" class="block mx-3 mt-3 rounded-md bg-charcoal px-5 py-2.5 text-center text-sm font-semibold text-cream">
+            <x-button :href="route('contact')" size="sm" class="mx-3 mt-3 w-[calc(100%-1.5rem)]">
                 {{ __('site.common.request_quote') }}
-            </a>
+            </x-button>
         </div>
     </div>
 </header>

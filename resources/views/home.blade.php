@@ -10,9 +10,9 @@
                     <p class="mt-5 text-lg text-stone-300 max-w-2xl mx-auto">{{ $slider->subtitle }}</p>
                 @endif
                 @if ($slider->button_text && $slider->button_link)
-                    <a href="{{ $slider->button_link }}" class="mt-8 inline-flex items-center rounded-md bg-cream px-7 py-3 text-sm font-semibold text-charcoal hover:bg-stone-100 transition-colors">
+                    <x-button :href="$slider->button_link" variant="inverted" class="mt-8">
                         {{ $slider->button_text }}
-                    </a>
+                    </x-button>
                 @endif
             </div>
         @empty
@@ -60,7 +60,7 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($featuredProjects as $project)
-                        <a href="{{ route('projects.show', $project) }}" class="group block rounded-xl overflow-hidden border border-stone-200">
+                        <a href="{{ route('projects.show', $project) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                             <div class="aspect-[4/3] bg-stone-200 overflow-hidden">
                                 @if ($project->getFirstMediaUrl('cover'))
                                     <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -88,7 +88,7 @@
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
                 @foreach ($stoneTypes as $stoneType)
-                    <a href="{{ route('stones.show', $stoneType) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white">
+                    <a href="{{ route('stones.show', $stoneType) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                         <div class="aspect-square bg-stone-200 overflow-hidden">
                             @if ($stoneType->getFirstMediaUrl('cover'))
                                 <img src="{{ $stoneType->getFirstMediaUrl('cover', 'thumb') }}" alt="{{ $stoneType->name }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -161,9 +161,9 @@
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.cta_title') }}</h2>
             <p class="mt-3 text-stone-600">{{ __('site.home.cta_subtitle') }}</p>
-            <a href="{{ route('contact') }}" class="mt-8 inline-flex items-center rounded-md bg-charcoal px-7 py-3 text-sm font-semibold text-cream hover:bg-charcoal-700 transition-colors">
+            <x-button :href="route('contact')" class="mt-8">
                 {{ __('site.common.request_quote') }}
-            </a>
+            </x-button>
         </div>
     </section>
 </x-layout>

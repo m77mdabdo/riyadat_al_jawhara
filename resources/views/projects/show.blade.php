@@ -79,9 +79,9 @@
 
     <section class="bg-stone-100 py-16">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <a href="{{ route('contact') }}" class="inline-flex items-center rounded-md bg-charcoal px-7 py-3 text-sm font-semibold text-cream hover:bg-charcoal-700 transition-colors">
+            <x-button :href="route('contact')">
                 {{ __('site.common.request_quote') }}
-            </a>
+            </x-button>
         </div>
     </section>
 </x-layout>

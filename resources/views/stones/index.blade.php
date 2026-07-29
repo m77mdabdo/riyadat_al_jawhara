@@ -19,7 +19,7 @@
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
             @forelse ($stoneTypes as $stoneType)
-                <a href="{{ route('stones.show', $stoneType) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white">
+                <a href="{{ route('stones.show', $stoneType) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                     <div class="aspect-square bg-stone-200 overflow-hidden">
                         @if ($stoneType->getFirstMediaUrl('cover'))
                             <img src="{{ $stoneType->getFirstMediaUrl('cover', 'thumb') }}" alt="{{ $stoneType->name }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -35,7 +35,7 @@
                     </div>
                 </a>
             @empty
-                <p class="text-stone-600 col-span-full text-center">{{ __('site.common.no_results') }}</p>
+                <p class="text-stone-600 col-span-full text-center py-12">{{ __('site.common.no_results') }}</p>
             @endforelse
         </div>
     </section>
