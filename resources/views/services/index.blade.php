@@ -12,7 +12,7 @@
                     <div class="h-12 w-12 rounded-lg bg-charcoal/5 flex items-center justify-center mb-4 group-hover:bg-charcoal transition-colors">
                         <x-dynamic-component :component="$service->icon ?: 'heroicon-o-cube'" class="h-6 w-6 text-charcoal group-hover:text-cream transition-colors" />
                     </div>
-                    <h3 class="font-semibold text-charcoal mb-2">{{ $service->name }}</h3>
+                    <h2 class="font-semibold text-charcoal mb-2">{{ $service->name }}</h2>
                     <p class="text-sm text-stone-600">{{ $service->description }}</p>
                     <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-charcoal group-hover:underline">{{ __('site.common.read_more') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" /></span>
                 </a>

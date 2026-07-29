@@ -38,7 +38,7 @@
                         @endif
                     </div>
                     <div class="p-5">
-                        <h3 class="font-semibold text-charcoal">{{ $project->title }}</h3>
+                        <h2 class="font-semibold text-charcoal">{{ $project->title }}</h2>
                         <p class="text-sm text-stone-600 mt-1">{{ $project->location }}</p>
                     </div>
                 </a>
