@@ -112,6 +112,7 @@
                         loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"
                         title="{{ __('site.contact.our_location') }}"
+                        allowfullscreen
                         src="https://maps.google.com/maps?q={{ $settings->map_lat }},{{ $settings->map_lng }}&z=14&output=embed">
                     </iframe>
                 </div>
