@@ -2,14 +2,22 @@
 
 namespace Database\Seeders;
 
+// STOCK PHOTO — all project imagery below (cover/before/after/gallery) is
+// sourced live from Pexels via App\Services\StockMediaFetcher (free for
+// commercial use, no attribution required per their license terms as of
+// 2026-07). These are illustrative stand-ins, NOT real before/after photos
+// of the same location -- replace with JRA's actual completed-project
+// photography before final handoff.
+
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\StoneType;
+use App\Services\StockMediaFetcher;
 use Illuminate\Database\Seeder;
 
 class ProjectSeeder extends Seeder
 {
-    public function run(): void
+    public function run(StockMediaFetcher $fetcher): void
     {
         $installation = Service::where('name_en', 'Marble Installation')->first();
         $facade = Service::where('name_en', 'Facade Design')->first();
@@ -33,6 +41,7 @@ class ProjectSeeder extends Seeder
                 'stone_type_id' => $carrara?->id,
                 'completed_at' => '2025-11-10',
                 'is_featured' => true,
+                'search' => ['cover' => 'luxury villa marble floor', 'before' => 'empty room construction interior', 'after' => 'marble floor luxury interior', 'gallery' => 'marble staircase luxury'],
             ],
             [
                 'title_ar' => 'واجهة برج تجاري - حي الملز',
@@ -46,6 +55,7 @@ class ProjectSeeder extends Seeder
                 'stone_type_id' => $hashemi?->id,
                 'completed_at' => '2025-08-22',
                 'is_featured' => true,
+                'search' => ['cover' => 'modern stone office building facade', 'before' => 'building construction scaffolding', 'after' => 'stone facade building exterior', 'gallery' => 'stone building facade close up'],
             ],
             [
                 'title_ar' => 'مطبخ فيلا - حي الشاطئ',
@@ -59,6 +69,7 @@ class ProjectSeeder extends Seeder
                 'stone_type_id' => $quartz?->id,
                 'completed_at' => '2026-02-14',
                 'is_featured' => false,
+                'search' => ['cover' => 'modern kitchen quartz countertop', 'before' => 'kitchen renovation construction', 'after' => 'modern white kitchen countertop', 'gallery' => 'quartz kitchen island'],
             ],
             [
                 'title_ar' => 'أرضية معرض سيارات - الدمام',
@@ -72,6 +83,7 @@ class ProjectSeeder extends Seeder
                 'stone_type_id' => $blackGranite?->id,
                 'completed_at' => '2025-05-30',
                 'is_featured' => false,
+                'search' => ['cover' => 'car showroom black floor', 'before' => 'empty warehouse concrete floor', 'after' => 'polished black granite floor showroom', 'gallery' => 'luxury car showroom interior'],
             ],
             [
                 'title_ar' => 'واجهة مسجد - حي النرجس',
@@ -85,6 +97,7 @@ class ProjectSeeder extends Seeder
                 'stone_type_id' => $hashemi?->id,
                 'completed_at' => '2024-12-05',
                 'is_featured' => true,
+                'search' => ['cover' => 'islamic mosque stone facade', 'before' => 'building construction site', 'after' => 'mosque stone facade exterior', 'gallery' => 'mosque architecture stone'],
             ],
             [
                 'title_ar' => 'صالة استقبال فندق - مكة المكرمة',
@@ -98,14 +111,37 @@ class ProjectSeeder extends Seeder
                 'stone_type_id' => $carrara?->id,
                 'completed_at' => '2025-09-18',
                 'is_featured' => false,
+                'search' => ['cover' => 'hotel lobby marble interior', 'before' => 'empty hotel lobby construction', 'after' => 'luxury hotel lobby marble', 'gallery' => 'hotel reception marble interior'],
             ],
         ];
 
         foreach ($projects as $order => $project) {
-            Project::updateOrCreate(
+            $search = $project['search'];
+            unset($project['search']);
+
+            $record = Project::updateOrCreate(
                 ['title_en' => $project['title_en']],
                 $project + ['is_active' => true, 'order' => $order + 1]
             );
+
+            // Skip live API calls during tests (see phpunit.xml APP_ENV=testing).
+            if (! app()->environment('testing') && $record->getMedia('cover')->isEmpty()) {
+                foreach ($fetcher->fetchPhotos($search['cover'], 'pexels', 1) as $path) {
+                    $record->addMedia($path)->toMediaCollection('cover');
+                }
+
+                foreach ($fetcher->fetchPhotos($search['before'], 'pexels', 1) as $path) {
+                    $record->addMedia($path)->toMediaCollection('before');
+                }
+
+                foreach ($fetcher->fetchPhotos($search['after'], 'pexels', 1) as $path) {
+                    $record->addMedia($path)->toMediaCollection('after');
+                }
+
+                foreach ($fetcher->fetchPhotos($search['gallery'], 'pexels', 2) as $path) {
+                    $record->addMedia($path)->toMediaCollection('gallery');
+                }
+            }
         }
     }
 }

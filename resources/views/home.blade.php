@@ -1,7 +1,15 @@
 <x-layout>
     {{-- Hero --}}
     <section class="relative bg-charcoal text-cream overflow-hidden" x-data="{ active: 0, count: {{ $sliders->count() ?: 1 }} }" x-init="setInterval(() => active = (active + 1) % count, 6000)">
-        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 20% 20%, #8B8680 0, transparent 40%), radial-gradient(circle at 80% 80%, #8B8680 0, transparent 40%);"></div>
+        <div class="absolute inset-0" x-data="{ showVideo: false }" x-init="showVideo = window.matchMedia('(min-width: 640px)').matches">
+            <img src="{{ asset('images/hero-poster.webp') }}" alt="" class="absolute inset-0 h-full w-full object-cover" loading="eager" fetchpriority="high">
+            <template x-if="showVideo">
+                <video autoplay muted loop playsinline class="absolute inset-0 h-full w-full object-cover">
+                    <source src="{{ asset('videos/hero-background.mp4') }}" type="video/mp4">
+                </video>
+            </template>
+            <div class="absolute inset-0 bg-gradient-to-t from-charcoal/90 to-charcoal/40"></div>
+        </div>
 
         @forelse ($sliders as $index => $slider)
             <div x-show="active === {{ $index }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-cloak="{{ $index > 0 ? 'true' : 'false' }}" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center">
@@ -39,12 +47,21 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach ($services as $service)
-                <a href="{{ route('services.show', $service) }}" class="group rounded-xl border border-stone-200 bg-white p-6 hover:shadow-lg hover:-translate-y-1 transition-all">
-                    <div class="h-12 w-12 rounded-lg bg-charcoal/5 flex items-center justify-center mb-4 group-hover:bg-charcoal transition-colors">
-                        <x-dynamic-component :component="$service->icon ?: 'heroicon-o-cube'" class="h-6 w-6 text-charcoal group-hover:text-cream transition-colors" />
+                <a href="{{ route('services.show', $service) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <div class="aspect-[4/3] bg-stone-200 overflow-hidden relative">
+                        @if ($service->getFirstMediaUrl('cover'))
+                            <img src="{{ $service->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $service->name }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        @else
+                            <x-image-placeholder class="h-full w-full" />
+                        @endif
+                        <div class="absolute bottom-3 start-3 h-10 w-10 rounded-lg bg-charcoal flex items-center justify-center">
+                            <x-dynamic-component :component="$service->icon ?: 'heroicon-o-cube'" class="h-5 w-5 text-cream" />
+                        </div>
                     </div>
-                    <h3 class="font-semibold text-charcoal mb-2">{{ $service->name }}</h3>
-                    <p class="text-sm text-stone-600 line-clamp-2">{{ $service->description }}</p>
+                    <div class="p-6">
+                        <h3 class="font-semibold text-charcoal mb-2">{{ $service->name }}</h3>
+                        <p class="text-sm text-stone-600 line-clamp-2">{{ $service->description }}</p>
+                    </div>
                 </a>
             @endforeach
         </div>

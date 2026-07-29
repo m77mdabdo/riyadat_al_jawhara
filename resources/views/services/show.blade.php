@@ -1,6 +1,11 @@
 <x-layout :title="$service->name" :description="$service->description">
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            @if ($service->getFirstMediaUrl('cover'))
+                <div class="aspect-[21/9] rounded-xl overflow-hidden mb-8">
+                    <img src="{{ $service->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $service->name }}" loading="eager" fetchpriority="high" class="h-full w-full object-cover">
+                </div>
+            @endif
             <div class="h-14 w-14 rounded-lg bg-charcoal flex items-center justify-center mb-6">
                 <x-dynamic-component :component="$service->icon ?: 'heroicon-o-cube'" class="h-7 w-7 text-cream" />
             </div>

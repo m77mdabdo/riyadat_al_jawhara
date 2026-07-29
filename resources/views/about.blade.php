@@ -6,6 +6,11 @@
                 <p class="mt-6 text-stone-600 leading-relaxed rtl:leading-loose">{{ $settings->about }}</p>
             @endif
         </div>
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+            <div class="aspect-[21/9] rounded-xl overflow-hidden">
+                <img src="{{ asset('images/about-hero.webp') }}" alt="{{ __('site.about.title') }}" loading="lazy" class="h-full w-full object-cover">
+            </div>
+        </div>
     </section>
 
     @if ($settings->vision || $settings->mission)

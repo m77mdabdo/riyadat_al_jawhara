@@ -35,8 +35,8 @@ class Slider extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumb')->width(400)->height(300);
-        $this->addMediaConversion('medium')->width(1200)->height(700);
+        $this->addMediaConversion('thumb')->width(400)->height(300)->nonQueued();
+        $this->addMediaConversion('medium')->width(1200)->height(700)->nonQueued();
     }
 
     public function getTitleAttribute(): string

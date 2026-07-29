@@ -2,13 +2,21 @@
 
 namespace Database\Seeders;
 
+// STOCK PHOTO — client_photo avatars below are sourced live from Pexels via
+// App\Services\StockMediaFetcher (free for commercial use, no attribution
+// required per their license terms as of 2026-07). These are NOT real
+// photos of JRA's actual clients -- replace with real client photos (with
+// their permission) before final handoff, or leave the branded placeholder
+// in place if no permission is given.
+
 use App\Models\Project;
 use App\Models\Testimonial;
+use App\Services\StockMediaFetcher;
 use Illuminate\Database\Seeder;
 
 class TestimonialSeeder extends Seeder
 {
-    public function run(): void
+    public function run(StockMediaFetcher $fetcher): void
     {
         $villa = Project::where('title_en', 'Private Villa - Al Malqa District')->first();
         $tower = Project::where('title_en', 'Commercial Tower Facade - Al Malaz District')->first();
@@ -22,6 +30,7 @@ class TestimonialSeeder extends Seeder
                 'comment_en' => 'The JRA team executed the marble flooring with great precision and full commitment to deadlines. Exceptional quality.',
                 'project_id' => $villa?->id,
                 'order' => 1,
+                'search' => 'professional business man headshot portrait',
             ],
             [
                 'client_name' => 'Sarah Al-Ghamdi',
@@ -30,6 +39,7 @@ class TestimonialSeeder extends Seeder
                 'comment_en' => 'The tower facade exceeded our expectations — an elegant design and professional execution from start to finish.',
                 'project_id' => $tower?->id,
                 'order' => 2,
+                'search' => 'professional business woman headshot portrait',
             ],
             [
                 'client_name' => 'Mohammed Al-Harbi',
@@ -38,6 +48,7 @@ class TestimonialSeeder extends Seeder
                 'comment_en' => 'Professional dealings and competitive prices — we recommend them for any stone or marble project.',
                 'project_id' => null,
                 'order' => 3,
+                'search' => 'professional man portrait smiling',
             ],
             [
                 'client_name' => 'Grand Makkah Hotel Management',
@@ -46,14 +57,25 @@ class TestimonialSeeder extends Seeder
                 'comment_en' => 'The marble decor in our reception lobby added a truly luxurious touch to our hotel.',
                 'project_id' => $hotel?->id,
                 'order' => 4,
+                'search' => null, // company name, not a person -- no headshot, keep the branded placeholder
             ],
         ];
 
         foreach ($testimonials as $testimonial) {
-            Testimonial::updateOrCreate(
+            $search = $testimonial['search'];
+            unset($testimonial['search']);
+
+            $record = Testimonial::updateOrCreate(
                 ['client_name' => $testimonial['client_name'], 'comment_en' => $testimonial['comment_en']],
                 $testimonial + ['is_active' => true]
             );
+
+            // Skip live API calls during tests (see phpunit.xml APP_ENV=testing).
+            if ($search && ! app()->environment('testing') && $record->getMedia('client_photo')->isEmpty()) {
+                foreach ($fetcher->fetchPhotos($search, 'pexels', 1) as $path) {
+                    $record->addMedia($path)->toMediaCollection('client_photo');
+                }
+            }
         }
     }
 }
