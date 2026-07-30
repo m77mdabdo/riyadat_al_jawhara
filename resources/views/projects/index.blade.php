@@ -24,12 +24,12 @@
             @endif
         </form>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div x-reveal class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse ($projects as $project)
                 <a href="{{ route('projects.show', $project) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                     <div class="aspect-[4/3] bg-stone-200 overflow-hidden relative">
                         @if ($project->getFirstMediaUrl('cover'))
-                            <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
                         @else
                             <x-image-placeholder class="h-full w-full" />
                         @endif

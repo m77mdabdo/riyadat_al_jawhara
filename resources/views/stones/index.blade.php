@@ -22,7 +22,7 @@
                 <a href="{{ route('stones.show', $stoneType) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                     <div class="aspect-square bg-stone-200 overflow-hidden">
                         @if ($stoneType->getFirstMediaUrl('cover'))
-                            <img src="{{ $stoneType->getFirstMediaUrl('cover', 'thumb') }}" alt="{{ $stoneType->name }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ $stoneType->getFirstMediaUrl('cover', 'thumb') }}" alt="{{ $stoneType->name }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
                         @else
                             <x-image-placeholder class="h-full w-full" />
                         @endif

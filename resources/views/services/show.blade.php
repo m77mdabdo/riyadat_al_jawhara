@@ -3,7 +3,7 @@
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             @if ($service->getFirstMediaUrl('cover'))
                 <div class="aspect-[21/9] rounded-xl overflow-hidden mb-8">
-                    <img src="{{ $service->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $service->name }}" loading="eager" fetchpriority="high" class="h-full w-full object-cover">
+                    <img src="{{ $service->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $service->name }}" loading="eager" fetchpriority="high" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
                 </div>
             @endif
             <div class="h-14 w-14 rounded-lg bg-charcoal flex items-center justify-center mb-6">
@@ -22,7 +22,7 @@
                     <a href="{{ route('projects.show', $project) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                         <div class="aspect-[4/3] bg-stone-200 overflow-hidden">
                             @if ($project->getFirstMediaUrl('cover'))
-                                <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
                             @else
                                 <x-image-placeholder class="h-full w-full" />
                             @endif

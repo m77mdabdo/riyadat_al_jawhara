@@ -2,9 +2,9 @@
     {{-- Hero --}}
     <section class="relative bg-charcoal text-cream overflow-hidden" x-data="{ active: 0, count: {{ $sliders->count() ?: 1 }} }" x-init="setInterval(() => active = (active + 1) % count, 6000)">
         <div class="absolute inset-0" x-data="{ showVideo: false }" x-init="showVideo = window.matchMedia('(min-width: 640px)').matches">
-            <img src="{{ asset('images/hero-poster.webp') }}" alt="" class="absolute inset-0 h-full w-full object-cover" loading="eager" fetchpriority="high">
+            <img src="{{ asset('images/hero-poster.webp') }}" alt="" class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]" loading="eager" fetchpriority="high">
             <template x-if="showVideo">
-                <video autoplay muted loop playsinline class="absolute inset-0 h-full w-full object-cover">
+                <video autoplay muted loop playsinline class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
                     <source src="{{ asset('videos/hero-background.mp4') }}" type="video/mp4">
                 </video>
             </template>
@@ -12,7 +12,7 @@
         </div>
 
         @forelse ($sliders as $index => $slider)
-            <div x-show="active === {{ $index }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-cloak="{{ $index > 0 ? 'true' : 'false' }}" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center">
+            <div x-show="active === {{ $index }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index > 0) x-cloak @endif class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center">
                 <h1 class="text-3xl sm:text-5xl font-extrabold ltr:tracking-tight">{{ $slider->title }}</h1>
                 @if ($slider->subtitle)
                     <p class="mt-5 text-lg text-stone-300 max-w-2xl mx-auto">{{ $slider->subtitle }}</p>
@@ -40,7 +40,7 @@
     </section>
 
     {{-- Services --}}
-    <section class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section x-reveal class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-12">
             <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.our_services') }}</h2>
             <p class="mt-3 text-stone-600">{{ __('site.home.our_services_subtitle') }}</p>
@@ -50,7 +50,7 @@
                 <a href="{{ route('services.show', $service) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                     <div class="aspect-[4/3] bg-stone-200 overflow-hidden relative">
                         @if ($service->getFirstMediaUrl('cover'))
-                            <img src="{{ $service->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $service->name }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ $service->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $service->name }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
                         @else
                             <x-image-placeholder class="h-full w-full" />
                         @endif
@@ -70,7 +70,7 @@
     {{-- Featured Projects --}}
     @if ($featuredProjects->isNotEmpty())
         <section class="py-20 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div x-reveal class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between mb-12">
                     <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.featured_projects') }}</h2>
                     <a href="{{ route('projects.index') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-charcoal hover:underline">{{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" /></a>
@@ -80,7 +80,7 @@
                         <a href="{{ route('projects.show', $project) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                             <div class="aspect-[4/3] bg-stone-200 overflow-hidden">
                                 @if ($project->getFirstMediaUrl('cover'))
-                                    <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
                                 @else
                                     <x-image-placeholder class="h-full w-full" />
                                 @endif
@@ -98,7 +98,7 @@
 
     {{-- Stone Collection --}}
     @if ($stoneTypes->isNotEmpty())
-        <section class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section x-reveal class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-12">
                 <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.stone_collection') }}</h2>
                 <a href="{{ route('stones.index') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-charcoal hover:underline">{{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" /></a>
@@ -108,7 +108,7 @@
                     <a href="{{ route('stones.show', $stoneType) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                         <div class="aspect-square bg-stone-200 overflow-hidden">
                             @if ($stoneType->getFirstMediaUrl('cover'))
-                                <img src="{{ $stoneType->getFirstMediaUrl('cover', 'thumb') }}" alt="{{ $stoneType->name }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <img src="{{ $stoneType->getFirstMediaUrl('cover', 'thumb') }}" alt="{{ $stoneType->name }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
                             @else
                                 <x-image-placeholder class="h-full w-full" />
                             @endif
@@ -124,8 +124,9 @@
 
     {{-- Testimonials --}}
     @if ($testimonials->isNotEmpty())
-        <section class="py-20 bg-charcoal text-cream">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section x-reveal class="relative py-20 bg-charcoal text-cream overflow-hidden">
+            <img src="{{ asset('images/textures/stone-texture.webp') }}" alt="" aria-hidden="true" loading="lazy" class="absolute inset-0 h-full w-full object-cover opacity-10">
+            <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-2xl sm:text-3xl font-bold text-center mb-12">{{ __('site.home.testimonials') }}</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" x-data>
                     @foreach ($testimonials as $testimonial)
@@ -139,7 +140,7 @@
                             <div class="mt-4 flex items-center gap-3">
                                 <div class="h-9 w-9 rounded-full overflow-hidden shrink-0">
                                     @if ($testimonial->getFirstMediaUrl('client_photo'))
-                                        <img src="{{ $testimonial->getFirstMediaUrl('client_photo', 'thumb') }}" alt="{{ $testimonial->client_name }}" loading="lazy" class="h-full w-full object-cover">
+                                        <img src="{{ $testimonial->getFirstMediaUrl('client_photo', 'thumb') }}" alt="{{ $testimonial->client_name }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
                                     @else
                                         <x-image-placeholder :icon="false" class="h-full w-full" />
                                     @endif
@@ -155,7 +156,7 @@
 
     {{-- FAQ --}}
     @if ($faqs->isNotEmpty())
-        <section class="py-20 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section x-reveal class="py-20 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-2xl sm:text-3xl font-bold text-charcoal text-center mb-12">{{ __('site.home.faq') }}</h2>
             <div class="space-y-3">
                 @foreach ($faqs as $faq)
@@ -174,8 +175,9 @@
     @endif
 
     {{-- CTA --}}
-    <section class="bg-stone-100 py-16">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section x-reveal class="relative bg-stone-100 py-16 overflow-hidden">
+        <img src="{{ asset('images/textures/marble-texture.webp') }}" alt="" aria-hidden="true" loading="lazy" class="absolute inset-0 h-full w-full object-cover opacity-[0.07]">
+        <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.cta_title') }}</h2>
             <p class="mt-3 text-stone-700">{{ __('site.home.cta_subtitle') }}</p>
             <x-button :href="route('contact')" class="mt-8">

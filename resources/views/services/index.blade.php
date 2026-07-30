@@ -11,7 +11,7 @@
                 <a href="{{ route('services.show', $service) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                     <div class="aspect-[4/3] bg-stone-200 overflow-hidden relative">
                         @if ($service->getFirstMediaUrl('cover'))
-                            <img src="{{ $service->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $service->name }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ $service->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $service->name }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
                         @else
                             <x-image-placeholder class="h-full w-full" />
                         @endif

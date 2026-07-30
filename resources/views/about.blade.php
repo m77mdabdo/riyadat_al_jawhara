@@ -8,7 +8,7 @@
         </div>
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
             <div class="aspect-[21/9] rounded-xl overflow-hidden">
-                <img src="{{ asset('images/about-hero.webp') }}" alt="{{ __('site.about.title') }}" loading="lazy" class="h-full w-full object-cover">
+                <img src="{{ asset('images/about-hero.webp') }}" alt="{{ __('site.about.title') }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
             </div>
         </div>
     </section>
@@ -45,7 +45,7 @@
                         <div class="text-center">
                             <div class="aspect-square rounded-full bg-stone-200 overflow-hidden mx-auto max-w-[160px]">
                                 @if ($member->getFirstMediaUrl('photo'))
-                                    <img src="{{ $member->getFirstMediaUrl('photo', 'thumb') }}" alt="{{ $member->name }}" loading="lazy" class="h-full w-full object-cover">
+                                    <img src="{{ $member->getFirstMediaUrl('photo', 'thumb') }}" alt="{{ $member->name }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
                                 @else
                                     <x-image-placeholder :icon="false" class="h-full w-full" />
                                 @endif

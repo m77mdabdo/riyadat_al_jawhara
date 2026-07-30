@@ -27,6 +27,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+    @if (request()->routeIs('home'))
+        <link rel="preload" as="image" href="{{ asset('images/hero-poster.webp') }}" fetchpriority="high">
+    @endif
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
