@@ -128,6 +128,9 @@ return [
         'rights_reserved' => 'جميع الحقوق محفوظة.',
     ],
 
+    'whatsapp_default_message' => 'مرحباً، حابب أستفسر عن خدماتكم',
+    'whatsapp_aria_label' => 'تواصل معنا عبر واتساب',
+
 ];
 
 

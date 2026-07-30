@@ -128,4 +128,7 @@ return [
         'rights_reserved' => 'All rights reserved.',
     ],
 
+    'whatsapp_default_message' => "Hi, I'd like to ask about your services.",
+    'whatsapp_aria_label' => 'Contact us on WhatsApp',
+
 ];

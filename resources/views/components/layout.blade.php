@@ -56,9 +56,12 @@
         @scroll.window="visible = window.scrollY > 480"
         @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
         aria-label="{{ __('site.common.back_to_top') }}"
-        class="fixed bottom-6 end-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-charcoal text-cream shadow-lg transition-colors hover:bg-charcoal-700 focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2"
+        style="bottom: calc(6rem + env(safe-area-inset-bottom));"
+        class="fixed end-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-charcoal text-cream shadow-lg transition-colors hover:bg-charcoal-700 focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2"
     >
         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
     </button>
+
+    <x-whatsapp-float />
 </body>
 </html>
