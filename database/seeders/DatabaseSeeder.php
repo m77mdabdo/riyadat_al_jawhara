@@ -22,7 +22,10 @@ class DatabaseSeeder extends Seeder
             TeamMemberSeeder::class,
             FaqSeeder::class,
             LeadSeeder::class,
+            BlogCategorySeeder::class,
+            TagSeeder::class,
             PostSeeder::class,
+            CommentSeeder::class,
         ]);
     }
 }
