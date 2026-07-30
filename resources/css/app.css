@@ -17,6 +17,33 @@
     transform: translateY(0);
 }
 
+@media (hover: hover) and (pointer: fine) {
+    html {
+        scrollbar-width: thin;
+        scrollbar-color: #A6A099 #F8F6F3;
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #F8F6F3;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #A6A099;
+        border-radius: 9999px;
+        border: 2px solid #F8F6F3;
+        background-clip: padding-box;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #2B2B2B;
+    }
+}
+
 @layer base {
     a,
     button,

@@ -19,10 +19,10 @@ return [
     ],
 
     'common' => [
-        'read_more' => 'Read More',
-        'view_all' => 'View All',
-        'view_details' => 'View Details',
-        'request_quote' => 'Request a Quote',
+        'read_more' => 'See the Craftsmanship',
+        'view_all' => 'Explore All',
+        'view_details' => 'Explore This Stone',
+        'request_quote' => 'Get Your Free Quote',
         'whatsapp_us' => 'Chat on WhatsApp',
         'call_us' => 'Call Us',
         'submit' => 'Submit',
@@ -31,7 +31,7 @@ return [
         'back' => 'Back',
         'filter' => 'Filter',
         'all' => 'All',
-        'no_results' => 'No results found.',
+        'no_results' => 'No matches yet — try a different filter.',
         'featured' => 'Featured',
         'local' => 'Local',
         'imported' => 'Imported',
@@ -57,6 +57,18 @@ return [
         'faq' => 'Frequently Asked Questions',
         'cta_title' => 'Ready to Start Your Project?',
         'cta_subtitle' => 'Get a free consultation and quote from our team today',
+    ],
+
+    'process' => [
+        'title' => 'How We Work',
+        'subtitle' => 'A clear, guided journey from first call to finished stone',
+        'steps' => [
+            ['title' => 'Consultation', 'description' => 'We discuss your vision, space, and budget to shape the right plan.'],
+            ['title' => 'Site Measurement', 'description' => 'Our team visits the site for precise measurements and technical assessment.'],
+            ['title' => 'Stone Selection', 'description' => 'Choose the perfect natural stone or marble from our curated collection.'],
+            ['title' => 'Fabrication & Installation', 'description' => 'Skilled craftsmen cut, finish, and install with precision and care.'],
+            ['title' => 'Handover & Warranty', 'description' => 'We hand over the finished work, backed by our quality warranty.'],
+        ],
     ],
 
     'about' => [
@@ -87,6 +99,8 @@ return [
         'before' => 'Before',
         'after' => 'After',
         'gallery' => 'Gallery',
+        'drag_to_compare' => 'Drag to compare',
+        'before_after_slider' => 'Before and after comparison slider',
     ],
 
     'contact' => [

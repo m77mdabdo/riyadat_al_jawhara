@@ -35,18 +35,46 @@
 
     @if ($project->getFirstMediaUrl('before') && $project->getFirstMediaUrl('after'))
         <section class="py-16 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-8">{{ __('site.projects.before') }} / {{ __('site.projects.after') }}</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                    <p class="text-sm font-semibold text-stone-600 mb-2">{{ __('site.projects.before') }}</p>
-                    <div class="aspect-[4/3] rounded-xl bg-stone-200 overflow-hidden">
-                        <img src="{{ $project->getFirstMediaUrl('before', 'medium') }}" alt="{{ __('site.projects.before') }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
-                    </div>
-                </div>
-                <div>
-                    <p class="text-sm font-semibold text-stone-600 mb-2">{{ __('site.projects.after') }}</p>
-                    <div class="aspect-[4/3] rounded-xl bg-stone-200 overflow-hidden">
-                        <img src="{{ $project->getFirstMediaUrl('after', 'medium') }}" alt="{{ __('site.projects.after') }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
+            <div class="flex items-center justify-between mb-8 flex-wrap gap-2">
+                <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.projects.before') }} / {{ __('site.projects.after') }}</h2>
+                <p class="text-sm text-stone-500">{{ __('site.projects.drag_to_compare') }}</p>
+            </div>
+
+            <div
+                x-data="{
+                    pos: 50,
+                    dragging: false,
+                    setFromClientX(clientX) {
+                        const rect = $el.getBoundingClientRect();
+                        this.pos = Math.min(100, Math.max(0, ((clientX - rect.left) / rect.width) * 100));
+                    },
+                }"
+                @mousedown="dragging = true; setFromClientX($event.clientX)"
+                @mousemove.window="dragging && setFromClientX($event.clientX)"
+                @mouseup.window="dragging = false"
+                @touchstart="dragging = true; setFromClientX($event.touches[0].clientX)"
+                @touchmove="dragging && setFromClientX($event.touches[0].clientX)"
+                @touchend="dragging = false"
+                @keydown.arrow-left="pos = Math.max(0, pos - 5)"
+                @keydown.arrow-right="pos = Math.min(100, pos + 5)"
+                role="slider"
+                tabindex="0"
+                :aria-valuenow="Math.round(pos)"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-label="{{ __('site.projects.before_after_slider') }}"
+                class="relative aspect-[16/10] sm:aspect-[21/9] rounded-xl overflow-hidden bg-stone-200 select-none touch-none cursor-ew-resize focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2"
+            >
+                <img src="{{ $project->getFirstMediaUrl('after', 'medium') }}" alt="{{ __('site.projects.after') }}" loading="lazy" draggable="false" class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] pointer-events-none">
+
+                <img src="{{ $project->getFirstMediaUrl('before', 'medium') }}" alt="{{ __('site.projects.before') }}" loading="lazy" draggable="false" :style="`clip-path: inset(0 ${100 - pos}% 0 0)`" class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] pointer-events-none">
+
+                <span class="absolute top-4 left-4 rounded-full bg-charcoal/70 text-cream text-xs font-semibold px-3 py-1 pointer-events-none">{{ __('site.projects.before') }}</span>
+                <span class="absolute top-4 right-4 rounded-full bg-charcoal/70 text-cream text-xs font-semibold px-3 py-1 pointer-events-none">{{ __('site.projects.after') }}</span>
+
+                <div class="absolute inset-y-0 w-0.5 bg-cream pointer-events-none" :style="`left: ${pos}%`">
+                    <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 h-10 w-10 rounded-full bg-cream shadow-lg flex items-center justify-center">
+                        <svg class="h-5 w-5 text-charcoal" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l-4 4 4 4m8-12l4 4-4 4" /></svg>
                     </div>
                 </div>
             </div>

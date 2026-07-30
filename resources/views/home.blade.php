@@ -1,6 +1,10 @@
 <x-layout>
     {{-- Hero --}}
-    <section class="relative bg-charcoal text-cream overflow-hidden" x-data="{ active: 0, count: {{ $sliders->count() ?: 1 }} }" x-init="setInterval(() => active = (active + 1) % count, 6000)">
+    <section class="relative bg-charcoal text-cream overflow-hidden"
+        x-data="{ active: 0, count: {{ $sliders->count() ?: 1 }}, mx: 50, my: 50, cursorFx: false }"
+        x-init="setInterval(() => active = (active + 1) % count, 6000); cursorFx = window.matchMedia('(hover: hover) and (pointer: fine)').matches"
+        @mousemove="if (cursorFx) { const r = $el.getBoundingClientRect(); mx = ((event.clientX - r.left) / r.width) * 100; my = ((event.clientY - r.top) / r.height) * 100; }"
+    >
         <div class="absolute inset-0" x-data="{ showVideo: false }" x-init="showVideo = window.matchMedia('(min-width: 640px)').matches">
             <img src="{{ asset('images/hero-poster.webp') }}" alt="" class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]" loading="eager" fetchpriority="high">
             <template x-if="showVideo">
@@ -10,6 +14,8 @@
             </template>
             <div class="absolute inset-0 bg-gradient-to-t from-charcoal/90 to-charcoal/40"></div>
         </div>
+
+        <div x-show="cursorFx" x-cloak class="absolute inset-0" :style="`background: radial-gradient(500px circle at ${mx}% ${my}%, rgba(248,246,243,0.10), transparent 60%)`"></div>
 
         @forelse ($sliders as $index => $slider)
             <div x-show="active === {{ $index }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index > 0) x-cloak @endif class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center">
@@ -67,6 +73,8 @@
         </div>
     </section>
 
+    <x-marble-divider />
+
     {{-- Featured Projects --}}
     @if ($featuredProjects->isNotEmpty())
         <section class="py-20 bg-white">
@@ -121,6 +129,35 @@
             </div>
         </section>
     @endif
+
+    <x-marble-divider />
+
+    {{-- How We Work --}}
+    <section x-reveal class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.process.title') }}</h2>
+            <p class="mt-3 text-stone-600">{{ __('site.process.subtitle') }}</p>
+        </div>
+
+        <div class="relative">
+            <div class="hidden lg:block absolute top-6 left-0 right-0 h-px bg-stone-300"></div>
+            <div class="lg:hidden absolute top-0 bottom-0 start-6 w-px bg-stone-300"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-6">
+                @foreach (__('site.process.steps') as $index => $step)
+                    <div class="relative flex items-start lg:flex-col lg:items-center gap-4 lg:gap-0 lg:text-center">
+                        <div class="relative z-10 shrink-0 h-12 w-12 rounded-full bg-charcoal text-cream flex items-center justify-center font-bold">
+                            {{ $index + 1 }}
+                        </div>
+                        <div class="lg:mt-5">
+                            <h3 class="font-semibold text-charcoal">{{ $step['title'] }}</h3>
+                            <p class="mt-1 text-sm text-stone-600 leading-relaxed rtl:leading-loose">{{ $step['description'] }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
 
     {{-- Testimonials --}}
     @if ($testimonials->isNotEmpty())
