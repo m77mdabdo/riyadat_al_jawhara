@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -26,12 +29,20 @@ class Post extends Model implements HasMedia
         'is_published',
         'published_at',
         'author_id',
+        'blog_category_id',
+        'views_count',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'datetime',
+        'views_count' => 'integer',
     ];
+
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('is_published', true)->where('published_at', '<=', now());
+    }
 
     public function getSlugOptions(): SlugOptions
     {
@@ -54,6 +65,26 @@ class Post extends Model implements HasMedia
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function blogCategory(): BelongsTo
+    {
+        return $this->belongsTo(BlogCategory::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function approvedComments(): HasMany
+    {
+        return $this->hasMany(Comment::class)->where('status', 'approved')->whereNull('parent_id');
     }
 
     public function getTitleAttribute(): string
