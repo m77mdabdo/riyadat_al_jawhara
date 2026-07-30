@@ -39,6 +39,8 @@ return [
         'close' => 'Close',
         'back_to_top' => 'Back to top',
         'view_image' => 'View larger image',
+        'previous_image' => 'Previous image',
+        'next_image' => 'Next image',
         'go_to_slide' => 'Go to slide :number',
         'switch_to_arabic' => 'Switch to Arabic',
         'switch_to_english' => 'Switch to English',

@@ -54,7 +54,7 @@
     @endif
 
     @if ($allMedia->isNotEmpty())
-        <section class="py-16 bg-white" x-data="{ open: false, active: 0 }">
+        <section class="py-16 bg-white" x-data="{ open: false, active: 0, count: {{ $allMedia->count() }}, touchX: 0, next() { this.active = (this.active + 1) % this.count }, prev() { this.active = (this.active - 1 + this.count) % this.count } }">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-8">{{ __('site.projects.gallery') }}</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -66,10 +66,24 @@
                 </div>
             </div>
 
-            <div x-show="open" x-cloak x-transition.opacity.duration.200ms class="fixed inset-0 z-50 bg-charcoal/90 flex items-center justify-center p-4" @click.self="open = false" @keydown.escape.window="open = false">
+            <div x-show="open" x-cloak x-transition.opacity.duration.200ms class="fixed inset-0 z-50 bg-charcoal/90 flex items-center justify-center p-4"
+                 @click.self="open = false"
+                 @keydown.escape.window="open = false"
+                 @keydown.arrow-right.window="next()"
+                 @keydown.arrow-left.window="prev()"
+                 @touchstart="touchX = $event.changedTouches[0].screenX"
+                 @touchend="const dx = $event.changedTouches[0].screenX - touchX; if (Math.abs(dx) > 40) { dx < 0 ? next() : prev() }">
                 <button @click="open = false" class="absolute top-6 end-6 text-cream" aria-label="{{ __('site.common.close') }}">
                     <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
+                @if ($allMedia->count() > 1)
+                    <button @click.stop="prev()" class="absolute start-2 sm:start-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-cream" aria-label="{{ __('site.common.previous_image') }}">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    <button @click.stop="next()" class="absolute end-2 sm:end-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-cream" aria-label="{{ __('site.common.next_image') }}">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                @endif
                 @foreach ($allMedia as $index => $media)
                     <img x-show="active === {{ $index }}" src="{{ $media->getUrl('medium') }}" alt="{{ $project->title }}" loading="lazy" class="max-h-[85vh] max-w-full rounded-lg saturate-[0.92] contrast-[1.03] sepia-[0.04]">
                 @endforeach

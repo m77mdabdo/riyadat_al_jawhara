@@ -39,6 +39,8 @@ return [
         'close' => 'إغلاق',
         'back_to_top' => 'العودة للأعلى',
         'view_image' => 'عرض صورة أكبر',
+        'previous_image' => 'الصورة السابقة',
+        'next_image' => 'الصورة التالية',
         'go_to_slide' => 'الانتقال إلى الشريحة رقم :number',
         'switch_to_arabic' => 'التبديل إلى العربية',
         'switch_to_english' => 'التبديل إلى الإنجليزية',

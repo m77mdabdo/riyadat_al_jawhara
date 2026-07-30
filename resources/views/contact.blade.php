@@ -19,19 +19,19 @@
 
                 <div>
                     <label for="name" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_name') }}</label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}" class="w-full rounded-md border-stone-300 focus:border-charcoal focus:ring-charcoal @error('name') border-red-400 @enderror">
+                    <input type="text" name="name" id="name" value="{{ old('name') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('name') border-red-400 @enderror">
                     @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label for="phone" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_phone') }}</label>
-                        <input type="text" name="phone" id="phone" value="{{ old('phone') }}" class="w-full rounded-md border-stone-300 focus:border-charcoal focus:ring-charcoal @error('phone') border-red-400 @enderror">
+                        <input type="text" name="phone" id="phone" value="{{ old('phone') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('phone') border-red-400 @enderror">
                         @error('phone') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label for="email" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_email') }}</label>
-                        <input type="email" name="email" id="email" value="{{ old('email') }}" class="w-full rounded-md border-stone-300 focus:border-charcoal focus:ring-charcoal @error('email') border-red-400 @enderror">
+                        <input type="email" name="email" id="email" value="{{ old('email') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('email') border-red-400 @enderror">
                         @error('email') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -39,12 +39,12 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label for="city" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_city') }}</label>
-                        <input type="text" name="city" id="city" value="{{ old('city') }}" class="w-full rounded-md border-stone-300 focus:border-charcoal focus:ring-charcoal @error('city') border-red-400 @enderror">
+                        <input type="text" name="city" id="city" value="{{ old('city') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('city') border-red-400 @enderror">
                         @error('city') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label for="service_id" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_service') }}</label>
-                        <select name="service_id" id="service_id" class="w-full rounded-md border-stone-300 focus:border-charcoal focus:ring-charcoal @error('service_id') border-red-400 @enderror">
+                        <select name="service_id" id="service_id" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('service_id') border-red-400 @enderror">
                             <option value="">{{ __('site.contact.choose_service') }}</option>
                             @foreach ($services as $service)
                                 <option value="{{ $service->id }}" @selected(old('service_id') == $service->id)>{{ $service->name }}</option>
@@ -56,7 +56,7 @@
 
                 <div>
                     <label for="stone_type_id" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_stone_type') }}</label>
-                    <select name="stone_type_id" id="stone_type_id" class="w-full rounded-md border-stone-300 focus:border-charcoal focus:ring-charcoal @error('stone_type_id') border-red-400 @enderror">
+                    <select name="stone_type_id" id="stone_type_id" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('stone_type_id') border-red-400 @enderror">
                         <option value="">{{ __('site.contact.choose_stone_type') }}</option>
                         @foreach ($stoneTypes as $stoneType)
                             <option value="{{ $stoneType->id }}" @selected(old('stone_type_id') == $stoneType->id)>{{ $stoneType->name }}</option>
@@ -67,7 +67,7 @@
 
                 <div>
                     <label for="message" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_message') }}</label>
-                    <textarea name="message" id="message" rows="4" class="w-full rounded-md border-stone-300 focus:border-charcoal focus:ring-charcoal @error('message') border-red-400 @enderror">{{ old('message') }}</textarea>
+                    <textarea name="message" id="message" rows="4" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('message') border-red-400 @enderror">{{ old('message') }}</textarea>
                     @error('message') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
