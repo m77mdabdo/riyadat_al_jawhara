@@ -42,9 +42,8 @@ class PostResource extends Resource
                                     ->label('Excerpt (EN)')
                                     ->rows(2)
                                     ->columnSpanFull(),
-                                Forms\Components\Textarea::make('body_en')
+                                Forms\Components\RichEditor::make('body_en')
                                     ->label('Body (EN)')
-                                    ->rows(8)
                                     ->columnSpanFull(),
                             ]),
                         Forms\Components\Tabs\Tab::make('Arabic')
@@ -57,9 +56,8 @@ class PostResource extends Resource
                                     ->label('المقتطف (AR)')
                                     ->rows(2)
                                     ->columnSpanFull(),
-                                Forms\Components\Textarea::make('body_ar')
+                                Forms\Components\RichEditor::make('body_ar')
                                     ->label('المحتوى (AR)')
-                                    ->rows(8)
                                     ->columnSpanFull(),
                             ]),
                     ]),
@@ -67,12 +65,30 @@ class PostResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
+                Forms\Components\Select::make('blog_category_id')
+                    ->label('Category')
+                    ->relationship('blogCategory', 'name_en')
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\Select::make('tags')
+                    ->relationship('tags', 'name_en')
+                    ->multiple()
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\Toggle::make('is_published')
+                    ->live()
+                    ->afterStateUpdated(function (bool $state, Forms\Set $set, Forms\Get $get) {
+                        if ($state && ! $get('published_at')) {
+                            $set('published_at', now());
+                        }
+                    })
                     ->default(false),
                 Forms\Components\DateTimePicker::make('published_at'),
                 Forms\Components\Select::make('author_id')
+                    ->label('Author')
                     ->relationship('author', 'name')
-                    ->searchable(),
+                    ->searchable()
+                    ->default(fn () => auth()->id()),
                 SpatieMediaLibraryFileUpload::make('cover')
                     ->collection('cover')
                     ->image()
@@ -86,11 +102,19 @@ class PostResource extends Resource
             ->columns([
                 SpatieMediaLibraryImageColumn::make('cover')->collection('cover')->label('Cover'),
                 Tables\Columns\TextColumn::make('title_en')->label('Title')->searchable(['title_en', 'title_ar']),
+                Tables\Columns\TextColumn::make('blogCategory.name_en')->label('Category'),
                 Tables\Columns\IconColumn::make('is_published')->boolean(),
                 Tables\Columns\TextColumn::make('published_at')->dateTime()->sortable(),
                 Tables\Columns\TextColumn::make('author.name'),
+                Tables\Columns\TextColumn::make('views_count')->label('Views')->numeric()->sortable(),
             ])
             ->defaultSort('published_at', 'desc')
+            ->filters([
+                Tables\Filters\TernaryFilter::make('is_published')->label('Published'),
+                Tables\Filters\SelectFilter::make('blog_category_id')
+                    ->label('Category')
+                    ->relationship('blogCategory', 'name_en'),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
