@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\StoneType;
@@ -16,6 +17,7 @@ class SitemapController extends Controller
             ['loc' => route('services.index'), 'priority' => '0.8'],
             ['loc' => route('stones.index'), 'priority' => '0.8'],
             ['loc' => route('projects.index'), 'priority' => '0.8'],
+            ['loc' => route('blog.index'), 'priority' => '0.7'],
             ['loc' => route('about'), 'priority' => '0.6'],
             ['loc' => route('contact'), 'priority' => '0.6'],
         ]);
@@ -30,6 +32,10 @@ class SitemapController extends Controller
 
         Project::active()->get()->each(
             fn (Project $project) => $urls->push(['loc' => route('projects.show', $project), 'priority' => '0.6'])
+        );
+
+        Post::published()->get()->each(
+            fn (Post $post) => $urls->push(['loc' => route('blog.show', $post), 'priority' => '0.5'])
         );
 
         $xml = view('sitemap', ['urls' => $urls])->render();

@@ -45,7 +45,7 @@ class PostSeeder extends Seeder
                 'published_at' => now()->subDays(5),
                 'category' => 'Project Insights',
                 'tags' => ['Facades', 'Trends'],
-                'search' => 'architecture magazine',
+                'search' => 'modern building facade exterior',
             ],
             [
                 'title_ar' => '٥ علامات تدل على حاجة أرضية الرخام لعناية احترافية',
