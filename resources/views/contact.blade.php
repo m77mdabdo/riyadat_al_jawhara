@@ -116,6 +116,14 @@
                         src="https://maps.google.com/maps?q={{ $settings->map_lat }},{{ $settings->map_lng }}&z=14&output=embed">
                     </iframe>
                 </div>
+                <a
+                    href="https://www.google.com/maps/dir/?api=1&destination={{ $settings->map_lat }},{{ $settings->map_lng }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-center justify-center gap-2 rounded-md border border-stone-300 hover:bg-stone-100 transition-colors text-charcoal text-sm font-semibold px-5 py-3"
+                >
+                    <x-heroicon-o-map class="h-4 w-4" /> {{ __('site.contact.get_directions') }}
+                </a>
             @endif
         </div>
     </section>
