@@ -26,6 +26,10 @@ class Setting extends Model
         'mission_en',
         'map_lat',
         'map_lng',
+        'privacy_policy_ar',
+        'privacy_policy_en',
+        'terms_ar',
+        'terms_en',
     ];
 
     public static function current(): self
@@ -56,5 +60,15 @@ class Setting extends Model
     public function getMissionAttribute(): ?string
     {
         return app()->getLocale() === 'ar' ? $this->mission_ar : $this->mission_en;
+    }
+
+    public function getPrivacyPolicyAttribute(): ?string
+    {
+        return app()->getLocale() === 'ar' ? $this->privacy_policy_ar : $this->privacy_policy_en;
+    }
+
+    public function getTermsAttribute(): ?string
+    {
+        return app()->getLocale() === 'ar' ? $this->terms_ar : $this->terms_en;
     }
 }

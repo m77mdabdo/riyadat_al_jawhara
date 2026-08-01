@@ -145,6 +145,13 @@ return [
         'get_in_touch' => 'تواصل معنا',
         'our_location' => 'موقعنا',
         'working_hours' => 'ساعات العمل',
+        'get_directions' => 'احصل على الاتجاهات',
+    ],
+
+    'legal' => [
+        'privacy_policy_title' => 'سياسة الخصوصية',
+        'terms_title' => 'شروط الاستخدام',
+        'content_missing' => 'لم يتم تعبئة هذه الصفحة بعد.',
     ],
 
     'footer' => [

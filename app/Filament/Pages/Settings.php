@@ -76,6 +76,24 @@ class Settings extends Page implements HasForms
                             ]),
                     ]),
 
+                Forms\Components\Section::make('Legal Pages')
+                    ->schema([
+                        Forms\Components\Tabs::make('LegalTranslations')
+                            ->columnSpanFull()
+                            ->tabs([
+                                Forms\Components\Tabs\Tab::make('English')
+                                    ->schema([
+                                        Forms\Components\RichEditor::make('privacy_policy_en')->label('Privacy Policy (EN)'),
+                                        Forms\Components\RichEditor::make('terms_en')->label('Terms of Use (EN)'),
+                                    ]),
+                                Forms\Components\Tabs\Tab::make('Arabic')
+                                    ->schema([
+                                        Forms\Components\RichEditor::make('privacy_policy_ar')->label('سياسة الخصوصية (AR)'),
+                                        Forms\Components\RichEditor::make('terms_ar')->label('شروط الاستخدام (AR)'),
+                                    ]),
+                            ]),
+                    ]),
+
                 Forms\Components\Section::make('Social Links')
                     ->schema([
                         Forms\Components\TextInput::make('facebook_url')->url(),

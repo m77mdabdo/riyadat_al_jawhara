@@ -72,8 +72,12 @@
     </div>
 
     <div class="border-t border-stone-700">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-xs text-stone-400 text-center">
-            &copy; {{ now()->year }} {{ __('site.meta.site_name') }} — {{ __('site.footer.rights_reserved') }}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs text-stone-400 text-center">
+            <span>&copy; {{ now()->year }} {{ __('site.meta.site_name') }} — {{ __('site.footer.rights_reserved') }}</span>
+            <span class="hidden sm:inline">&middot;</span>
+            <a href="{{ route('legal.privacy') }}" class="hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.legal.privacy_policy_title') }}</a>
+            <span class="hidden sm:inline">&middot;</span>
+            <a href="{{ route('legal.terms') }}" class="hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.legal.terms_title') }}</a>
         </div>
     </div>
 </footer>

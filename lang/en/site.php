@@ -145,6 +145,13 @@ return [
         'get_in_touch' => 'Get in Touch',
         'our_location' => 'Our Location',
         'working_hours' => 'Working Hours',
+        'get_directions' => 'Get Directions',
+    ],
+
+    'legal' => [
+        'privacy_policy_title' => 'Privacy Policy',
+        'terms_title' => 'Terms of Use',
+        'content_missing' => 'This page has not been filled in yet.',
     ],
 
     'footer' => [

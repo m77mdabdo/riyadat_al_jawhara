@@ -4,6 +4,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LegalController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ServiceController;
@@ -32,6 +33,9 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+Route::get('/privacy-policy', [LegalController::class, 'privacyPolicy'])->name('legal.privacy');
+Route::get('/terms-of-use', [LegalController::class, 'termsOfUse'])->name('legal.terms');
 
 Route::get('/lang/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 
