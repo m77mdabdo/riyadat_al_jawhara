@@ -8,6 +8,17 @@ return [
         'default_description' => 'Supply, installation, and design of natural stone and marble across Saudi Arabia.',
     ],
 
+    'errors' => [
+        '404_title' => 'Page Not Found',
+        '404_heading' => "Looks like this page doesn't exist",
+        '404_message' => "The page you're looking for may have been moved or no longer exists. Let's get you back on track.",
+        '500_title' => 'Something Went Wrong',
+        '500_heading' => 'Something went wrong on our end',
+        '500_message' => "We're already looking into it. Please try again in a moment, or reach out if the problem continues.",
+        'back_home' => 'Back to Homepage',
+        'quick_links' => 'Or try one of these:',
+    ],
+
     'nav' => [
         'home' => 'Home',
         'services' => 'Services',
