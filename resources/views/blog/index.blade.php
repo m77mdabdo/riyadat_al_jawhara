@@ -40,7 +40,7 @@
                 <a href="{{ route('blog.show', $post) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                     <div class="aspect-[4/3] bg-stone-200 overflow-hidden relative">
                         @if ($post->getFirstMediaUrl('cover'))
-                            <img src="{{ $post->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $post->title }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ $post->getFirstMediaUrl('cover', 'medium') }}" alt="" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
                         @else
                             <x-image-placeholder class="h-full w-full" />
                         @endif
@@ -49,7 +49,7 @@
                         @endif
                     </div>
                     <div class="p-5">
-                        <p class="text-xs text-stone-500 mb-2"><bdi>{{ $post->published_at->format('Y-m-d') }}</bdi></p>
+                        <p class="text-xs text-stone-600 mb-2"><bdi>{{ $post->published_at->format('Y-m-d') }}</bdi></p>
                         <h2 class="font-semibold text-charcoal">{{ $post->title }}</h2>
                         @if ($post->excerpt)
                             <p class="text-sm text-stone-600 mt-2 line-clamp-2">{{ $post->excerpt }}</p>

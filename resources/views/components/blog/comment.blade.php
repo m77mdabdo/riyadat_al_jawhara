@@ -8,7 +8,7 @@
     <div class="rounded-lg border border-stone-200 bg-white p-5">
         <div class="flex items-center justify-between gap-3">
             <p class="font-semibold text-charcoal text-sm">{{ $comment->name }}</p>
-            <p class="text-xs text-stone-500 shrink-0"><bdi>{{ $comment->created_at->diffForHumans() }}</bdi></p>
+            <p class="text-xs text-stone-600 shrink-0"><bdi>{{ $comment->created_at->diffForHumans() }}</bdi></p>
         </div>
         <p class="mt-2 text-sm text-stone-700 leading-relaxed rtl:leading-loose">{{ $comment->body }}</p>
 

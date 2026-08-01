@@ -53,7 +53,7 @@
                         <a href="{{ route('blog.show', $relatedPost) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
                             <div class="aspect-[4/3] bg-stone-200 overflow-hidden">
                                 @if ($relatedPost->getFirstMediaUrl('cover'))
-                                    <img src="{{ $relatedPost->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $relatedPost->title }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
+                                    <img src="{{ $relatedPost->getFirstMediaUrl('cover', 'medium') }}" alt="" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
                                 @else
                                     <x-image-placeholder class="h-full w-full" />
                                 @endif
