@@ -16,6 +16,7 @@
                 <li><a href="{{ route('stones.index') }}" class="hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.stones') }}</a></li>
                 <li><a href="{{ route('projects.index') }}" class="hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.projects') }}</a></li>
                 <li><a href="{{ route('blog.index') }}" class="hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.blog') }}</a></li>
+                <li><a href="{{ route('faq') }}" class="hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.faq') }}</a></li>
                 <li><a href="{{ route('about') }}" class="hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.about') }}</a></li>
                 <li><a href="{{ route('contact') }}" class="hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.contact') }}</a></li>
             </ul>

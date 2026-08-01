@@ -45,6 +45,13 @@ class FaqSeeder extends Seeder
                 'answer_en' => 'Yes, we provide an installation quality warranty of up to two years depending on the project type.',
                 'order' => 5,
             ],
+            [
+                'question_ar' => 'كيف يتم تحديد سعر المشروع؟',
+                'question_en' => 'How is the price of a project determined?',
+                'answer_ar' => 'يعتمد السعر على نوع الحجر المختار ومساحة المشروع ومدى تعقيد التركيب. نقدم عرض سعر مفصل ومجاني بعد المعاينة قبل البدء في أي عمل.',
+                'answer_en' => 'Pricing depends on the stone type selected, the project area, and the complexity of installation. We provide a detailed, free quote after the site inspection before any work begins.',
+                'order' => 6,
+            ],
         ];
 
         foreach ($faqs as $faq) {

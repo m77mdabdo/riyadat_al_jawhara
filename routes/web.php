@@ -3,6 +3,7 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\LocaleController;
@@ -28,6 +29,8 @@ Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('blog.sho
 Route::post('/blog/{post:slug}/comments', [BlogController::class, 'storeComment'])
     ->middleware('throttle:5,1')
     ->name('blog.comments.store');
+
+Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 

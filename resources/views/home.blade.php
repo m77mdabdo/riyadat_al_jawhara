@@ -208,6 +208,11 @@
                     </div>
                 @endforeach
             </div>
+            <div class="mt-8 text-center">
+                <a href="{{ route('faq') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-charcoal hover:underline">
+                    {{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" />
+                </a>
+            </div>
         </section>
     @endif
 

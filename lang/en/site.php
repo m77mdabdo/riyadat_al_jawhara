@@ -27,6 +27,7 @@ return [
         'about' => 'About Us',
         'contact' => 'Contact Us',
         'blog' => 'News',
+        'faq' => 'FAQ',
     ],
 
     'common' => [
@@ -87,6 +88,13 @@ return [
         'our_vision' => 'Our Vision',
         'our_mission' => 'Our Mission',
         'our_team' => 'Our Team',
+    ],
+
+    'faq' => [
+        'title' => 'Frequently Asked Questions',
+        'subtitle' => 'Answers to common questions about our services, process, and pricing',
+        'no_faqs_yet' => 'No questions have been added yet.',
+        'still_have_questions' => "Still have questions? We're happy to help.",
     ],
 
     'services' => [

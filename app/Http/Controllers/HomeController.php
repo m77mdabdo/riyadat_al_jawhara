@@ -20,7 +20,7 @@ class HomeController extends Controller
             'featuredProjects' => Project::active()->featured()->ordered()->take(6)->get(),
             'stoneTypes' => StoneType::active()->ordered()->take(8)->get(),
             'testimonials' => Testimonial::active()->ordered()->with('project')->get(),
-            'faqs' => Faq::active()->ordered()->get(),
+            'faqs' => Faq::active()->ordered()->take(4)->get(),
         ]);
     }
 }
