@@ -4,13 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class ThankYouPageTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function submit(array $overrides = []): \Illuminate\Testing\TestResponse
+    private function submit(array $overrides = []): TestResponse
     {
         return $this->post(route('contact.store'), $overrides + ['name' => 'C', 'phone' => '0500000000', 'message' => 'Quote', 'consent' => '1']);
     }
