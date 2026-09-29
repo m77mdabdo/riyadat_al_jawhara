@@ -24,6 +24,7 @@ class DemoSeeder extends Seeder
             SliderSeeder::class,
             ServiceSeeder::class,
             StoneCategorySeeder::class,
+            StoneAttributeSeeder::class,
             ProjectSeeder::class,
             TestimonialSeeder::class,
             TeamMemberSeeder::class,

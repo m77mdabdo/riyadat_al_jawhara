@@ -106,6 +106,16 @@ return [
         'title' => 'الأحجار والرخام',
         'origin' => 'المنشأ',
         'category' => 'الفئة',
+        'specifications' => 'المواصفات',
+        'finish' => 'التشطيب',
+        'colour' => 'اللون',
+        'size' => 'المقاس / السماكة',
+        'application' => 'الاستخدام',
+        'origin_type' => 'محلي / مستورد',
+        'filter_by' => 'تصفية الأحجار',
+        'any' => 'الكل',
+        'clear_filters' => 'مسح التصفية',
+        'results_count' => ':count حجر',
     ],
 
     'projects' => [

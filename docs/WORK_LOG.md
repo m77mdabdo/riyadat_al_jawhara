@@ -20,13 +20,17 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 1A — B1 reply leak, B2 user roles, B3 icon crash, L1/L2 contact spam | `c26b54e` | 23 / 98 | Allowed icons: truck, wrench-screwdriver, building-office-2, sparkles, cube. Pint fixed 3 pre-existing style issues in touched files |
 | 1B — Settings admin-only, rich-text sanitizing, Post trait, env→config, seeder split, `app:create-admin` | `663fcc4` | 41 / 183 | `db:seed` now seeds roles only; demo via `--class=DemoSeeder`. Sanitizer = Filament's `sanitizeHtml()` (symfony/html-sanitizer, already installed) |
 | 2 — Leads: notification, contextual CTAs, lead context columns, consent, tel/mailto, WhatsApp normalization, active-only refs, phone input | `900f96d` | 61 / 241 | Mail goes to Settings email + admin users (queued, deduped). Phone accepts Arabic-Indic digits (normalized) |
-| 3a — Lead workflow: view page, notes, assignee, follow-up date, CSV export | _(next commit)_ | 71 / 307 | Export is admin-only, respects table filters, CSV-injection guarded, UTF-8 BOM. Notes editable by author/admin. Dashboard: "Follow-ups Due" stat; project stat now counts active only |
+| 3a — Lead workflow: view page, notes, assignee, follow-up date, CSV export | `5be71e8` | 71 / 307 | Export is admin-only, respects table filters, CSV-injection guarded, UTF-8 BOM. Notes editable by author/admin. Dashboard: "Follow-ups Due" stat; project stat now counts active only |
+| 3b — Stone attributes (finish / colour / size / application + local/imported), admin + public filters + spec block | _(next commit)_ | 83 / 379 | One lookup table `stone_attributes` (type column) + pivot. Demo options listed in `StoneAttributeSeeder::OPTIONS` (demo links are illustrative) |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
 1. `2026_09_29_100000_add_context_columns_to_leads_table` — adds nullable `project_id` (FK → projects, null on delete), `locale`, `source_url`, `ip_address`, `user_agent`, `consented_at` to `leads`; indexes on `status` and `created_at`. Existing rows untouched. Up/down verified on SQLite.
 2. `2026_09_29_110000_add_workflow_columns_to_leads_table` — adds nullable `assigned_to` (FK → users, null on delete) and `follow_up_at` (date, indexed) to `leads`.
 3. `2026_09_29_110100_create_lead_notes_table` — new `lead_notes` table (lead_id cascade, user_id null on delete, body).
+4. `2026_09_29_120000_create_stone_attributes_table` — new lookup table (type, name_ar/en, slug unique per type, hex_color, order, is_active).
+5. `2026_09_29_120100_create_stone_attribute_stone_type_table` — new pivot (cascade on both sides).
+6. `2026_09_29_120200_add_origin_type_to_stone_types_table` — nullable, indexed `origin_type` (local/imported) on `stone_types`.
 
 ## Open questions
 

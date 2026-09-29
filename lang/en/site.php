@@ -106,6 +106,16 @@ return [
         'title' => 'Stones & Marble',
         'origin' => 'Origin',
         'category' => 'Category',
+        'specifications' => 'Specifications',
+        'finish' => 'Finish',
+        'colour' => 'Colour',
+        'size' => 'Size / Thickness',
+        'application' => 'Application',
+        'origin_type' => 'Local / Imported',
+        'filter_by' => 'Filter stones',
+        'any' => 'Any',
+        'clear_filters' => 'Clear filters',
+        'results_count' => ':count stones',
     ],
 
     'projects' => [

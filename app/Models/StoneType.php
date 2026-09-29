@@ -5,7 +5,9 @@ namespace App\Models;
 use App\Models\Concerns\HasActiveScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -23,6 +25,7 @@ class StoneType extends Model implements HasMedia
         'slug',
         'origin_ar',
         'origin_en',
+        'origin_type',
         'description_ar',
         'description_en',
         'is_active',
@@ -32,6 +35,15 @@ class StoneType extends Model implements HasMedia
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public const ORIGIN_LOCAL = 'local';
+
+    public const ORIGIN_IMPORTED = 'imported';
+
+    /**
+     * @var array<int, string>
+     */
+    public const ORIGIN_TYPES = [self::ORIGIN_LOCAL, self::ORIGIN_IMPORTED];
 
     public function getSlugOptions(): SlugOptions
     {
@@ -65,6 +77,48 @@ class StoneType extends Model implements HasMedia
     public function leads(): HasMany
     {
         return $this->hasMany(Lead::class);
+    }
+
+    /**
+     * All specification values. The per-type relations below are what the
+     * admin form and views use; they share the same pivot table.
+     */
+    public function stoneAttributes(): BelongsToMany
+    {
+        return $this->belongsToMany(StoneAttribute::class)->orderBy('stone_attributes.order');
+    }
+
+    public function finishes(): BelongsToMany
+    {
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::FINISH);
+    }
+
+    public function colours(): BelongsToMany
+    {
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::COLOUR);
+    }
+
+    public function sizes(): BelongsToMany
+    {
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::SIZE);
+    }
+
+    public function applications(): BelongsToMany
+    {
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::APPLICATION);
+    }
+
+    /**
+     * Active specification values grouped by type, for the detail page.
+     *
+     * @return Collection<string, Collection<int, StoneAttribute>>
+     */
+    public function specificationGroups(): Collection
+    {
+        return $this->stoneAttributes
+            ->where('is_active', true)
+            ->groupBy('type')
+            ->sortBy(fn ($group, string $type) => array_search($type, array_keys(StoneAttribute::TYPES), true));
     }
 
     public function getNameAttribute(): string

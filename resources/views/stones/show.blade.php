@@ -15,6 +15,38 @@
                     <p class="mt-3 text-sm text-stone-600"><span class="font-semibold">{{ __('site.stones.origin') }}:</span> {{ $stoneType->origin }}</p>
                 @endif
                 <p class="mt-4 text-stone-600 leading-relaxed rtl:leading-loose">{{ $stoneType->description }}</p>
+
+                @php
+                    $specGroups = $stoneType->specificationGroups();
+                @endphp
+                @if ($specGroups->isNotEmpty() || $stoneType->origin_type)
+                    <div class="mt-6 border-t border-stone-200 pt-5">
+                        <h2 class="text-sm font-semibold text-charcoal mb-3">{{ __('site.stones.specifications') }}</h2>
+                        <dl class="space-y-3 text-sm">
+                            @if ($stoneType->origin_type)
+                                <div class="flex flex-wrap gap-x-3 gap-y-1">
+                                    <dt class="font-semibold text-stone-600 min-w-28">{{ __('site.stones.origin_type') }}</dt>
+                                    <dd class="text-charcoal">{{ __('site.common.'.$stoneType->origin_type) }}</dd>
+                                </div>
+                            @endif
+                            @foreach ($specGroups as $type => $values)
+                                <div class="flex flex-wrap gap-x-3 gap-y-1">
+                                    <dt class="font-semibold text-stone-600 min-w-28">{{ __('site.stones.'.$type) }}</dt>
+                                    <dd class="flex flex-wrap gap-2">
+                                        @foreach ($values as $value)
+                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-stone-100 px-3 py-1 text-charcoal">
+                                                @if ($type === \App\Models\StoneAttribute::COLOUR && $value->swatch)
+                                                    <span class="h-3 w-3 rounded-full border border-stone-300" style="background-color: {{ $value->swatch }}" aria-hidden="true"></span>
+                                                @endif
+                                                {{ $value->name }}
+                                            </span>
+                                        @endforeach
+                                    </dd>
+                                </div>
+                            @endforeach
+                        </dl>
+                    </div>
+                @endif
                 <x-button :href="route('contact', ['stone_type' => $stoneType->slug])" class="mt-6">
                     {{ __('site.common.request_quote') }}
                 </x-button>

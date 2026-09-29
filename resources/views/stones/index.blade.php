@@ -41,16 +41,63 @@
             </div>
         @endif
 
-        <div class="flex flex-wrap gap-2 mb-10">
-            <a href="{{ route('stones.index') }}" class="px-4 py-2 rounded-full text-sm font-medium {{ $activeCategory === '' ? 'bg-charcoal text-cream' : 'bg-white border border-stone-300 text-stone-700 hover:bg-stone-100' }}">
+        @php
+            $keptFilters = array_filter($activeFilters);
+        @endphp
+
+        <div class="flex flex-wrap gap-2 mb-6">
+            <a href="{{ route('stones.index', $keptFilters) }}" class="inline-flex min-h-11 items-center px-4 py-2 rounded-full text-sm font-medium {{ $activeCategory === '' ? 'bg-charcoal text-cream' : 'bg-white border border-stone-300 text-stone-700 hover:bg-stone-100' }}">
                 {{ __('site.common.all') }}
             </a>
             @foreach ($categories as $category)
-                <a href="{{ route('stones.index', ['stone_category' => $category->slug]) }}" class="px-4 py-2 rounded-full text-sm font-medium {{ $activeCategory === $category->slug ? 'bg-charcoal text-cream' : 'bg-white border border-stone-300 text-stone-700 hover:bg-stone-100' }}">
+                <a href="{{ route('stones.index', $keptFilters + ['stone_category' => $category->slug]) }}" class="inline-flex min-h-11 items-center px-4 py-2 rounded-full text-sm font-medium {{ $activeCategory === $category->slug ? 'bg-charcoal text-cream' : 'bg-white border border-stone-300 text-stone-700 hover:bg-stone-100' }}">
                     {{ $category->name }}
                 </a>
             @endforeach
         </div>
+
+        @if ($filterOptions->isNotEmpty() || $originOptions->isNotEmpty())
+            <form method="GET" action="{{ route('stones.index') }}" class="mb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end" aria-label="{{ __('site.stones.filter_by') }}">
+                @if ($activeCategory !== '')
+                    <input type="hidden" name="stone_category" value="{{ $activeCategory }}">
+                @endif
+
+                @foreach ($attributeFilters as $param => $type)
+                    @if ($filterOptions->has($type))
+                        <div>
+                            <label for="filter-{{ $param }}" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.stones.'.$param) }}</label>
+                            <select name="{{ $param }}" id="filter-{{ $param }}" onchange="this.form.submit()" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base sm:text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
+                                <option value="">{{ __('site.stones.any') }}</option>
+                                @foreach ($filterOptions->get($type) as $option)
+                                    <option value="{{ $option->slug }}" @selected($activeFilters[$param] === $option->slug)>{{ $option->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
+                @endforeach
+
+                @if ($originOptions->isNotEmpty())
+                    <div>
+                        <label for="filter-origin" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.stones.origin_type') }}</label>
+                        <select name="origin" id="filter-origin" onchange="this.form.submit()" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base sm:text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
+                            <option value="">{{ __('site.stones.any') }}</option>
+                            @foreach ($originOptions as $originOption)
+                                <option value="{{ $originOption }}" @selected($activeFilters['origin'] === $originOption)>{{ __('site.common.'.$originOption) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
+
+                <div class="flex items-center gap-4">
+                    <noscript><button type="submit" class="rounded-md bg-charcoal text-cream px-5 py-2.5 text-sm font-semibold">{{ __('site.common.filter') }}</button></noscript>
+                    @if ($keptFilters !== [])
+                        <a href="{{ route('stones.index', array_filter(['stone_category' => $activeCategory])) }}" class="inline-flex min-h-11 items-center text-sm font-medium text-stone-600 hover:text-charcoal">{{ __('site.stones.clear_filters') }} &times;</a>
+                    @endif
+                </div>
+            </form>
+        @endif
+
+        <p class="sr-only" role="status">{{ __('site.stones.results_count', ['count' => $stoneTypes->count()]) }}</p>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
             @forelse ($stoneTypes as $index => $stoneType)

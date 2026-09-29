@@ -13,6 +13,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class StoneTypeResource extends Resource
 {
@@ -43,7 +45,7 @@ class StoneTypeResource extends Resource
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
                                 Forms\Components\TextInput::make('origin_en')
                                     ->label('Origin (EN)')
                                     ->maxLength(255),
@@ -71,6 +73,22 @@ class StoneTypeResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
+                Forms\Components\Section::make('Specifications')
+                    ->description('Values are managed under Stones → Stone Attributes.')
+                    ->schema([
+                        Forms\Components\Select::make('origin_type')
+                            ->label('Local / Imported')
+                            ->options([
+                                StoneType::ORIGIN_LOCAL => 'Local',
+                                StoneType::ORIGIN_IMPORTED => 'Imported',
+                            ])
+                            ->in(StoneType::ORIGIN_TYPES)
+                            ->placeholder('Not specified'),
+                        static::attributeSelect('finishes', 'Finishes'),
+                        static::attributeSelect('colours', 'Colours'),
+                        static::attributeSelect('sizes', 'Sizes / Thickness'),
+                        static::attributeSelect('applications', 'Applications'),
+                    ])->columns(2),
                 Forms\Components\TextInput::make('order')
                     ->numeric()
                     ->default(0),
@@ -86,6 +104,20 @@ class StoneTypeResource extends Resource
                     ->reorderable()
                     ->columnSpanFull(),
             ]);
+    }
+
+    /**
+     * Multi-select bound to one of the per-type relations on StoneType, so each
+     * select only lists (and only syncs) values of its own type.
+     */
+    private static function attributeSelect(string $relationship, string $label): Forms\Components\Select
+    {
+        return Forms\Components\Select::make($relationship)
+            ->label($label)
+            ->relationship($relationship, 'name_en', fn (Builder $query) => $query->orderBy('stone_attributes.order'))
+            ->multiple()
+            ->preload()
+            ->searchable();
     }
 
     public static function table(Table $table): Table
