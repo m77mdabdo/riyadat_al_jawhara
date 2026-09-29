@@ -69,6 +69,11 @@ class StoneType extends Model implements HasMedia
         return $this->belongsTo(StoneCategory::class);
     }
 
+    /**
+     * Projects where this is the primary stone (projects.stone_type_id).
+     * Use Project::usingStone() to include projects that list it as an
+     * additional material.
+     */
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class);

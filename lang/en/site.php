@@ -130,6 +130,19 @@ return [
         'gallery' => 'Gallery',
         'drag_to_compare' => 'Drag to compare',
         'before_after_slider' => 'Before and after comparison slider',
+        'sector' => 'Sector',
+        'area' => 'Area',
+        'area_value' => ':area m²',
+        'city' => 'City',
+        'materials' => 'Materials used',
+        'details' => 'Project details',
+        'sectors' => [
+            'residential' => 'Residential',
+            'commercial' => 'Commercial',
+            'hospitality' => 'Hospitality',
+            'government' => 'Government',
+            'industrial' => 'Industrial',
+        ],
     ],
 
     'blog' => [

@@ -22,13 +22,34 @@
                 @if ($project->service)
                     <span><span class="font-semibold text-charcoal">{{ __('site.projects.service') }}:</span> {{ $project->service->name }}</span>
                 @endif
-                @if ($project->stoneType)
-                    <span><span class="font-semibold text-charcoal">{{ __('site.projects.stone_type') }}:</span> {{ $project->stoneType->name }}</span>
+                @if ($project->city)
+                    <span><span class="font-semibold text-charcoal">{{ __('site.projects.city') }}:</span> {{ $project->city }}</span>
+                @endif
+                @if ($project->sector && in_array($project->sector, \App\Models\Project::SECTORS, true))
+                    <span><span class="font-semibold text-charcoal">{{ __('site.projects.sector') }}:</span> {{ __('site.projects.sectors.'.$project->sector) }}</span>
+                @endif
+                @if ($project->area_m2)
+                    <span><span class="font-semibold text-charcoal">{{ __('site.projects.area') }}:</span> <bdi>{{ __('site.projects.area_value', ['area' => rtrim(rtrim(number_format((float) $project->area_m2, 2), '0'), '.')]) }}</bdi></span>
                 @endif
                 @if ($project->completed_at)
                     <span><span class="font-semibold text-charcoal">{{ __('site.projects.completed_at') }}:</span> <bdi>{{ $project->completed_at->format('Y-m-d') }}</bdi></span>
                 @endif
             </div>
+            @php
+                $materials = $project->allStoneTypes();
+            @endphp
+            @if ($materials->isNotEmpty())
+                <div class="mt-5">
+                    <p class="text-sm font-semibold text-charcoal mb-2">{{ __('site.projects.materials') }}</p>
+                    <ul class="flex flex-wrap gap-2">
+                        @foreach ($materials as $material)
+                            <li>
+                                <a href="{{ route('stones.show', $material) }}" class="inline-flex min-h-11 items-center rounded-full bg-stone-100 px-4 py-2 text-sm text-charcoal hover:bg-stone-200 transition-colors">{{ $material->name }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <p class="mt-6 text-stone-600 leading-relaxed rtl:leading-loose">{{ $project->description }}</p>
         </div>
     </section>

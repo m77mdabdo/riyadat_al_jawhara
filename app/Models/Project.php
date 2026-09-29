@@ -6,7 +6,9 @@ use App\Models\Concerns\HasActiveScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -26,6 +28,10 @@ class Project extends Model implements HasMedia
         'location_ar',
         'location_en',
         'client_name',
+        'sector',
+        'area_m2',
+        'city_ar',
+        'city_en',
         'service_id',
         'stone_type_id',
         'completed_at',
@@ -38,7 +44,13 @@ class Project extends Model implements HasMedia
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
         'completed_at' => 'date',
+        'area_m2' => 'decimal:2',
     ];
+
+    /**
+     * @var array<int, string> Allowed sector values (labels live in lang files: site.projects.sectors.*)
+     */
+    public const SECTORS = ['residential', 'commercial', 'hospitality', 'government', 'industrial'];
 
     public function getSlugOptions(): SlugOptions
     {
@@ -76,6 +88,39 @@ class Project extends Model implements HasMedia
         return $this->belongsTo(StoneType::class);
     }
 
+    /**
+     * Additional stones used in the project. `stone_type_id` stays the
+     * primary stone; see allStoneTypes() for the combined list.
+     */
+    public function stoneTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(StoneType::class);
+    }
+
+    /**
+     * Projects that use the stone either as primary or additional material.
+     */
+    public function scopeUsingStone(Builder $query, int $stoneTypeId): Builder
+    {
+        return $query->where(fn (Builder $q) => $q
+            ->where('stone_type_id', $stoneTypeId)
+            ->orWhereHas('stoneTypes', fn (Builder $pivot) => $pivot->where('stone_types.id', $stoneTypeId)));
+    }
+
+    /**
+     * Primary stone first, then the additional ones, active only, no duplicates.
+     *
+     * @return Collection<int, StoneType>
+     */
+    public function allStoneTypes(): Collection
+    {
+        return collect([$this->stoneType])
+            ->merge($this->stoneTypes)
+            ->filter(fn (?StoneType $stone) => $stone?->is_active)
+            ->unique('id')
+            ->values();
+    }
+
     public function testimonials(): HasMany
     {
         return $this->hasMany(Testimonial::class);
@@ -89,6 +134,11 @@ class Project extends Model implements HasMedia
     public function getDescriptionAttribute(): ?string
     {
         return app()->getLocale() === 'ar' ? $this->description_ar : $this->description_en;
+    }
+
+    public function getCityAttribute(): ?string
+    {
+        return app()->getLocale() === 'ar' ? ($this->city_ar ?: $this->city_en) : ($this->city_en ?: $this->city_ar);
     }
 
     public function getLocationAttribute(): ?string

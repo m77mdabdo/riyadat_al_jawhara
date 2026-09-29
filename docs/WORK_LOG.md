@@ -21,7 +21,8 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 1B — Settings admin-only, rich-text sanitizing, Post trait, env→config, seeder split, `app:create-admin` | `663fcc4` | 41 / 183 | `db:seed` now seeds roles only; demo via `--class=DemoSeeder`. Sanitizer = Filament's `sanitizeHtml()` (symfony/html-sanitizer, already installed) |
 | 2 — Leads: notification, contextual CTAs, lead context columns, consent, tel/mailto, WhatsApp normalization, active-only refs, phone input | `900f96d` | 61 / 241 | Mail goes to Settings email + admin users (queued, deduped). Phone accepts Arabic-Indic digits (normalized) |
 | 3a — Lead workflow: view page, notes, assignee, follow-up date, CSV export | `5be71e8` | 71 / 307 | Export is admin-only, respects table filters, CSV-injection guarded, UTF-8 BOM. Notes editable by author/admin. Dashboard: "Follow-ups Due" stat; project stat now counts active only |
-| 3b — Stone attributes (finish / colour / size / application + local/imported), admin + public filters + spec block | _(next commit)_ | 83 / 379 | One lookup table `stone_attributes` (type column) + pivot. Demo options listed in `StoneAttributeSeeder::OPTIONS` (demo links are illustrative) |
+| 3b — Stone attributes (finish / colour / size / application + local/imported), admin + public filters + spec block | `405658f` | 83 / 379 | One lookup table `stone_attributes` (type column) + pivot. Demo options listed in `StoneAttributeSeeder::OPTIONS` (demo links are illustrative) |
+| 3c — Project metadata: sector, area m², city (AR/EN), additional stones (M:N) | _(next commit)_ | 89 / 414 | `stone_type_id` kept as "primary stone"; stone filters and stone pages match primary OR additional stones |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
@@ -31,6 +32,8 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 4. `2026_09_29_120000_create_stone_attributes_table` — new lookup table (type, name_ar/en, slug unique per type, hex_color, order, is_active).
 5. `2026_09_29_120100_create_stone_attribute_stone_type_table` — new pivot (cascade on both sides).
 6. `2026_09_29_120200_add_origin_type_to_stone_types_table` — nullable, indexed `origin_type` (local/imported) on `stone_types`.
+7. `2026_09_29_130000_add_metadata_to_projects_table` — nullable `sector` (indexed), `area_m2`, `city_ar`, `city_en` on `projects`.
+8. `2026_09_29_130100_create_project_stone_type_table` — new pivot for additional stones per project.
 
 ## Open questions
 

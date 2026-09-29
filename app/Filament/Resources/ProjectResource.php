@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class ProjectResource extends Resource
 {
@@ -39,9 +40,12 @@ class ProjectResource extends Resource
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
                                 Forms\Components\TextInput::make('location_en')
                                     ->label('Location (EN)')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('city_en')
+                                    ->label('City (EN)')
                                     ->maxLength(255),
                                 Forms\Components\Textarea::make('description_en')
                                     ->label('Description (EN)')
@@ -57,6 +61,9 @@ class ProjectResource extends Resource
                                 Forms\Components\TextInput::make('location_ar')
                                     ->label('الموقع (AR)')
                                     ->maxLength(255),
+                                Forms\Components\TextInput::make('city_ar')
+                                    ->label('المدينة (AR)')
+                                    ->maxLength(255),
                                 Forms\Components\Textarea::make('description_ar')
                                     ->label('الوصف (AR)')
                                     ->rows(4)
@@ -69,13 +76,28 @@ class ProjectResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('client_name')
                     ->maxLength(255),
+                Forms\Components\Select::make('sector')
+                    ->options(array_combine(Project::SECTORS, array_map('ucfirst', Project::SECTORS)))
+                    ->in(Project::SECTORS),
+                Forms\Components\TextInput::make('area_m2')
+                    ->label('Area (m²)')
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(99999999)
+                    ->step(0.01),
                 Forms\Components\Select::make('service_id')
                     ->label('Service')
                     ->options(fn () => Service::ordered()->pluck('name_en', 'id'))
                     ->searchable(),
                 Forms\Components\Select::make('stone_type_id')
-                    ->label('Stone Type')
+                    ->label('Primary stone type')
                     ->options(fn () => StoneType::ordered()->pluck('name_en', 'id'))
+                    ->searchable(),
+                Forms\Components\Select::make('stoneTypes')
+                    ->label('Additional stones used')
+                    ->relationship('stoneTypes', 'name_en')
+                    ->multiple()
+                    ->preload()
                     ->searchable(),
                 Forms\Components\DatePicker::make('completed_at'),
                 Forms\Components\TextInput::make('order')
@@ -111,6 +133,7 @@ class ProjectResource extends Resource
                 Tables\Columns\TextColumn::make('title_en')->label('Title')->searchable(['title_en', 'title_ar']),
                 Tables\Columns\TextColumn::make('service.name_en')->label('Service'),
                 Tables\Columns\TextColumn::make('location_en')->label('Location'),
+                Tables\Columns\TextColumn::make('sector')->badge()->formatStateUsing(fn (?string $state): string => ucfirst((string) $state))->toggleable(),
                 Tables\Columns\IconColumn::make('is_featured')->boolean(),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),
                 Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
@@ -120,6 +143,8 @@ class ProjectResource extends Resource
                 Tables\Filters\SelectFilter::make('service_id')
                     ->label('Service')
                     ->options(fn () => Service::ordered()->pluck('name_en', 'id')),
+                Tables\Filters\SelectFilter::make('sector')
+                    ->options(array_combine(Project::SECTORS, array_map('ucfirst', Project::SECTORS))),
                 Tables\Filters\TernaryFilter::make('is_featured'),
             ])
             ->actions([

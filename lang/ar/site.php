@@ -130,6 +130,19 @@ return [
         'gallery' => 'معرض الصور',
         'drag_to_compare' => 'اسحب للمقارنة',
         'before_after_slider' => 'شريط مقارنة قبل وبعد',
+        'sector' => 'القطاع',
+        'area' => 'المساحة',
+        'area_value' => ':area م²',
+        'city' => 'المدينة',
+        'materials' => 'المواد المستخدمة',
+        'details' => 'تفاصيل المشروع',
+        'sectors' => [
+            'residential' => 'سكني',
+            'commercial' => 'تجاري',
+            'hospitality' => 'ضيافة وفنادق',
+            'government' => 'حكومي',
+            'industrial' => 'صناعي',
+        ],
     ],
 
     'blog' => [

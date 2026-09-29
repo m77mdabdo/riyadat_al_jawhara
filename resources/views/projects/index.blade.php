@@ -19,7 +19,15 @@
                     <option value="{{ $stoneType->slug }}" @selected($activeStoneType === $stoneType->slug)>{{ $stoneType->name }}</option>
                 @endforeach
             </select>
-            @if ($activeService || $activeStoneType)
+            @if ($sectors->isNotEmpty())
+                <select name="sector" onchange="this.form.submit()" aria-label="{{ __('site.projects.sector') }}" class="rounded-md border-stone-300 px-3 py-2.5 text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
+                    <option value="">{{ __('site.projects.sector') }}: {{ __('site.common.all') }}</option>
+                    @foreach ($sectors as $sectorOption)
+                        <option value="{{ $sectorOption }}" @selected($activeSector === $sectorOption)>{{ __('site.projects.sectors.'.$sectorOption) }}</option>
+                    @endforeach
+                </select>
+            @endif
+            @if ($activeService || $activeStoneType || $activeSector)
                 <a href="{{ route('projects.index') }}" class="text-sm font-medium text-stone-600 hover:text-charcoal self-center">{{ __('site.common.all') }} &times;</a>
             @endif
         </form>

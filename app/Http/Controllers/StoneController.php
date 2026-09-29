@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\StoneAttribute;
 use App\Models\StoneCategory;
 use App\Models\StoneType;
@@ -79,7 +80,7 @@ class StoneController extends Controller
 
         return view('stones.show', [
             'stoneType' => $stoneType,
-            'projects' => $stoneType->projects()->active()->ordered()->take(6)->get(),
+            'projects' => Project::active()->usingStone($stoneType->id)->ordered()->take(6)->get(),
         ]);
     }
 }
