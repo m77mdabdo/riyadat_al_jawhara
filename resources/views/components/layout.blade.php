@@ -11,6 +11,8 @@
     'breadcrumbs' => [],
     // e.g. "noindex, follow" for search-result pages.
     'robots' => null,
+    // [type, id] of the service/stone/project a WhatsApp click comes from.
+    'waContext' => null,
 ])
 @php
     $jsonLdSettings = \App\Models\Setting::current();
@@ -73,6 +75,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $metaDescription }}">
     @if ($robots)
@@ -129,7 +132,10 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-cream text-charcoal {{ app()->getLocale() === 'ar' ? 'font-arabic' : 'font-sans' }} antialiased scroll-smooth">
+<body class="bg-cream text-charcoal {{ app()->getLocale() === 'ar' ? 'font-arabic' : 'font-sans' }} antialiased scroll-smooth"
+      data-locale="{{ app()->getLocale() }}"
+      data-wa-endpoint="{{ route('whatsapp.click') }}"
+      @if ($waContext) data-wa-context-type="{{ $waContext[0] }}" data-wa-context-id="{{ $waContext[1] }}" @endif>
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-[60] focus:rounded-md focus:bg-charcoal focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-cream">
         {{ __('site.common.skip_to_content') }}
     </a>

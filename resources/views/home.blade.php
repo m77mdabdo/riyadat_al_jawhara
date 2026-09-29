@@ -85,7 +85,7 @@
                                 <x-button :href="route('contact')" variant="inverted">{{ __('site.common.request_quote') }}</x-button>
                             @endif
                             @if ($settings->whatsapp_url)
-                                <x-button :href="$settings->whatsapp_url" variant="outline-light" target="_blank" rel="noopener noreferrer">
+                                <x-button :href="$settings->whatsapp_url" variant="outline-light" data-wa-track target="_blank" rel="noopener noreferrer">
                                     <x-social-icon network="whatsapp" class="h-4 w-4" /> {{ __('site.common.whatsapp_us') }}
                                 </x-button>
                             @endif
@@ -98,7 +98,7 @@
                         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
                             <x-button :href="route('contact')" variant="inverted">{{ __('site.common.request_quote') }}</x-button>
                             @if ($settings->whatsapp_url)
-                                <x-button :href="$settings->whatsapp_url" variant="outline-light" target="_blank" rel="noopener noreferrer">
+                                <x-button :href="$settings->whatsapp_url" variant="outline-light" data-wa-track target="_blank" rel="noopener noreferrer">
                                     <x-social-icon network="whatsapp" class="h-4 w-4" /> {{ __('site.common.whatsapp_us') }}
                                 </x-button>
                             @endif
@@ -358,7 +358,7 @@
             <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <x-button :href="route('contact')">{{ __('site.common.request_quote') }}</x-button>
                 @if ($settings->whatsapp_url)
-                    <x-button :href="$settings->whatsapp_url" variant="outline" target="_blank" rel="noopener noreferrer">
+                    <x-button :href="$settings->whatsapp_url" variant="outline" data-wa-track target="_blank" rel="noopener noreferrer">
                         <x-social-icon network="whatsapp" class="h-4 w-4" /> {{ __('site.common.whatsapp_us') }}
                     </x-button>
                 @endif

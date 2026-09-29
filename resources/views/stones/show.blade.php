@@ -1,4 +1,4 @@
-<x-layout :title="$stoneType->name" :description="$stoneType->description" :image="$stoneType->coverImageUrl()" :breadcrumbs="[['name' => __('site.stones.title'), 'url' => route('stones.index')], ['name' => $stoneType->name, 'url' => route('stones.show', $stoneType)]]">
+<x-layout :title="$stoneType->name" :description="$stoneType->description" :image="$stoneType->coverImageUrl()" :breadcrumbs="[['name' => __('site.stones.title'), 'url' => route('stones.index')], ['name' => $stoneType->name, 'url' => route('stones.show', $stoneType)]]" :wa-context="['stone_type', $stoneType->id]">
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div class="aspect-square rounded-xl bg-stone-200 overflow-hidden">

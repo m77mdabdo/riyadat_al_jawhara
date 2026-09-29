@@ -38,7 +38,7 @@
         </div>
 
         <a
-            href="{{ $settings->whatsapp_url }}?text={{ urlencode(__('site.whatsapp_default_message')) }}"
+            data-wa-track href="{{ $settings->whatsapp_url }}?text={{ urlencode(__('site.whatsapp_default_message')) }}"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="{{ __('site.whatsapp_aria_label') }}"

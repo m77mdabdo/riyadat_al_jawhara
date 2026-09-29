@@ -23,7 +23,7 @@
 
             <div class="mt-8 flex flex-wrap gap-3">
                 @if ($settings->whatsapp_url)
-                    <x-button :href="$settings->whatsapp_url" target="_blank" rel="noopener noreferrer">
+                    <x-button :href="$settings->whatsapp_url" data-wa-track target="_blank" rel="noopener noreferrer">
                         <x-social-icon network="whatsapp" class="h-4 w-4" /> {{ __('site.common.whatsapp_us') }}
                     </x-button>
                 @endif

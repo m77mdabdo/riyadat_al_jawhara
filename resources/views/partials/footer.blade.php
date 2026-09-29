@@ -49,7 +49,7 @@
             @endphp
             <div class="flex flex-wrap items-center gap-2">
                 @foreach ($socialLinks as $network => $url)
-                    <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" class="h-11 w-11 flex items-center justify-center rounded-full bg-stone-700 hover:bg-stone-600 transition-colors focus-visible:ring-cream focus-visible:ring-offset-charcoal" aria-label="{{ $socialLabels[$network] }}">
+                    <a href="{{ $url }}" @if ($network === 'whatsapp') data-wa-track @endif target="_blank" rel="noopener noreferrer" class="h-11 w-11 flex items-center justify-center rounded-full bg-stone-700 hover:bg-stone-600 transition-colors focus-visible:ring-cream focus-visible:ring-offset-charcoal" aria-label="{{ $socialLabels[$network] }}">
                         <x-social-icon :network="$network" />
                     </a>
                 @endforeach

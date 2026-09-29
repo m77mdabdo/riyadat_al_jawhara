@@ -38,6 +38,9 @@ class AppServiceProvider extends ServiceProvider
         // Public lead form: 5 submissions per minute per IP. A throttled visitor
         // is sent back to the form with their input intact and a translated
         // message instead of the bare 429 error page.
+        // Click beacons (WhatsApp, analytics): generous, but not a free write endpoint.
+        RateLimiter::for('beacons', fn (Request $request) => Limit::perMinute(20)->by($request->ip()));
+
         RateLimiter::for('contact', function (Request $request) {
             return Limit::perMinute(5)
                 ->by($request->ip())

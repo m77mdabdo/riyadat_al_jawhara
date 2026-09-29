@@ -12,6 +12,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoneController;
+use App\Http\Controllers\WhatsappClickController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,6 +60,11 @@ Route::prefix('{locale}')
 */
 // Legacy session-based switcher: now just redirects to the new-style URL.
 Route::get('/lang/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
+
+// Anonymous WhatsApp-button click beacon (see WhatsappClickController).
+Route::post('/whatsapp-click', WhatsappClickController::class)
+    ->middleware('throttle:beacons')
+    ->name('whatsapp.click');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');

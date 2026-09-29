@@ -1,4 +1,5 @@
 import './bootstrap';
+import './tracking';
 import Alpine from 'alpinejs';
 
 Alpine.directive('reveal', (el) => {

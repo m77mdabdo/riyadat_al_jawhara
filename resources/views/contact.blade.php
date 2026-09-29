@@ -125,7 +125,7 @@
                     @endif
                 </ul>
                 @if ($settings->whatsapp_url)
-                    <a href="{{ $settings->whatsapp_url }}" target="_blank" rel="noopener" class="mt-6 flex items-center justify-center gap-2 rounded-md bg-green-700 hover:bg-green-800 transition-colors text-white text-sm font-semibold px-5 py-3">
+                    <a data-wa-track href="{{ $settings->whatsapp_url }}" target="_blank" rel="noopener" class="mt-6 flex items-center justify-center gap-2 rounded-md bg-green-700 hover:bg-green-800 transition-colors text-white text-sm font-semibold px-5 py-3">
                         <x-heroicon-o-chat-bubble-left-right class="h-4 w-4" /> {{ __('site.common.whatsapp_us') }}
                     </a>
                 @endif
