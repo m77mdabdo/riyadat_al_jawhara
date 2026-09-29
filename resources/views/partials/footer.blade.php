@@ -26,10 +26,10 @@
             <h3 class="text-base font-semibold mb-4">{{ __('site.footer.contact_info') }}</h3>
             <ul class="space-y-2 text-sm text-stone-300">
                 @if ($settings->phone)
-                    <li><bdi>{{ $settings->phone }}</bdi></li>
+                    <li><a href="{{ $settings->phone_href }}" class="hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal"><bdi dir="ltr">{{ $settings->phone }}</bdi></a></li>
                 @endif
                 @if ($settings->email)
-                    <li><bdi>{{ $settings->email }}</bdi></li>
+                    <li><a href="mailto:{{ $settings->email }}" class="break-all hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal"><bdi>{{ $settings->email }}</bdi></a></li>
                 @endif
                 @if ($settings->address)
                     <li>{{ $settings->address }}</li>
@@ -63,8 +63,8 @@
                         <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2c3 0 5 2.3 5 5.4 0 1 0 2 .1 2.6.1.2.4.3.8.3.5-.1 1-.4 1.3-.4.4 0 1 .2 1 .8 0 .5-.5.8-1 1-.3.1-.6.3-.6.6 0 .8 1.6 2.7 3.4 3-.1.6-1 1-1.7 1.2-.3 0-.5.2-.6.5-.1.3-.2.7-.4.9-.3.3-1 .2-1.7.1-.6-.1-1.3-.2-1.9 0-.6.2-1.1.7-1.7 1.1-.6.5-1.3 1-2.4 1s-1.8-.5-2.4-1c-.6-.4-1.1-.9-1.7-1.1-.6-.2-1.3-.1-1.9 0-.7.1-1.4.2-1.7-.1-.2-.2-.3-.6-.4-.9-.1-.3-.3-.5-.6-.5-.7-.2-1.6-.6-1.7-1.2 1.8-.3 3.4-2.2 3.4-3 0-.3-.3-.5-.6-.6-.5-.2-1-.5-1-1 0-.6.6-.8 1-.8.3 0 .8.3 1.3.4.4 0 .7-.1.8-.3.1-.6.1-1.6.1-2.6C7 4.3 9 2 12 2z"/></svg>
                     </a>
                 @endif
-                @if ($settings->whatsapp)
-                    <a href="https://wa.me/{{ $settings->whatsapp }}" target="_blank" rel="noopener" class="h-9 w-9 flex items-center justify-center rounded-full bg-stone-700 hover:bg-stone-600 transition-colors focus-visible:ring-cream focus-visible:ring-offset-charcoal" aria-label="WhatsApp">
+                @if ($settings->whatsapp_url)
+                    <a href="{{ $settings->whatsapp_url }}" target="_blank" rel="noopener" class="h-9 w-9 flex items-center justify-center rounded-full bg-stone-700 hover:bg-stone-600 transition-colors focus-visible:ring-cream focus-visible:ring-offset-charcoal" aria-label="WhatsApp">
                         <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm0 1.8a8.2 8.2 0 016.9 12.6l-.3.5.6 2.2-2.3-.6-.5.3a8.2 8.2 0 11-4.4-15zm4.5 10.2c-.2-.1-1.3-.6-1.5-.7-.2-.1-.4-.1-.5.1-.2.2-.6.7-.7.9-.1.1-.3.1-.5 0-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.3.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2 1 2.4c.1.1 1.6 2.5 3.9 3.4.5.2 1 .4 1.3.5.5.2 1 .1 1.4.1.4-.1 1.3-.5 1.5-1 .2-.5.2-.9.1-1z"/></svg>
                     </a>
                 @endif

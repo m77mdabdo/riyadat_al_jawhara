@@ -15,7 +15,7 @@
                     <p class="mt-3 text-sm text-stone-600"><span class="font-semibold">{{ __('site.stones.origin') }}:</span> {{ $stoneType->origin }}</p>
                 @endif
                 <p class="mt-4 text-stone-600 leading-relaxed rtl:leading-loose">{{ $stoneType->description }}</p>
-                <x-button :href="route('contact')" class="mt-6">
+                <x-button :href="route('contact', ['stone_type' => $stoneType->slug])" class="mt-6">
                     {{ __('site.common.request_quote') }}
                 </x-button>
             </div>

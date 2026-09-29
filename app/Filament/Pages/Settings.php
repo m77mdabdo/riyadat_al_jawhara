@@ -42,7 +42,8 @@ class Settings extends Page implements HasForms
                     ->schema([
                         Forms\Components\TextInput::make('phone')->tel(),
                         Forms\Components\TextInput::make('whatsapp')
-                            ->helperText('Digits only, with country code, e.g. 966501234567'),
+                            ->helperText('With country code, e.g. 966501234567. Spaces and "+" are removed on save.')
+                            ->dehydrateStateUsing(fn (?string $state): ?string => filled($state) ? preg_replace('/\D/', '', $state) : null),
                         Forms\Components\TextInput::make('email')->email(),
                     ])->columns(3),
 

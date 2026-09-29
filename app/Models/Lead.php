@@ -13,10 +13,20 @@ class Lead extends Model
         'email',
         'service_id',
         'stone_type_id',
+        'project_id',
         'city',
         'message',
         'status',
         'source',
+        'locale',
+        'source_url',
+        'ip_address',
+        'user_agent',
+        'consented_at',
+    ];
+
+    protected $casts = [
+        'consented_at' => 'datetime',
     ];
 
     public function service(): BelongsTo
@@ -27,5 +37,10 @@ class Lead extends Model
     public function stoneType(): BelongsTo
     {
         return $this->belongsTo(StoneType::class);
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 }

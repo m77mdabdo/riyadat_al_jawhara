@@ -121,7 +121,7 @@
 
     <section class="bg-stone-100 py-16">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <x-button :href="route('contact')">
+            <x-button :href="route('contact', ['project' => $project->slug])">
                 {{ __('site.common.request_quote') }}
             </x-button>
         </div>

@@ -2,7 +2,7 @@
     $settings = $settings ?? \App\Models\Setting::current();
 @endphp
 
-@if ($settings->whatsapp)
+@if ($settings->whatsapp_url)
     <div
         x-data="{
             showTooltip: false,
@@ -38,7 +38,7 @@
         </div>
 
         <a
-            href="https://wa.me/{{ preg_replace('/\D/', '', $settings->whatsapp) }}?text={{ urlencode(__('site.whatsapp_default_message')) }}"
+            href="{{ $settings->whatsapp_url }}?text={{ urlencode(__('site.whatsapp_default_message')) }}"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="{{ __('site.whatsapp_aria_label') }}"

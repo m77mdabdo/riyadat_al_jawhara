@@ -65,6 +65,7 @@ class PublicPagesTest extends TestCase
             'name' => 'Test User',
             'phone' => '0500000000',
             'message' => 'Test message content',
+            'consent' => '1',
         ]);
 
         $response->assertSessionHasNoErrors();

@@ -30,21 +30,31 @@
                     <input type="text" name="website" id="website-contact" tabindex="-1" autocomplete="off">
                 </div>
 
+                @if ($selectedProject)
+                    <input type="hidden" name="project_id" value="{{ $selectedProject->id }}">
+                    <p class="rounded-md bg-stone-100 px-4 py-3 text-sm text-stone-700">
+                        {{ __('site.contact.regarding_project') }} <span class="font-semibold text-charcoal">{{ $selectedProject->title }}</span>
+                    </p>
+                @elseif (old('project_id'))
+                    <input type="hidden" name="project_id" value="{{ old('project_id') }}">
+                @endif
+
                 <div>
                     <label for="name" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_name') }}</label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('name') border-red-400 @enderror">
+                    <input type="text" name="name" id="name" autocomplete="name" value="{{ old('name') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('name') border-red-400 @enderror">
                     @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label for="phone" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_phone') }}</label>
-                        <input type="text" name="phone" id="phone" value="{{ old('phone') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('phone') border-red-400 @enderror">
+                        <input type="tel" name="phone" id="phone" inputmode="tel" autocomplete="tel" dir="ltr" aria-describedby="phone-hint" value="{{ old('phone') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('phone') border-red-400 @enderror">
+                        <p id="phone-hint" class="mt-1 text-xs text-stone-600">{{ __('site.contact.phone_hint') }}</p>
                         @error('phone') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label for="email" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_email') }}</label>
-                        <input type="email" name="email" id="email" value="{{ old('email') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('email') border-red-400 @enderror">
+                        <input type="email" name="email" id="email" autocomplete="email" dir="ltr" value="{{ old('email') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('email') border-red-400 @enderror">
                         @error('email') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -52,7 +62,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label for="city" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_city') }}</label>
-                        <input type="text" name="city" id="city" value="{{ old('city') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('city') border-red-400 @enderror">
+                        <input type="text" name="city" id="city" autocomplete="address-level2" value="{{ old('city') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('city') border-red-400 @enderror">
                         @error('city') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
@@ -60,7 +70,7 @@
                         <select name="service_id" id="service_id" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('service_id') border-red-400 @enderror">
                             <option value="">{{ __('site.contact.choose_service') }}</option>
                             @foreach ($services as $service)
-                                <option value="{{ $service->id }}" @selected(old('service_id') == $service->id)>{{ $service->name }}</option>
+                                <option value="{{ $service->id }}" @selected(old('service_id', $selectedServiceId) == $service->id)>{{ $service->name }}</option>
                             @endforeach
                         </select>
                         @error('service_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
@@ -72,7 +82,7 @@
                     <select name="stone_type_id" id="stone_type_id" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('stone_type_id') border-red-400 @enderror">
                         <option value="">{{ __('site.contact.choose_stone_type') }}</option>
                         @foreach ($stoneTypes as $stoneType)
-                            <option value="{{ $stoneType->id }}" @selected(old('stone_type_id') == $stoneType->id)>{{ $stoneType->name }}</option>
+                            <option value="{{ $stoneType->id }}" @selected(old('stone_type_id', $selectedStoneTypeId) == $stoneType->id)>{{ $stoneType->name }}</option>
                         @endforeach
                     </select>
                     @error('stone_type_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
@@ -84,12 +94,20 @@
                     @error('message') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
+                <div>
+                    <label for="consent" class="flex items-start gap-3 text-sm text-stone-700 leading-relaxed rtl:leading-loose cursor-pointer">
+                        <input type="checkbox" name="consent" id="consent" value="1" @checked(old('consent')) class="mt-1 h-5 w-5 shrink-0 rounded border-stone-300 text-charcoal focus:ring-charcoal @error('consent') border-red-400 @enderror">
+                        <span>{!! __('site.contact.consent_label', ['link' => '<a href="'.e(route('legal.privacy')).'" target="_blank" class="font-semibold text-charcoal underline underline-offset-2 hover:no-underline">'.e(__('site.legal.privacy_policy_title')).'</a>']) !!}</span>
+                    </label>
+                    @error('consent') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                </div>
+
                 <x-button type="submit" x-bind:disabled="submitting" class="w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed">
                     <svg x-show="submitting" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                     </svg>
-                    <span x-text="submitting ? '{{ __('site.common.sending') }}' : '{{ __('site.common.send_message') }}'"></span>
+                    <span x-text="submitting ? @js(__('site.common.sending')) : @js(__('site.common.send_message'))">{{ __('site.common.send_message') }}</span>
                 </x-button>
             </form>
         </div>
@@ -99,10 +117,10 @@
                 <h2 class="text-xl font-bold text-charcoal mb-4">{{ __('site.contact.get_in_touch') }}</h2>
                 <ul class="space-y-3 text-sm text-stone-600">
                     @if ($settings->phone)
-                        <li class="flex items-center gap-2"><x-heroicon-o-phone class="h-4 w-4 text-charcoal shrink-0" /> <bdi>{{ $settings->phone }}</bdi></li>
+                        <li><a href="{{ $settings->phone_href }}" class="inline-flex min-h-11 items-center gap-2 hover:text-charcoal"><x-heroicon-o-phone class="h-4 w-4 text-charcoal shrink-0" /> <bdi dir="ltr">{{ $settings->phone }}</bdi></a></li>
                     @endif
                     @if ($settings->email)
-                        <li class="flex items-center gap-2"><x-heroicon-o-envelope class="h-4 w-4 text-charcoal shrink-0" /> <bdi>{{ $settings->email }}</bdi></li>
+                        <li><a href="mailto:{{ $settings->email }}" class="inline-flex min-h-11 items-center gap-2 break-all hover:text-charcoal"><x-heroicon-o-envelope class="h-4 w-4 text-charcoal shrink-0" /> <bdi>{{ $settings->email }}</bdi></a></li>
                     @endif
                     @if ($settings->address)
                         <li class="flex items-center gap-2"><x-heroicon-o-map-pin class="h-4 w-4 text-charcoal shrink-0" /> {{ $settings->address }}</li>
@@ -111,8 +129,8 @@
                         <li class="flex items-center gap-2"><x-heroicon-o-clock class="h-4 w-4 text-charcoal shrink-0" /> <bdi>{{ $settings->working_hours }}</bdi></li>
                     @endif
                 </ul>
-                @if ($settings->whatsapp)
-                    <a href="https://wa.me/{{ $settings->whatsapp }}" target="_blank" rel="noopener" class="mt-6 flex items-center justify-center gap-2 rounded-md bg-green-700 hover:bg-green-800 transition-colors text-white text-sm font-semibold px-5 py-3">
+                @if ($settings->whatsapp_url)
+                    <a href="{{ $settings->whatsapp_url }}" target="_blank" rel="noopener" class="mt-6 flex items-center justify-center gap-2 rounded-md bg-green-700 hover:bg-green-800 transition-colors text-white text-sm font-semibold px-5 py-3">
                         <x-heroicon-o-chat-bubble-left-right class="h-4 w-4" /> {{ __('site.common.whatsapp_us') }}
                     </a>
                 @endif

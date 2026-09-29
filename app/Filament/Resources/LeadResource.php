@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\LeadResource\Pages;
 use App\Models\Lead;
+use App\Models\Project;
 use App\Models\Service;
 use App\Models\StoneType;
 use Filament\Forms;
@@ -55,6 +56,10 @@ class LeadResource extends Resource
                     ->label('Stone Type')
                     ->options(fn () => StoneType::ordered()->pluck('name_en', 'id'))
                     ->searchable(),
+                Forms\Components\Select::make('project_id')
+                    ->label('Related Project')
+                    ->options(fn () => Project::ordered()->pluck('title_en', 'id'))
+                    ->searchable(),
                 Forms\Components\Textarea::make('message')
                     ->rows(4)
                     ->columnSpanFull(),
@@ -83,6 +88,7 @@ class LeadResource extends Resource
                 Tables\Columns\TextColumn::make('phone')->searchable(),
                 Tables\Columns\TextColumn::make('city'),
                 Tables\Columns\TextColumn::make('service.name_en')->label('Service'),
+                Tables\Columns\TextColumn::make('project.title_en')->label('Project')->limit(30)->toggleable(),
                 Tables\Columns\TextColumn::make('source')->badge(),
                 Tables\Columns\SelectColumn::make('status')
                     ->options([

@@ -16,6 +16,7 @@ class ContactSpamProtectionTest extends TestCase
             'name' => 'Real Customer',
             'phone' => '0500000000',
             'message' => 'I need a quote for 80 m² of marble flooring.',
+            'consent' => '1',
         ], $overrides);
     }
 
