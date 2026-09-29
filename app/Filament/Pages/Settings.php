@@ -60,8 +60,8 @@ class Settings extends Page implements HasForms
                 Forms\Components\Section::make('Branding')
                     ->description('Leave empty to keep the built-in logo and share image.')
                     ->schema([
-                        $image('logo', 'logo', 'Logo (dark, for light backgrounds)', 'PNG with transparency, ~560×112 px. Header and error pages.'),
-                        $image('logo_light', 'logo_light', 'Logo (light, for dark backgrounds)', 'PNG with transparency, ~560×112 px. Footer.'),
+                        $image('logo', 'logo', 'Logo (dark, for light backgrounds)', 'Transparent PNG, same proportions as the current logo (~294×256 px). Header and error pages.'),
+                        $image('logo_light', 'logo_light', 'Logo (light, for dark backgrounds)', 'Transparent PNG (white artwork), ~294×256 px. Footer.'),
                         $image('og_image', 'og_image', 'Default share image', '1200×630 px JPG/PNG/WebP. Used when a page has no image of its own.'),
                     ])->columns(3),
 

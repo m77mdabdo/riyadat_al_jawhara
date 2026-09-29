@@ -12,13 +12,42 @@
     @endpush
 
     {{-- Hero --}}
-    <section class="relative bg-charcoal text-cream overflow-hidden"
-        x-data="{ active: 0, count: {{ $sliders->count() ?: 1 }}, mx: 50, my: 50, cursorFx: false }"
-        x-init="setInterval(() => active = (active + 1) % count, 6000); cursorFx = window.matchMedia('(hover: hover) and (pointer: fine)').matches"
+    <section class="relative bg-charcoal text-cream overflow-hidden min-h-hero flex flex-col"
+        aria-roledescription="carousel"
+        aria-label="{{ __('site.common.slideshow') }}"
+        x-data="{
+            active: 0,
+            count: {{ max($sliders->count(), 1) }},
+            playing: false,
+            timer: null,
+            mx: 50,
+            my: 50,
+            cursorFx: false,
+            init() {
+                this.cursorFx = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+                // No autoplay for a single slide or for visitors who prefer reduced motion.
+                if (this.count > 1 && ! window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    this.play();
+                }
+            },
+            play() {
+                clearInterval(this.timer);
+                this.playing = true;
+                this.timer = setInterval(() => this.active = (this.active + 1) % this.count, 6000);
+            },
+            stop() {
+                clearInterval(this.timer);
+                this.playing = false;
+            },
+            go(index) {
+                this.active = index;
+                if (this.playing) this.play();
+            },
+        }"
         @mousemove="if (cursorFx) { const r = $el.getBoundingClientRect(); mx = ((event.clientX - r.left) / r.width) * 100; my = ((event.clientY - r.top) / r.height) * 100; }"
     >
         <div class="absolute inset-0" x-data="{ showVideo: false }" x-init="showVideo = {{ $hasSlideImages ? 'false' : "window.matchMedia('(min-width: 640px)').matches" }}">
-            <img src="{{ asset('images/hero-poster.webp') }}" alt="" class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]" @if ($firstSlideImage) loading="lazy" @else loading="eager" fetchpriority="high" @endif>
+            <img src="{{ asset('images/hero-poster.webp') }}" alt="" width="1280" height="720" decoding="async" class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]" @if ($firstSlideImage) loading="lazy" @else loading="eager" fetchpriority="high" @endif>
             @unless ($hasSlideImages)
                 <template x-if="showVideo">
                     <video autoplay muted loop playsinline class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
@@ -27,37 +56,48 @@
                 </template>
             @endunless
             @foreach ($slideImages as $index => $imageUrl)
-                <img src="{{ $imageUrl }}" alt="" x-show="active === {{ $index }}" x-transition:enter="transition-opacity duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index === 0) fetchpriority="high" @else x-cloak loading="lazy" @endif class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
+                <img src="{{ $imageUrl }}" alt="" width="1920" height="1080" decoding="async" x-show="active === {{ $index }}" x-transition:enter="transition-opacity duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index === 0) fetchpriority="high" @else x-cloak loading="lazy" @endif class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
             @endforeach
             <div class="absolute inset-0 bg-gradient-to-t from-charcoal/90 to-charcoal/40"></div>
         </div>
 
         <div x-show="cursorFx" x-cloak class="absolute inset-0" :style="`background: radial-gradient(500px circle at ${mx}% ${my}%, rgba(248,246,243,0.10), transparent 60%)`"></div>
 
-        @forelse ($sliders as $index => $slider)
-            <div x-show="active === {{ $index }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index > 0) x-cloak @endif class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center">
-                <h1 class="text-3xl sm:text-5xl font-extrabold ltr:tracking-tight">{{ $slider->title }}</h1>
-                @if ($slider->subtitle)
-                    <p class="mt-5 text-lg text-stone-300 max-w-2xl mx-auto">{{ $slider->subtitle }}</p>
-                @endif
-                @if ($slider->button_text && $slider->button_link)
-                    <x-button :href="$slider->button_link" variant="inverted" class="mt-8">
-                        {{ $slider->button_text }}
-                    </x-button>
-                @endif
+        <div class="relative flex-1 flex items-center">
+            <div class="w-full">
+                @forelse ($sliders->values() as $index => $slider)
+                    <div x-show="active === {{ $index }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index > 0) x-cloak @endif role="group" aria-roledescription="slide" aria-label="{{ $index + 1 }} / {{ $sliders->count() }}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
+                        {{-- One h1 per page: later slides use an h2 with the same styling. --}}
+                        <{{ $index === 0 ? 'h1' : 'h2' }} class="text-hero font-extrabold ltr:tracking-tight break-words">{{ $slider->title }}</{{ $index === 0 ? 'h1' : 'h2' }}>
+                        @if ($slider->subtitle)
+                            <p class="mt-5 text-base sm:text-lg text-stone-300 max-w-2xl mx-auto">{{ $slider->subtitle }}</p>
+                        @endif
+                        @if ($slider->button_text && $slider->button_link)
+                            <x-button :href="$slider->button_link" variant="inverted" class="mt-8">
+                                {{ $slider->button_text }}
+                            </x-button>
+                        @endif
+                    </div>
+                @empty
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
+                        <h1 class="text-hero font-extrabold ltr:tracking-tight break-words">{{ __('site.meta.site_name') }}</h1>
+                        <p class="mt-5 text-base sm:text-lg text-stone-300">{{ __('site.meta.tagline') }}</p>
+                    </div>
+                @endforelse
             </div>
-        @empty
-            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center">
-                <h1 class="text-3xl sm:text-5xl font-extrabold ltr:tracking-tight">{{ __('site.meta.site_name') }}</h1>
-                <p class="mt-5 text-lg text-stone-300">{{ __('site.meta.tagline') }}</p>
-            </div>
-        @endforelse
+        </div>
 
         @if ($sliders->count() > 1)
-            <div class="relative flex items-center justify-center gap-2 pb-8">
-                @foreach ($sliders as $index => $slider)
-                    <button @click="active = {{ $index }}" class="h-2 w-2 rounded-full focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal" :class="active === {{ $index }} ? 'bg-cream' : 'bg-stone-500'" aria-label="{{ __('site.common.go_to_slide', ['number' => $index + 1]) }}"></button>
+            <div class="relative flex items-center justify-center gap-1 pb-6">
+                @foreach ($sliders->values() as $index => $slider)
+                    <button type="button" @click="go({{ $index }})" class="group h-11 w-11 flex items-center justify-center rounded-full focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal" :aria-current="active === {{ $index }} ? 'true' : 'false'" aria-label="{{ __('site.common.go_to_slide', ['number' => $index + 1]) }}">
+                        <span class="h-2.5 w-2.5 rounded-full transition-colors" :class="active === {{ $index }} ? 'bg-cream' : 'bg-stone-500 group-hover:bg-stone-300'"></span>
+                    </button>
                 @endforeach
+                <button type="button" @click="playing ? stop() : play()" class="ms-2 h-11 w-11 flex items-center justify-center rounded-full text-cream hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal" :aria-label="playing ? @js(__('site.common.pause_slideshow')) : @js(__('site.common.play_slideshow'))">
+                    <svg x-show="playing" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>
+                    <svg x-show="! playing" x-cloak class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                </button>
             </div>
         @endif
     </section>
@@ -65,27 +105,12 @@
     {{-- Services --}}
     <section x-reveal class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-12">
-            <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.our_services') }}</h2>
+            <h2 class="text-section-title font-bold text-charcoal">{{ __('site.home.our_services') }}</h2>
             <p class="mt-3 text-stone-600">{{ __('site.home.our_services_subtitle') }}</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach ($services as $service)
-                <a href="{{ route('services.show', $service) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
-                    <div class="aspect-[4/3] bg-stone-200 overflow-hidden relative">
-                        @if ($service->getFirstMediaUrl('cover'))
-                            <img src="{{ $service->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $service->name }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
-                        @else
-                            <x-image-placeholder class="h-full w-full" />
-                        @endif
-                        <div class="absolute bottom-3 start-3 h-10 w-10 rounded-lg bg-charcoal flex items-center justify-center">
-                            <x-dynamic-component :component="$service->safe_icon" class="h-5 w-5 text-cream" />
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-charcoal mb-2">{{ $service->name }}</h3>
-                        <p class="text-sm text-stone-600 line-clamp-2">{{ $service->description }}</p>
-                    </div>
-                </a>
+                <x-cards.service :service="$service" />
             @endforeach
         </div>
     </section>
@@ -96,25 +121,13 @@
     @if ($featuredProjects->isNotEmpty())
         <section class="py-20 bg-white">
             <div x-reveal class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between mb-12">
-                    <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.featured_projects') }}</h2>
-                    <a href="{{ route('projects.index') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-charcoal hover:underline">{{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" /></a>
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-12">
+                    <h2 class="text-section-title font-bold text-charcoal">{{ __('site.home.featured_projects') }}</h2>
+                    <a href="{{ route('projects.index') }}" class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-charcoal hover:underline">{{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" aria-hidden="true" /></a>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($featuredProjects as $project)
-                        <a href="{{ route('projects.show', $project) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
-                            <div class="aspect-[4/3] bg-stone-200 overflow-hidden">
-                                @if ($project->getFirstMediaUrl('cover'))
-                                    <img src="{{ $project->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $project->title }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
-                                @else
-                                    <x-image-placeholder class="h-full w-full" />
-                                @endif
-                            </div>
-                            <div class="p-5">
-                                <h3 class="font-semibold text-charcoal">{{ $project->title }}</h3>
-                                <p class="text-sm text-stone-600 mt-1">{{ $project->location }}</p>
-                            </div>
-                        </a>
+                        <x-cards.project :project="$project" />
                     @endforeach
                 </div>
             </div>
@@ -124,24 +137,13 @@
     {{-- Stone Collection --}}
     @if ($stoneTypes->isNotEmpty())
         <section x-reveal class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between mb-12">
-                <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.stone_collection') }}</h2>
-                <a href="{{ route('stones.index') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-charcoal hover:underline">{{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" /></a>
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-12">
+                <h2 class="text-section-title font-bold text-charcoal">{{ __('site.home.stone_collection') }}</h2>
+                <a href="{{ route('stones.index') }}" class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-charcoal hover:underline">{{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" aria-hidden="true" /></a>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
                 @foreach ($stoneTypes as $stoneType)
-                    <a href="{{ route('stones.show', $stoneType) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
-                        <div class="aspect-square bg-stone-200 overflow-hidden">
-                            @if ($stoneType->getFirstMediaUrl('cover'))
-                                <img src="{{ $stoneType->getFirstMediaUrl('cover', 'thumb') }}" alt="{{ $stoneType->name }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
-                            @else
-                                <x-image-placeholder class="h-full w-full" />
-                            @endif
-                        </div>
-                        <div class="p-4">
-                            <h3 class="font-semibold text-charcoal text-sm">{{ $stoneType->name }}</h3>
-                        </div>
-                    </a>
+                    <x-cards.stone :stone-type="$stoneType" />
                 @endforeach
             </div>
         </section>
@@ -152,7 +154,7 @@
     {{-- How We Work --}}
     <section x-reveal class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-16">
-            <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.process.title') }}</h2>
+            <h2 class="text-section-title font-bold text-charcoal">{{ __('site.process.title') }}</h2>
             <p class="mt-3 text-stone-600">{{ __('site.process.subtitle') }}</p>
         </div>
 
@@ -179,9 +181,9 @@
     {{-- Testimonials --}}
     @if ($testimonials->isNotEmpty())
         <section x-reveal class="relative py-20 bg-charcoal text-cream overflow-hidden">
-            <img src="{{ asset('images/textures/stone-texture.webp') }}" alt="" aria-hidden="true" loading="lazy" class="absolute inset-0 h-full w-full object-cover opacity-10">
+            <img src="{{ asset('images/textures/stone-texture.webp') }}" alt="" aria-hidden="true" width="1280" height="720" loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover opacity-10">
             <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-2xl sm:text-3xl font-bold text-center mb-12">{{ __('site.home.testimonials') }}</h2>
+                <h2 class="text-section-title font-bold text-center mb-12">{{ __('site.home.testimonials') }}</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" x-data>
                     @foreach ($testimonials as $testimonial)
                         <div class="rounded-xl bg-white/5 border border-white/10 p-6">
@@ -193,11 +195,7 @@
                             <p class="text-stone-200 text-sm leading-relaxed rtl:leading-loose">&ldquo;{{ $testimonial->comment }}&rdquo;</p>
                             <div class="mt-4 flex items-center gap-3">
                                 <div class="h-9 w-9 rounded-full overflow-hidden shrink-0">
-                                    @if ($testimonial->getFirstMediaUrl('client_photo'))
-                                        <img src="{{ $testimonial->getFirstMediaUrl('client_photo', 'thumb') }}" alt="{{ $testimonial->client_name }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
-                                    @else
-                                        <x-image-placeholder :icon="false" class="h-full w-full" />
-                                    @endif
+                                    <x-media-image :model="$testimonial" collection="client_photo" conversion="thumb" alt="" :width="200" :height="200" :placeholder-icon="false" class="h-full w-full" />
                                 </div>
                                 <p class="font-semibold text-sm">{{ $testimonial->client_name }}</p>
                             </div>
@@ -211,23 +209,23 @@
     {{-- FAQ --}}
     @if ($faqs->isNotEmpty())
         <section x-reveal class="py-20 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl sm:text-3xl font-bold text-charcoal text-center mb-12">{{ __('site.home.faq') }}</h2>
+            <h2 class="text-section-title font-bold text-charcoal text-center mb-12">{{ __('site.home.faq') }}</h2>
             <div class="space-y-3">
                 @foreach ($faqs as $faq)
                     <div x-data="{ open: false }" class="rounded-lg border border-stone-200 bg-white">
-                        <button @click="open = !open" class="w-full flex items-center justify-between p-5 text-start">
+                        <button type="button" @click="open = !open" :aria-expanded="open.toString()" aria-controls="home-faq-{{ $faq->id }}" class="w-full flex items-center justify-between gap-4 p-5 text-start">
                             <span class="font-medium text-charcoal">{{ $faq->question }}</span>
-                            <svg class="h-5 w-5 text-stone-500 shrink-0 transition-transform" :class="open && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            <svg class="h-5 w-5 text-stone-500 shrink-0 transition-transform" :class="open && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
-                        <div x-show="open" x-cloak x-transition class="px-5 pb-5 text-sm text-stone-600 leading-relaxed rtl:leading-loose">
+                        <div id="home-faq-{{ $faq->id }}" x-show="open" x-cloak x-transition class="px-5 pb-5 text-sm text-stone-600 leading-relaxed rtl:leading-loose">
                             {{ $faq->answer }}
                         </div>
                     </div>
                 @endforeach
             </div>
             <div class="mt-8 text-center">
-                <a href="{{ route('faq') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-charcoal hover:underline">
-                    {{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" />
+                <a href="{{ route('faq') }}" class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-charcoal hover:underline">
+                    {{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" aria-hidden="true" />
                 </a>
             </div>
         </section>
@@ -235,9 +233,9 @@
 
     {{-- CTA --}}
     <section x-reveal class="relative bg-stone-100 py-16 overflow-hidden">
-        <img src="{{ asset('images/textures/marble-texture.webp') }}" alt="" aria-hidden="true" loading="lazy" class="absolute inset-0 h-full w-full object-cover opacity-[0.07]">
+        <img src="{{ asset('images/textures/marble-texture.webp') }}" alt="" aria-hidden="true" width="960" height="1280" loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover opacity-[0.07]">
         <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-2xl sm:text-3xl font-bold text-charcoal">{{ __('site.home.cta_title') }}</h2>
+            <h2 class="text-section-title font-bold text-charcoal">{{ __('site.home.cta_title') }}</h2>
             <p class="mt-3 text-stone-700">{{ __('site.home.cta_subtitle') }}</p>
             <x-button :href="route('contact')" class="mt-8">
                 {{ __('site.common.request_quote') }}

@@ -45,6 +45,16 @@
 }
 
 @layer base {
+    /* Preflight resets every border width to 0, and the site doesn't use the
+       @tailwindcss/forms plugin -- so text fields, selects and textareas had a
+       border colour but no border at all (invisible on white cards). Give every
+       public form control a visible 1px border; utilities still override it. */
+    /* :where() keeps specificity at zero so utilities (e.g. border-red-400 on
+       invalid fields) always win. */
+    :where(input:not([type='checkbox'], [type='radio'], [type='hidden']), select, textarea) {
+        @apply border border-stone-300 bg-white;
+    }
+
     a,
     button,
     input,
@@ -64,4 +74,37 @@
     [tabindex]:not([tabindex="-1"]):focus-visible {
         @apply ring-2 ring-offset-2 ring-charcoal;
     }
+}
+
+@layer utilities {
+    /* Viewport-relative sizes with a vh fallback for browsers without svh.
+       svh = the viewport with mobile browser UI visible, so nothing jumps. */
+    .min-h-hero {
+        min-height: 70vh;
+        min-height: 70svh;
+    }
+
+    .max-h-lightbox {
+        max-height: 80vh;
+        max-height: 80svh;
+    }
+}
+
+/* Rich text from the CMS (blog body, legal pages): never let wide content
+   (tables, embeds, long URLs) push the page wider than the viewport. */
+.prose {
+    overflow-wrap: anywhere;
+}
+
+.prose table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.prose img,
+.prose video,
+.prose iframe {
+    max-width: 100%;
+    height: auto;
 }

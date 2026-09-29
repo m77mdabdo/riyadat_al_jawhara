@@ -1,7 +1,7 @@
 <x-layout :title="__('site.contact.title')" :description="__('site.contact.subtitle')">
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-3xl sm:text-4xl font-bold text-charcoal">{{ __('site.contact.title') }}</h1>
+            <h1 class="text-page-title font-bold text-charcoal">{{ __('site.contact.title') }}</h1>
             <p class="mt-3 text-stone-600">{{ __('site.contact.subtitle') }}</p>
         </div>
     </section>
@@ -41,65 +41,65 @@
 
                 <div>
                     <label for="name" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_name') }}</label>
-                    <input type="text" name="name" id="name" autocomplete="name" value="{{ old('name') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('name') border-red-400 @enderror">
-                    @error('name') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    <input type="text" name="name" id="name" autocomplete="name" value="{{ old('name') }}" @error('name') aria-invalid="true" aria-describedby="name-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('name') border-red-400 @else border-stone-300 @enderror">
+                    @error('name') <p id="name-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label for="phone" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_phone') }}</label>
-                        <input type="tel" name="phone" id="phone" inputmode="tel" autocomplete="tel" dir="ltr" aria-describedby="phone-hint" value="{{ old('phone') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('phone') border-red-400 @enderror">
-                        <p id="phone-hint" class="mt-1 text-xs text-stone-600">{{ __('site.contact.phone_hint') }}</p>
-                        @error('phone') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                        <input type="tel" name="phone" id="phone" inputmode="tel" autocomplete="tel" dir="ltr" aria-describedby="phone-hint @error('phone') phone-error @enderror" @error('phone') aria-invalid="true" @enderror value="{{ old('phone') }}" class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('phone') border-red-400 @else border-stone-300 @enderror">
+                        <p id="phone-hint" class="mt-1 text-sm sm:text-xs text-stone-600">{{ __('site.contact.phone_hint') }} <bdi dir="ltr">+966 5X XXX XXXX</bdi></p>
+                        @error('phone') <p id="phone-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label for="email" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_email') }}</label>
-                        <input type="email" name="email" id="email" autocomplete="email" dir="ltr" value="{{ old('email') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('email') border-red-400 @enderror">
-                        @error('email') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                        <input type="email" name="email" id="email" autocomplete="email" dir="ltr" value="{{ old('email') }}" @error('email') aria-invalid="true" aria-describedby="email-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('email') border-red-400 @else border-stone-300 @enderror">
+                        @error('email') <p id="email-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label for="city" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_city') }}</label>
-                        <input type="text" name="city" id="city" autocomplete="address-level2" value="{{ old('city') }}" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('city') border-red-400 @enderror">
-                        @error('city') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                        <input type="text" name="city" id="city" autocomplete="address-level2" value="{{ old('city') }}" @error('city') aria-invalid="true" aria-describedby="city-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('city') border-red-400 @else border-stone-300 @enderror">
+                        @error('city') <p id="city-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label for="service_id" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_service') }}</label>
-                        <select name="service_id" id="service_id" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('service_id') border-red-400 @enderror">
+                        <select name="service_id" id="service_id" @error('service_id') aria-invalid="true" aria-describedby="service_id-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('service_id') border-red-400 @else border-stone-300 @enderror">
                             <option value="">{{ __('site.contact.choose_service') }}</option>
                             @foreach ($services as $service)
                                 <option value="{{ $service->id }}" @selected(old('service_id', $selectedServiceId) == $service->id)>{{ $service->name }}</option>
                             @endforeach
                         </select>
-                        @error('service_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                        @error('service_id') <p id="service_id-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div>
                     <label for="stone_type_id" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_stone_type') }}</label>
-                    <select name="stone_type_id" id="stone_type_id" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('stone_type_id') border-red-400 @enderror">
+                    <select name="stone_type_id" id="stone_type_id" @error('stone_type_id') aria-invalid="true" aria-describedby="stone_type_id-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('stone_type_id') border-red-400 @else border-stone-300 @enderror">
                         <option value="">{{ __('site.contact.choose_stone_type') }}</option>
                         @foreach ($stoneTypes as $stoneType)
                             <option value="{{ $stoneType->id }}" @selected(old('stone_type_id', $selectedStoneTypeId) == $stoneType->id)>{{ $stoneType->name }}</option>
                         @endforeach
                     </select>
-                    @error('stone_type_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    @error('stone_type_id') <p id="stone_type_id-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label for="message" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_message') }}</label>
-                    <textarea name="message" id="message" rows="4" class="w-full rounded-md border-stone-300 px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('message') border-red-400 @enderror">{{ old('message') }}</textarea>
-                    @error('message') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    <textarea name="message" id="message" rows="4" @error('message') aria-invalid="true" aria-describedby="message-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('message') border-red-400 @else border-stone-300 @enderror">{{ old('message') }}</textarea>
+                    @error('message') <p id="message-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
-                    <label for="consent" class="flex items-start gap-3 text-sm text-stone-700 leading-relaxed rtl:leading-loose cursor-pointer">
-                        <input type="checkbox" name="consent" id="consent" value="1" @checked(old('consent')) class="mt-1 h-5 w-5 shrink-0 rounded border-stone-300 text-charcoal focus:ring-charcoal @error('consent') border-red-400 @enderror">
+                    <label for="consent" class="flex min-h-11 items-start gap-3 text-sm text-stone-700 leading-relaxed rtl:leading-loose cursor-pointer">
+                        <input type="checkbox" name="consent" id="consent" value="1" @checked(old('consent')) @error('consent') aria-invalid="true" aria-describedby="consent-error" @enderror class="mt-1 h-5 w-5 shrink-0 rounded text-charcoal focus:ring-charcoal @error('consent') border-red-400 @else border-stone-300 @enderror">
                         <span>{!! __('site.contact.consent_label', ['link' => '<a href="'.e(route('legal.privacy')).'" target="_blank" class="font-semibold text-charcoal underline underline-offset-2 hover:no-underline">'.e(__('site.legal.privacy_policy_title')).'</a>']) !!}</span>
                     </label>
-                    @error('consent') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                    @error('consent') <p id="consent-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <x-button type="submit" x-bind:disabled="submitting" class="w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed">

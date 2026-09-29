@@ -44,6 +44,13 @@ export default {
                     300: '#EFEBE4',
                 },
             },
+            // Fluid type scale: grows smoothly with the viewport and lands on the
+            // previous fixed sizes (text-3xl/4xl/5xl) at desktop widths.
+            fontSize: {
+                hero: ['clamp(1.875rem, 1.3rem + 2.6vw, 3rem)', { lineHeight: '1.15' }],
+                'page-title': ['clamp(1.75rem, 1.45rem + 1.3vw, 2.25rem)', { lineHeight: '1.2' }],
+                'section-title': ['clamp(1.5rem, 1.3rem + 0.9vw, 1.875rem)', { lineHeight: '1.25' }],
+            },
             fontFamily: {
                 sans: ['Inter', ...defaultTheme.fontFamily.sans],
                 arabic: ['Cairo', ...defaultTheme.fontFamily.sans],

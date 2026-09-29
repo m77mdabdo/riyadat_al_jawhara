@@ -57,6 +57,10 @@ return [
         'switch_to_arabic' => 'Switch to Arabic',
         'switch_to_english' => 'Switch to English',
         'skip_to_content' => 'Skip to content',
+        'main_navigation' => 'Main navigation',
+        'slideshow' => 'Featured slides',
+        'pause_slideshow' => 'Pause slideshow',
+        'play_slideshow' => 'Play slideshow',
     ],
 
     'home' => [
@@ -88,6 +92,7 @@ return [
         'our_vision' => 'Our Vision',
         'our_mission' => 'Our Mission',
         'our_team' => 'Our Team',
+        'hero_alt' => 'Designers reviewing a floor plan on a white marble table',
     ],
 
     'faq' => [
@@ -188,7 +193,7 @@ return [
         'consent_label' => 'I agree that my details may be used to respond to this request, as described in the :link.',
         'consent_attribute' => 'consent',
         'regarding_project' => 'Regarding project:',
-        'phone_hint' => 'Include your country code, e.g. +966 5X XXX XXXX',
+        'phone_hint' => 'Include your country code, e.g.',
         'get_in_touch' => 'Get in Touch',
         'our_location' => 'Our Location',
         'working_hours' => 'Working Hours',
@@ -215,6 +220,12 @@ return [
         'privacy_policy_title' => 'Privacy Policy',
         'terms_title' => 'Terms of Use',
         'content_missing' => 'This page has not been filled in yet.',
+    ],
+
+    'pagination' => [
+        'label' => 'Pagination',
+        'summary' => 'Showing :from–:to of :total',
+        'go_to_page' => 'Go to page :page',
     ],
 
     'footer' => [

@@ -1,14 +1,14 @@
 <x-layout :title="__('site.about.title')" :description="$settings->about">
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-3xl sm:text-4xl font-bold text-charcoal">{{ __('site.about.title') }}</h1>
+            <h1 class="text-page-title font-bold text-charcoal">{{ __('site.about.title') }}</h1>
             @if ($settings->about)
                 <p class="mt-6 text-stone-600 leading-relaxed rtl:leading-loose">{{ $settings->about }}</p>
             @endif
         </div>
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-            <div class="aspect-[21/9] rounded-xl overflow-hidden">
-                <img src="{{ asset('images/about-hero.webp') }}" alt="{{ __('site.about.title') }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
+            <div class="aspect-[16/9] sm:aspect-[21/9] rounded-xl overflow-hidden">
+                <img src="{{ asset('images/about-hero.webp') }}" alt="{{ __('site.about.hero_alt') }}" width="1300" height="1300" loading="lazy" decoding="async" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
             </div>
         </div>
     </section>
@@ -39,16 +39,12 @@
     @if ($teamMembers->isNotEmpty())
         <section class="py-16 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-2xl sm:text-3xl font-bold text-charcoal text-center mb-12">{{ __('site.about.our_team') }}</h2>
+                <h2 class="text-section-title font-bold text-charcoal text-center mb-12">{{ __('site.about.our_team') }}</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
                     @foreach ($teamMembers as $member)
                         <div class="text-center">
                             <div class="aspect-square rounded-full bg-stone-200 overflow-hidden mx-auto max-w-[160px]">
-                                @if ($member->getFirstMediaUrl('photo'))
-                                    <img src="{{ $member->getFirstMediaUrl('photo', 'thumb') }}" alt="{{ $member->name }}" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
-                                @else
-                                    <x-image-placeholder :icon="false" class="h-full w-full" />
-                                @endif
+                                <x-media-image :model="$member" collection="photo" conversion="thumb" :alt="$member->name" :width="300" :height="300" :placeholder-icon="false" class="h-full w-full" />
                             </div>
                             <h3 class="mt-4 font-semibold text-charcoal">{{ $member->name }}</h3>
                             <p class="text-sm text-stone-600">{{ $member->position }}</p>

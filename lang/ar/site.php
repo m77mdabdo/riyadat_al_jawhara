@@ -57,6 +57,10 @@ return [
         'switch_to_arabic' => 'التبديل إلى العربية',
         'switch_to_english' => 'التبديل إلى الإنجليزية',
         'skip_to_content' => 'تخطَّ إلى المحتوى',
+        'main_navigation' => 'القائمة الرئيسية',
+        'slideshow' => 'شرائح مميزة',
+        'pause_slideshow' => 'إيقاف العرض التلقائي',
+        'play_slideshow' => 'تشغيل العرض التلقائي',
     ],
 
     'home' => [
@@ -88,6 +92,7 @@ return [
         'our_vision' => 'رؤيتنا',
         'our_mission' => 'رسالتنا',
         'our_team' => 'فريقنا',
+        'hero_alt' => 'مصممون يراجعون مخطط منزل على طاولة من الرخام الأبيض',
     ],
 
     'faq' => [
@@ -188,7 +193,7 @@ return [
         'consent_label' => 'أوافق على استخدام بياناتي للرد على هذا الطلب، وفقًا لما هو موضح في :link.',
         'consent_attribute' => 'الموافقة',
         'regarding_project' => 'بخصوص المشروع:',
-        'phone_hint' => 'أدخل رمز الدولة، مثال: ‎+966 5X XXX XXXX',
+        'phone_hint' => 'أدخل رمز الدولة، مثال:',
         'get_in_touch' => 'تواصل معنا',
         'our_location' => 'موقعنا',
         'working_hours' => 'ساعات العمل',
@@ -215,6 +220,12 @@ return [
         'privacy_policy_title' => 'سياسة الخصوصية',
         'terms_title' => 'شروط الاستخدام',
         'content_missing' => 'لم يتم تعبئة هذه الصفحة بعد.',
+    ],
+
+    'pagination' => [
+        'label' => 'التنقل بين الصفحات',
+        'summary' => 'عرض :from–:to من أصل :total',
+        'go_to_page' => 'الانتقال إلى الصفحة :page',
     ],
 
     'footer' => [

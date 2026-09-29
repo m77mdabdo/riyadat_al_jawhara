@@ -24,7 +24,8 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 3b — Stone attributes (finish / colour / size / application + local/imported), admin + public filters + spec block | `405658f` | 83 / 379 | One lookup table `stone_attributes` (type column) + pivot. Demo options listed in `StoneAttributeSeeder::OPTIONS` (demo links are illustrative) |
 | 3c — Project metadata: sector, area m², city (AR/EN), additional stones (M:N) | `efbfc88` | 89 / 414 | `stone_type_id` kept as "primary stone"; stone filters and stone pages match primary OR additional stones |
 | 3d — Settings branding (logo, light logo, default OG image), LinkedIn/X/YouTube, slider images in hero | `815d81e` | 97 / 444 | Branding via Media Library on `Setting` (JPG/PNG/WebP ≤ 2 MB). Hero: slide image if present, else poster/video (video skipped when any slide has an image). Mobile monogram logo stays static |
-| 3e — Admin password reset + profile page (current password required for email/password change), one password policy | _(next commit)_ | 105 / 492 | Policy: min 12 chars, letters + numbers (profile, reset, Users form, `app:create-admin`). Reset emails need a real mailer in production |
+| 3e — Admin password reset + profile page (current password required for email/password change), one password policy | `d553d62` | 105 / 492 | Policy: min 12 chars, letters + numbers (profile, reset, Users form, `app:create-admin`). Reset emails need a real mailer in production |
+| 4 — UI/UX + responsive + missing-image pass | _(next commit)_ | 118 / 617 | Playwright (cached npx 1.62, no new deps): 15 pages × 11 widths × EN/AR = 330 checks, 0 overflow / 0 broken img / 0 text < 14px; lightbox behaviour verified in RTL. Fixed invisible form fields (pre-existing). Desktop nav now from `xl` (AR labels don't fit at 1024). See `docs/MISSING_IMAGES.md` |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
@@ -44,4 +45,5 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 
 - Queue worker: lead emails are queued (`QUEUE_CONNECTION=database`), so they are only sent while `php artisan queue:work` runs. Production needs Supervisor (or switch to `sync`).
 - Lead emails are rendered in the app default locale (`APP_LOCALE`, currently `en`); strings exist in both AR and EN.
+- **Cleanup needed (not deleted without approval):** before the global `Storage::fake('public')` guard was added, one test run wrote 3 unreferenced files into the real media folder: `storage/app/public/1/g1.jpg`, `storage/app/public/1/conversions/g1-thumb.jpg`, `storage/app/public/1/conversions/g1-medium.jpg`. Safe to delete. The real media files in that folder were not touched.
 - Side effect: one early test run wrote a single fake "New quote request" entry to the local, git-ignored `storage/logs/laravel.log` (test since changed to the array mailer).
