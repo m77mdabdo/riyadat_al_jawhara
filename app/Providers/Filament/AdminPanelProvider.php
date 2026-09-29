@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\EditProfile;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,6 +28,11 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            // Forgotten-password flow (emails a signed reset link through the
+            // configured mailer) and a self-service profile page for changing
+            // name, email and password.
+            ->passwordReset()
+            ->profile(EditProfile::class, isSimple: false)
             ->brandName('JRA Admin')
             ->colors([
                 'primary' => Color::hex('#2B2B2B'),
