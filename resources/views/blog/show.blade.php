@@ -1,4 +1,24 @@
 <x-layout :title="$post->title" :description="$post->excerpt">
+    @push('head')
+        @php
+            $articleLd = array_filter([
+                '@context' => 'https://schema.org',
+                '@type' => 'Article',
+                'headline' => $post->title,
+                'description' => $post->excerpt,
+                'datePublished' => $post->published_at?->toIso8601String(),
+                'dateModified' => $post->updated_at?->toIso8601String(),
+                'author' => $post->author ? [
+                    '@type' => 'Person',
+                    'name' => $post->author->name,
+                ] : null,
+                'image' => $post->getFirstMediaUrl('cover') ?: null,
+                'mainEntityOfPage' => url()->current(),
+            ]);
+        @endphp
+        <script type="application/ld+json">{!! json_encode($articleLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
+    @endpush
+
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             @if ($post->getFirstMediaUrl('cover'))

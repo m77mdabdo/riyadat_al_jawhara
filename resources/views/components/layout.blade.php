@@ -1,4 +1,33 @@
 @props(['title' => null, 'description' => null])
+@php
+    $jsonLdSettings = \App\Models\Setting::current();
+
+    $localBusiness = array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'LocalBusiness',
+        'name' => __('site.meta.site_name'),
+        'url' => url('/'),
+        'telephone' => $jsonLdSettings->phone,
+        'email' => $jsonLdSettings->email,
+        'image' => asset('og-image-1200x630.png'),
+        'address' => $jsonLdSettings->address ? [
+            '@type' => 'PostalAddress',
+            'streetAddress' => $jsonLdSettings->address,
+            'addressCountry' => 'SA',
+        ] : null,
+        'geo' => ($jsonLdSettings->map_lat && $jsonLdSettings->map_lng) ? [
+            '@type' => 'GeoCoordinates',
+            'latitude' => (float) $jsonLdSettings->map_lat,
+            'longitude' => (float) $jsonLdSettings->map_lng,
+        ] : null,
+        'sameAs' => array_values(array_filter([
+            $jsonLdSettings->facebook_url,
+            $jsonLdSettings->instagram_url,
+            $jsonLdSettings->tiktok_url,
+            $jsonLdSettings->snapchat_url,
+        ])),
+    ]);
+@endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
@@ -16,6 +45,21 @@
     <meta name="twitter:image" content="{{ asset('og-image-1200x630.png') }}">
     <title>{{ isset($title) ? $title.' | '.__('site.meta.site_name') : __('site.meta.site_name').' | '.__('site.meta.tagline') }}</title>
 
+    {{--
+        hreflang note: this site switches language via a session flag (see
+        App\Http\Middleware\SetLocale), not a distinct URL per language, so
+        there is no separate Arabic/English URL to point hreflang="ar" and
+        hreflang="en" at -- both would resolve to this exact same URL, which
+        would be meaningless (or arguably incorrect) markup rather than a
+        genuine signal to search engines. Only the honest, self-referencing
+        x-default is included. Properly correct hreflang would require
+        URL-based locale routing (e.g. /ar/... and /en/...), which is a
+        bigger structural change out of scope for this phase.
+    --}}
+    <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
+
+    <script type="application/ld+json">{!! json_encode($localBusiness, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
+
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}">
@@ -30,6 +74,8 @@
     @if (request()->routeIs('home'))
         <link rel="preload" as="image" href="{{ asset('images/hero-poster.webp') }}" fetchpriority="high">
     @endif
+
+    @stack('head')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
