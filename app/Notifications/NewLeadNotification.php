@@ -81,7 +81,9 @@ class NewLeadNotification extends Notification implements ShouldQueue
             ->line(__('site.lead_mail.language').': '.strtoupper((string) ($lead->locale ?: $dash)))
             ->action(__('site.lead_mail.view_in_admin'), route('filament.admin.resources.leads.view', $lead));
 
-        if ($lead->email) {
+        // Only a strictly valid address may reach a mail header (defence in
+        // depth against header injection; see StoreLeadRequest).
+        if ($lead->email && filter_var($lead->email, FILTER_VALIDATE_EMAIL) && ! preg_match('/[\r\n]/', $lead->email.$lead->name)) {
             $message->replyTo($lead->email, $lead->name);
         }
 

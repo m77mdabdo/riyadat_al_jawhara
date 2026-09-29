@@ -4,10 +4,14 @@ namespace Tests\Feature;
 
 use App\Filament\Resources\ProjectResource\Pages\CreateProject;
 use App\Filament\Support\ImageUpload;
+use App\Models\Lead;
+use App\Models\Post;
 use App\Models\Project;
 use App\Models\User;
+use App\Notifications\NewLeadNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Notifications\AnonymousNotifiable;
 use Livewire\Livewire;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileUnacceptableForCollection;
 use Spatie\Permission\Models\Role;
@@ -91,5 +95,26 @@ class SecurityTest extends TestCase
 
         $this->expectException(FileUnacceptableForCollection::class);
         $project->addMedia(UploadedFile::fake()->create('evil.svg', 4, 'image/svg+xml'))->toMediaCollection('cover');
+    }
+
+    public function test_email_fields_reject_control_characters(): void
+    {
+        $lead = ['name' => 'X', 'phone' => '0500000000', 'message' => 'm', 'consent' => '1'];
+
+        $this->post(route('contact.store'), $lead + ['email' => "victim@example.test\r\nBcc: spam@example.test"])
+            ->assertSessionHasErrors('email');
+
+        $post = Post::factory()->create();
+        $this->post(route('blog.comments.store', $post), ['name' => 'X', 'body' => 'Hi', 'email' => "a@example.test\nBcc: b@example.test"])
+            ->assertSessionHasErrors('email');
+    }
+
+    public function test_lead_mail_never_puts_an_invalid_address_in_reply_to(): void
+    {
+        $lead = Lead::factory()->create(['email' => "evil@example.test\r\nBcc: x@example.test"]);
+
+        $mail = (new NewLeadNotification($lead))->toMail(new AnonymousNotifiable);
+
+        $this->assertSame([], $mail->replyTo);
     }
 }
