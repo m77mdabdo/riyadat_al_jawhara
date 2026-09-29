@@ -13,7 +13,7 @@
 <body class="bg-cream text-charcoal {{ app()->getLocale() === 'ar' ? 'font-arabic' : 'font-sans' }} antialiased min-h-screen flex items-center justify-center px-4 py-16">
     <div class="max-w-lg w-full text-center">
         <a href="{{ route('home') }}" class="inline-block mb-10">
-            <img src="{{ asset('logo-header-black@2x.png') }}" alt="{{ __('site.meta.site_name') }}" class="h-12 w-auto mx-auto">
+            <img src="{{ rescue(fn () => \App\Models\Setting::current()->logoUrl(), asset(\App\Models\Setting::DEFAULT_LOGO), false) }}" alt="{{ __('site.meta.site_name') }}" class="h-12 w-auto mx-auto">
         </a>
 
         <p class="text-sm font-semibold text-stone-500 tracking-[0.2em]">{{ $code }}</p>

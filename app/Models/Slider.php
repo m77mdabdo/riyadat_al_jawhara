@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -37,6 +38,23 @@ class Slider extends Model implements HasMedia
     {
         $this->addMediaConversion('thumb')->width(400)->height(300)->nonQueued();
         $this->addMediaConversion('medium')->width(1200)->height(700)->nonQueued();
+        $this->addMediaConversion('hero')->fit(Fit::Max, 1920, 1080)->format('webp')->quality(80)->nonQueued();
+    }
+
+    /**
+     * Full-width hero background for this slide, or null when the slide has no
+     * image (the hero then falls back to the default video/poster). Media
+     * uploaded before the 'hero' conversion existed uses the original file.
+     */
+    public function heroImageUrl(): ?string
+    {
+        $media = $this->getFirstMedia('image');
+
+        if (! $media) {
+            return null;
+        }
+
+        return $media->hasGeneratedConversion('hero') ? $media->getUrl('hero') : $media->getUrl();
     }
 
     public function getTitleAttribute(): string

@@ -1,17 +1,34 @@
 <x-layout>
+    @php
+        // Slides that have an uploaded image use it as the hero background;
+        // otherwise the default poster (and, on wider screens, the video) shows.
+        $slideImages = $sliders->values()->map(fn ($slider) => $slider->heroImageUrl())->filter();
+        $hasSlideImages = $slideImages->isNotEmpty();
+        $firstSlideImage = $slideImages->get(0);
+    @endphp
+
+    @push('head')
+        <link rel="preload" as="image" href="{{ $firstSlideImage ?? asset('images/hero-poster.webp') }}" fetchpriority="high">
+    @endpush
+
     {{-- Hero --}}
     <section class="relative bg-charcoal text-cream overflow-hidden"
         x-data="{ active: 0, count: {{ $sliders->count() ?: 1 }}, mx: 50, my: 50, cursorFx: false }"
         x-init="setInterval(() => active = (active + 1) % count, 6000); cursorFx = window.matchMedia('(hover: hover) and (pointer: fine)').matches"
         @mousemove="if (cursorFx) { const r = $el.getBoundingClientRect(); mx = ((event.clientX - r.left) / r.width) * 100; my = ((event.clientY - r.top) / r.height) * 100; }"
     >
-        <div class="absolute inset-0" x-data="{ showVideo: false }" x-init="showVideo = window.matchMedia('(min-width: 640px)').matches">
-            <img src="{{ asset('images/hero-poster.webp') }}" alt="" class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]" loading="eager" fetchpriority="high">
-            <template x-if="showVideo">
-                <video autoplay muted loop playsinline class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
-                    <source src="{{ asset('videos/hero-background.mp4') }}" type="video/mp4">
-                </video>
-            </template>
+        <div class="absolute inset-0" x-data="{ showVideo: false }" x-init="showVideo = {{ $hasSlideImages ? 'false' : "window.matchMedia('(min-width: 640px)').matches" }}">
+            <img src="{{ asset('images/hero-poster.webp') }}" alt="" class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]" @if ($firstSlideImage) loading="lazy" @else loading="eager" fetchpriority="high" @endif>
+            @unless ($hasSlideImages)
+                <template x-if="showVideo">
+                    <video autoplay muted loop playsinline class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
+                        <source src="{{ asset('videos/hero-background.mp4') }}" type="video/mp4">
+                    </video>
+                </template>
+            @endunless
+            @foreach ($slideImages as $index => $imageUrl)
+                <img src="{{ $imageUrl }}" alt="" x-show="active === {{ $index }}" x-transition:enter="transition-opacity duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index === 0) fetchpriority="high" @else x-cloak loading="lazy" @endif class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
+            @endforeach
             <div class="absolute inset-0 bg-gradient-to-t from-charcoal/90 to-charcoal/40"></div>
         </div>
 

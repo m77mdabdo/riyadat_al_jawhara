@@ -22,7 +22,8 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 2 — Leads: notification, contextual CTAs, lead context columns, consent, tel/mailto, WhatsApp normalization, active-only refs, phone input | `900f96d` | 61 / 241 | Mail goes to Settings email + admin users (queued, deduped). Phone accepts Arabic-Indic digits (normalized) |
 | 3a — Lead workflow: view page, notes, assignee, follow-up date, CSV export | `5be71e8` | 71 / 307 | Export is admin-only, respects table filters, CSV-injection guarded, UTF-8 BOM. Notes editable by author/admin. Dashboard: "Follow-ups Due" stat; project stat now counts active only |
 | 3b — Stone attributes (finish / colour / size / application + local/imported), admin + public filters + spec block | `405658f` | 83 / 379 | One lookup table `stone_attributes` (type column) + pivot. Demo options listed in `StoneAttributeSeeder::OPTIONS` (demo links are illustrative) |
-| 3c — Project metadata: sector, area m², city (AR/EN), additional stones (M:N) | _(next commit)_ | 89 / 414 | `stone_type_id` kept as "primary stone"; stone filters and stone pages match primary OR additional stones |
+| 3c — Project metadata: sector, area m², city (AR/EN), additional stones (M:N) | `efbfc88` | 89 / 414 | `stone_type_id` kept as "primary stone"; stone filters and stone pages match primary OR additional stones |
+| 3d — Settings branding (logo, light logo, default OG image), LinkedIn/X/YouTube, slider images in hero | _(next commit)_ | 97 / 444 | Branding via Media Library on `Setting` (JPG/PNG/WebP ≤ 2 MB). Hero: slide image if present, else poster/video (video skipped when any slide has an image). Mobile monogram logo stays static |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
@@ -34,8 +35,11 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 6. `2026_09_29_120200_add_origin_type_to_stone_types_table` — nullable, indexed `origin_type` (local/imported) on `stone_types`.
 7. `2026_09_29_130000_add_metadata_to_projects_table` — nullable `sector` (indexed), `area_m2`, `city_ar`, `city_en` on `projects`.
 8. `2026_09_29_130100_create_project_stone_type_table` — new pivot for additional stones per project.
+9. `2026_09_29_140000_add_extra_socials_to_settings_table` — nullable `linkedin_url`, `x_url`, `youtube_url` on `settings`.
 
 ## Open questions
+
+- After deploying, run `php artisan media-library:regenerate --only-missing` so existing slider images get the new `hero` WebP conversion (until then the original file is used).
 
 - Queue worker: lead emails are queued (`QUEUE_CONNECTION=database`), so they are only sent while `php artisan queue:work` runs. Production needs Supervisor (or switch to `sync`).
 - Lead emails are rendered in the app default locale (`APP_LOCALE`, currently `en`); strings exist in both AR and EN.

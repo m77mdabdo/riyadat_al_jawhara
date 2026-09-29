@@ -14,7 +14,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20">
             <a href="{{ route('home') }}" class="flex items-center shrink-0">
-                <img src="{{ asset('logo-header-black@2x.png') }}" alt="{{ __('site.meta.site_name') }}" class="hidden sm:block h-14 w-auto">
+                <img src="{{ ($settings ?? \App\Models\Setting::current())->logoUrl() }}" alt="{{ __('site.meta.site_name') }}" class="hidden sm:block h-14 w-auto">
                 <img src="{{ asset('logo-monogram-header-black@2x.png') }}" alt="{{ __('site.meta.site_name') }}" class="block sm:hidden h-10 w-auto">
             </a>
 

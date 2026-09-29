@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\Setting;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -31,13 +32,39 @@ class Settings extends Page implements HasForms
 
     public function mount(): void
     {
-        $this->form->fill(Setting::current()->toArray());
+        $this->form->fill(Setting::current()->attributesToArray());
+    }
+
+    /**
+     * The single settings row, needed so the media upload fields can load and
+     * save their files through Spatie Media Library.
+     */
+    public function getSetting(): Setting
+    {
+        return Setting::current();
     }
 
     public function form(Forms\Form $form): Forms\Form
     {
+        $image = fn (string $name, string $collection, string $label, string $help) => SpatieMediaLibraryFileUpload::make($name)
+            ->label($label)
+            ->collection($collection)
+            ->image()
+            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+            ->maxSize(2048)
+            ->helperText($help);
+
         return $form
+            ->model($this->getSetting())
             ->schema([
+                Forms\Components\Section::make('Branding')
+                    ->description('Leave empty to keep the built-in logo and share image.')
+                    ->schema([
+                        $image('logo', 'logo', 'Logo (dark, for light backgrounds)', 'PNG with transparency, ~560×112 px. Header and error pages.'),
+                        $image('logo_light', 'logo_light', 'Logo (light, for dark backgrounds)', 'PNG with transparency, ~560×112 px. Footer.'),
+                        $image('og_image', 'og_image', 'Default share image', '1200×630 px JPG/PNG/WebP. Used when a page has no image of its own.'),
+                    ])->columns(3),
+
                 Forms\Components\Section::make('Contact')
                     ->schema([
                         Forms\Components\TextInput::make('phone')->tel(),
@@ -111,6 +138,9 @@ class Settings extends Page implements HasForms
                         Forms\Components\TextInput::make('instagram_url')->url(),
                         Forms\Components\TextInput::make('tiktok_url')->url(),
                         Forms\Components\TextInput::make('snapchat_url')->url(),
+                        Forms\Components\TextInput::make('linkedin_url')->label('LinkedIn URL')->url(),
+                        Forms\Components\TextInput::make('x_url')->label('X (Twitter) URL')->url(),
+                        Forms\Components\TextInput::make('youtube_url')->label('YouTube URL')->url(),
                     ])->columns(2),
             ])
             ->statePath('data');
@@ -118,7 +148,9 @@ class Settings extends Page implements HasForms
 
     public function save(): void
     {
-        Setting::current()->update($this->form->getState());
+        $setting = $this->getSetting();
+        $setting->update($this->form->getState());
+        $this->form->model($setting)->saveRelationships();
 
         Notification::make()
             ->title('Settings saved')

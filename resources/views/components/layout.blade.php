@@ -9,7 +9,8 @@
         'url' => url('/'),
         'telephone' => $jsonLdSettings->phone,
         'email' => $jsonLdSettings->email,
-        'image' => asset('og-image-1200x630.png'),
+        'logo' => $jsonLdSettings->logoUrl(),
+        'image' => $jsonLdSettings->ogImageUrl(),
         'address' => $jsonLdSettings->address ? [
             '@type' => 'PostalAddress',
             'streetAddress' => $jsonLdSettings->address,
@@ -20,12 +21,7 @@
             'latitude' => (float) $jsonLdSettings->map_lat,
             'longitude' => (float) $jsonLdSettings->map_lng,
         ] : null,
-        'sameAs' => array_values(array_filter([
-            $jsonLdSettings->facebook_url,
-            $jsonLdSettings->instagram_url,
-            $jsonLdSettings->tiktok_url,
-            $jsonLdSettings->snapchat_url,
-        ])),
+        'sameAs' => array_values($jsonLdSettings->socialLinks()),
     ]);
 @endphp
 <!DOCTYPE html>
@@ -38,11 +34,11 @@
     <meta property="og:description" content="{{ $description ?? __('site.meta.default_description') }}">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="{{ app()->getLocale() === 'ar' ? 'ar_SA' : 'en_US' }}">
-    <meta property="og:image" content="{{ asset('og-image-1200x630.png') }}">
+    <meta property="og:image" content="{{ $jsonLdSettings->ogImageUrl() }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="{{ asset('og-image-1200x630.png') }}">
+    <meta name="twitter:image" content="{{ $jsonLdSettings->ogImageUrl() }}">
     <title>{{ isset($title) ? $title.' | '.__('site.meta.site_name') : __('site.meta.site_name').' | '.__('site.meta.tagline') }}</title>
 
     {{--
@@ -71,9 +67,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
-    @if (request()->routeIs('home'))
-        <link rel="preload" as="image" href="{{ asset('images/hero-poster.webp') }}" fetchpriority="high">
-    @endif
 
     @stack('head')
 
