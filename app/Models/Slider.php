@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
@@ -13,7 +14,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Slider extends Model implements HasMedia
 {
-    use HasActiveScope, HasTranslations, InteractsWithMedia;
+    use HasActiveScope, HasFactory, HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'title_ar',

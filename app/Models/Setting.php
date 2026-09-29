@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasTranslations;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Image\Enums\Fit;
@@ -13,7 +14,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Setting extends Model implements HasMedia
 {
-    use HasTranslations, InteractsWithMedia;
+    use HasFactory, HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'phone',

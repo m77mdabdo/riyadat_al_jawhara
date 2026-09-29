@@ -4,11 +4,12 @@ namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Faq extends Model
 {
-    use HasActiveScope, HasTranslations;
+    use HasActiveScope, HasFactory, HasTranslations;
 
     protected $fillable = [
         'question_ar',

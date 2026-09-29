@@ -6,6 +6,7 @@ use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
@@ -14,7 +15,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Testimonial extends Model implements HasMedia
 {
-    use HasActiveScope, HasTranslations, HasWebpConversions, InteractsWithMedia;
+    use HasActiveScope, HasFactory, HasTranslations, HasWebpConversions, InteractsWithMedia;
 
     protected $fillable = [
         'client_name',

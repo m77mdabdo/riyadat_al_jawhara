@@ -6,6 +6,7 @@ use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -13,7 +14,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class TeamMember extends Model implements HasMedia
 {
-    use HasActiveScope, HasTranslations, HasWebpConversions, InteractsWithMedia;
+    use HasActiveScope, HasFactory, HasTranslations, HasWebpConversions, InteractsWithMedia;
 
     protected $fillable = [
         'name_ar',

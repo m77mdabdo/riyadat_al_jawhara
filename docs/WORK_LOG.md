@@ -30,7 +30,8 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 5b — SEO: canonical, og:url, per-entity share images, twitter title/description, article meta, BreadcrumbList, FAQPage, sitemap (lastmod + FAQ + legal), robots | `f3c4f96` | 133 / 695 | Canonical drops filter/search params, keeps `?page=N`. Blog search results `noindex, follow`. Dynamic `/robots.txt` (absolute Sitemap line) is shadowed by `public/robots.txt` — see open questions |
 | 5c — Security: upload whitelist (JPG/PNG/WebP, 5 MB), model MIME rules, security headers + CSP (public + admin), secure cookies in production | `df76cdf` | 140 / 734 | CSP verified with Playwright: 0 violations on 8 public pages + admin login/leads/projects/settings; Alpine, Livewire and the Maps embed work |
 | 5d — WebP responsive images (new `card` 800w / `large` 1600w conversions + srcset/sizes) | `7f2f363` | 144 / 747 | Existing JPEG `thumb`/`medium` kept (share images + legacy media). Owner runs `media-library:regenerate --only-missing` after deploy |
-| 5e — Remove axios, `lang/ar.json` for framework strings | _(next commit)_ | 146 / 757 | Public JS 92.8 KB → 46.3 KB (gzip 34.1 → 16.7 KB). Re-verified after Phase 5: 330 visual checks clean; CSP 0 violations |
+| 5e — Remove axios, `lang/ar.json` for framework strings | `53e536f` | 146 / 757 | Public JS 92.8 KB → 46.3 KB (gzip 34.1 → 16.7 KB). Re-verified after Phase 5: 330 visual checks clean; CSP 0 violations |
+| 6 — Tests + CI: factories for all 17 models, test matrix (blog, public pages + RTL, every admin resource × role, command, error pages), query budgets, GitHub Actions (Pint + PHPUnit + asset build) | _(next commit)_ | 228 / 1150 | Branded 403/419/429/503 pages added (comment throttle showed a raw 429). Pint fixed 5 pre-existing skeleton files so CI can enforce style repo-wide. Tests fake the public disk and skip Vite |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 

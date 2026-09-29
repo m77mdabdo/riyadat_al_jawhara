@@ -17,6 +17,18 @@ return [
         '500_message' => "We're already looking into it. Please try again in a moment, or reach out if the problem continues.",
         'back_home' => 'Back to Homepage',
         'quick_links' => 'Or try one of these:',
+        '403_title' => 'Access denied',
+        '403_heading' => 'You don\'t have access to this page',
+        '403_message' => 'This page isn\'t available to you. If you think this is a mistake, please contact us.',
+        '419_title' => 'Page expired',
+        '419_heading' => 'This page has expired',
+        '419_message' => 'For your security the form expired. Please go back, refresh the page and try again.',
+        '429_title' => 'Too many requests',
+        '429_heading' => 'Please slow down',
+        '429_message' => 'You sent several requests in a short time. Please wait a minute and try again.',
+        '503_title' => 'Back soon',
+        '503_heading' => 'We\'ll be right back',
+        '503_message' => 'The site is briefly down for maintenance. Please try again in a few minutes.',
     ],
 
     'nav' => [
