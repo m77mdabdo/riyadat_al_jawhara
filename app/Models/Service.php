@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
+use App\Support\ServiceIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
@@ -56,6 +57,15 @@ class Service extends Model implements HasMedia
     public function leads(): HasMany
     {
         return $this->hasMany(Lead::class);
+    }
+
+    /**
+     * The icon component to render publicly. Falls back to the default icon
+     * for empty or unknown values so a bad value can never break a page.
+     */
+    public function getSafeIconAttribute(): string
+    {
+        return ServiceIcon::resolve($this->icon);
     }
 
     public function getNameAttribute(): string

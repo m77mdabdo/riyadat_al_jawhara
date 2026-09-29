@@ -161,6 +161,7 @@ return [
         'choose_service' => 'Choose a service',
         'choose_stone_type' => 'Choose a stone type',
         'success_message' => 'Thank you! Your request has been received. Our team will contact you shortly.',
+        'throttled' => 'You have sent several messages in a short time. Please wait a minute and try again — your message has been kept below.',
         'get_in_touch' => 'Get in Touch',
         'our_location' => 'Our Location',
         'working_hours' => 'Working Hours',

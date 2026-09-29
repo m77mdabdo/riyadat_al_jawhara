@@ -39,4 +39,14 @@ class Comment extends Model
     {
         return $this->hasMany(Comment::class, 'parent_id');
     }
+
+    /**
+     * Replies that are safe to show publicly. Anything rendered on the site
+     * must go through this relation -- `replies()` also returns pending and
+     * spam comments and is only meant for the admin panel.
+     */
+    public function approvedReplies(): HasMany
+    {
+        return $this->replies()->where('status', 'approved');
+    }
 }

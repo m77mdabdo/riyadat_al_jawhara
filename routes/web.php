@@ -35,7 +35,9 @@ Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:contact')
+    ->name('contact.store');
 
 Route::get('/privacy-policy', [LegalController::class, 'privacyPolicy'])->name('legal.privacy');
 Route::get('/terms-of-use', [LegalController::class, 'termsOfUse'])->name('legal.terms');

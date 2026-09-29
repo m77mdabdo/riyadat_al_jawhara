@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreLeadRequest extends FormRequest
@@ -12,7 +13,7 @@ class StoreLeadRequest extends FormRequest
     }
 
     /**
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -24,6 +25,7 @@ class StoreLeadRequest extends FormRequest
             'service_id' => ['nullable', 'exists:services,id'],
             'stone_type_id' => ['nullable', 'exists:stone_types,id'],
             'message' => ['required', 'string', 'max:2000'],
+            'website' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

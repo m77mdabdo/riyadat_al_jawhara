@@ -14,8 +14,21 @@
                 </div>
             @endif
 
+            @if (session('error'))
+                <div role="alert" class="mb-6 rounded-lg bg-red-50 border border-red-200 text-red-700 px-5 py-4 text-sm">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('contact.store') }}" class="space-y-5 bg-white border border-stone-200 rounded-xl p-6 sm:p-8" x-data="{ submitting: false }" @submit="submitting = true">
                 @csrf
+
+                {{-- Honeypot: same approach as the blog comment form -- clipped to a 1x1px box in
+                     normal flow, hidden from assistive tech, out of the tab order, no autocomplete. --}}
+                <div class="h-px w-px overflow-hidden" aria-hidden="true">
+                    <label for="website-contact">Website</label>
+                    <input type="text" name="website" id="website-contact" tabindex="-1" autocomplete="off">
+                </div>
 
                 <div>
                     <label for="name" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_name') }}</label>

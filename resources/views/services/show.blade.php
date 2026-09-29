@@ -7,7 +7,7 @@
                 </div>
             @endif
             <div class="h-14 w-14 rounded-lg bg-charcoal flex items-center justify-center mb-6">
-                <x-dynamic-component :component="$service->icon ?: 'heroicon-o-cube'" class="h-7 w-7 text-cream" />
+                <x-dynamic-component :component="$service->safe_icon" class="h-7 w-7 text-cream" />
             </div>
             <h1 class="text-3xl sm:text-4xl font-bold text-charcoal">{{ $service->name }}</h1>
             <p class="mt-4 text-stone-600 leading-relaxed max-w-3xl">{{ $service->description }}</p>

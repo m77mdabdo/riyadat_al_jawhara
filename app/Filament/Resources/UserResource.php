@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserResource extends Resource
 {
@@ -38,13 +39,14 @@ class UserResource extends Resource
                     ->dehydrated(fn (?string $state): bool => filled($state))
                     ->required(fn (string $operation): bool => $operation === 'create')
                     ->helperText('Leave blank to keep the current password.'),
+                // Options must come from the relationship itself so the stored
+                // state is role IDs; overriding them with name keys made
+                // sync() insert role names into model_has_roles.role_id.
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
-                    ->options([
-                        'admin' => 'Admin',
-                        'editor' => 'Editor',
-                    ])
+                    ->getOptionLabelFromRecordUsing(fn (Role $record): string => ucfirst($record->name))
                     ->multiple()
+                    ->preload()
                     ->required(),
             ]);
     }

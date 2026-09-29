@@ -58,7 +58,8 @@ class BlogController extends Controller
             $request->session()->put($sessionKey, true);
         }
 
-        $post->load(['blogCategory', 'tags', 'author', 'approvedComments.replies']);
+        $post->load(['blogCategory', 'tags', 'author']);
+        $this->loadApprovedCommentTree($post);
 
         $related = Post::published()
             ->where('id', '!=', $post->id)
@@ -71,6 +72,28 @@ class BlogController extends Controller
             'post' => $post,
             'related' => $related,
         ]);
+    }
+
+    /**
+     * Loads every approved comment for the post in one query and wires up
+     * `approvedComments` (top level) and `approvedReplies` (every nested
+     * level) in memory. This covers any nesting depth without N+1 queries.
+     * A reply whose parent is not approved is never reached, so it stays
+     * hidden too.
+     */
+    private function loadApprovedCommentTree(Post $post): void
+    {
+        $byParent = $post->comments()
+            ->approved()
+            ->orderBy('id')
+            ->get()
+            ->groupBy(fn (Comment $comment) => $comment->parent_id ?? 0);
+
+        $byParent->flatten()->each(
+            fn (Comment $comment) => $comment->setRelation('approvedReplies', $byParent->get($comment->id, collect())->values())
+        );
+
+        $post->setRelation('approvedComments', $byParent->get(0, collect())->values());
     }
 
     public function storeComment(StoreCommentRequest $request, Post $post): RedirectResponse

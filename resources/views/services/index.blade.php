@@ -16,7 +16,7 @@
                             <x-image-placeholder class="h-full w-full" />
                         @endif
                         <div class="absolute bottom-3 start-3 h-10 w-10 rounded-lg bg-charcoal flex items-center justify-center">
-                            <x-dynamic-component :component="$service->icon ?: 'heroicon-o-cube'" class="h-5 w-5 text-cream" />
+                            <x-dynamic-component :component="$service->safe_icon" class="h-5 w-5 text-cream" />
                         </div>
                     </div>
                     <div class="p-6">

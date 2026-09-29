@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\Setting;
 use App\Models\StoneType;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 use Illuminate\View\View;
 
 class ContactController extends Controller
@@ -23,7 +24,15 @@ class ContactController extends Controller
 
     public function store(StoreLeadRequest $request): RedirectResponse
     {
-        Lead::create($request->validated() + ['status' => 'new', 'source' => 'website']);
+        $data = $request->validated();
+
+        // Honeypot: bots that fill this hidden field get the normal success
+        // response, but nothing is stored, so they can't tell they were caught.
+        if (filled($data['website'] ?? null)) {
+            return back()->with('success', __('site.contact.success_message'));
+        }
+
+        Lead::create(Arr::except($data, 'website') + ['status' => 'new', 'source' => 'website']);
 
         return back()->with('success', __('site.contact.success_message'));
     }

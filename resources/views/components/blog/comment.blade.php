@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    @foreach ($comment->replies as $reply)
+    @foreach ($comment->approvedReplies as $reply)
         <x-blog.comment :comment="$reply" :post="$post" :depth="$depth + 1" />
     @endforeach
 </div>

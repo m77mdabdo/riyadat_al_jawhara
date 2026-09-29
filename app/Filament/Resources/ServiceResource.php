@@ -5,13 +5,15 @@ namespace App\Filament\Resources;
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\ServiceResource\Pages;
 use App\Models\Service;
+use App\Support\ServiceIcon;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class ServiceResource extends Resource
 {
@@ -37,7 +39,7 @@ class ServiceResource extends Resource
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
                                 Forms\Components\Textarea::make('description_en')
                                     ->label('Description (EN)')
                                     ->rows(4)
@@ -59,10 +61,11 @@ class ServiceResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
-                Forms\Components\TextInput::make('icon')
-                    ->label('Heroicon name')
-                    ->helperText('e.g. heroicon-o-truck')
-                    ->maxLength(255),
+                Forms\Components\Select::make('icon')
+                    ->label('Icon')
+                    ->options(ServiceIcon::OPTIONS)
+                    ->in(array_keys(ServiceIcon::OPTIONS))
+                    ->placeholder('Default (Cube)'),
                 Forms\Components\TextInput::make('order')
                     ->numeric()
                     ->default(0),
