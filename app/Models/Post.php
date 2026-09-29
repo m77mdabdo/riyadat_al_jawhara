@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +16,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Post extends Model implements HasMedia
 {
-    use HasSlug, InteractsWithMedia;
+    use HasSlug, HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'title_ar',
@@ -88,16 +89,16 @@ class Post extends Model implements HasMedia
 
     public function getTitleAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->title_ar : $this->title_en;
+        return $this->translated('title') ?? '';
     }
 
     public function getExcerptAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->excerpt_ar : $this->excerpt_en;
+        return $this->translated('excerpt');
     }
 
     public function getBodyAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->body_ar : $this->body_en;
+        return $this->translated('body');
     }
 }

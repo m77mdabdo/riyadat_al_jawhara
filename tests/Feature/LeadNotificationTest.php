@@ -41,7 +41,7 @@ class LeadNotificationTest extends TestCase
         $admin = $this->admin();
         Role::firstOrCreate(['name' => 'editor', 'guard_name' => 'web']);
         $editor = tap(User::factory()->create())->assignRole('editor');
-        Setting::current()->update(['email' => 'info@company.test']);
+        Setting::editable()->update(['email' => 'info@company.test']);
 
         $this->submit();
 
@@ -58,7 +58,7 @@ class LeadNotificationTest extends TestCase
     {
         Notification::fake();
         $this->admin('info@company.test');
-        Setting::current()->update(['email' => 'INFO@company.test']);
+        Setting::editable()->update(['email' => 'INFO@company.test']);
 
         $this->submit();
 

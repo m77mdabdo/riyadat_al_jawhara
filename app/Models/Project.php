@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +18,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Project extends Model implements HasMedia
 {
-    use HasActiveScope, HasSlug, InteractsWithMedia;
+    use HasActiveScope, HasSlug, HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'title_ar',
@@ -128,21 +129,21 @@ class Project extends Model implements HasMedia
 
     public function getTitleAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->title_ar : $this->title_en;
+        return $this->translated('title') ?? '';
     }
 
     public function getDescriptionAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->description_ar : $this->description_en;
+        return $this->translated('description');
     }
 
     public function getCityAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? ($this->city_ar ?: $this->city_en) : ($this->city_en ?: $this->city_ar);
+        return $this->translated('city');
     }
 
     public function getLocationAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->location_ar : $this->location_en;
+        return $this->translated('location');
     }
 }

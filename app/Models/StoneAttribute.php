@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +18,7 @@ use Spatie\Sluggable\SlugOptions;
  */
 class StoneAttribute extends Model
 {
-    use HasActiveScope, HasFactory, HasSlug;
+    use HasActiveScope, HasFactory, HasSlug, HasTranslations;
 
     public const FINISH = 'finish';
 
@@ -82,6 +83,6 @@ class StoneAttribute extends Model
 
     public function getNameAttribute(): string
     {
-        return (app()->getLocale() === 'ar' ? $this->name_ar : $this->name_en) ?: (string) $this->name_en;
+        return $this->translated('name') ?? '';
     }
 }

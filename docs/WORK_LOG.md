@@ -25,7 +25,8 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 3c — Project metadata: sector, area m², city (AR/EN), additional stones (M:N) | `efbfc88` | 89 / 414 | `stone_type_id` kept as "primary stone"; stone filters and stone pages match primary OR additional stones |
 | 3d — Settings branding (logo, light logo, default OG image), LinkedIn/X/YouTube, slider images in hero | `815d81e` | 97 / 444 | Branding via Media Library on `Setting` (JPG/PNG/WebP ≤ 2 MB). Hero: slide image if present, else poster/video (video skipped when any slide has an image). Mobile monogram logo stays static |
 | 3e — Admin password reset + profile page (current password required for email/password change), one password policy | `d553d62` | 105 / 492 | Policy: min 12 chars, letters + numbers (profile, reset, Users form, `app:create-admin`). Reset emails need a real mailer in production |
-| 4 — UI/UX + responsive + missing-image pass | _(next commit)_ | 118 / 617 | Playwright (cached npx 1.62, no new deps): 15 pages × 11 widths × EN/AR = 330 checks, 0 overflow / 0 broken img / 0 text < 14px; lightbox behaviour verified in RTL. Fixed invisible form fields (pre-existing). Desktop nav now from `xl` (AR labels don't fit at 1024). See `docs/MISSING_IMAGES.md` |
+| 4 — UI/UX + responsive + missing-image pass | `29f350a` | 118 / 617 | Playwright (cached npx 1.62, no new deps): 15 pages × 11 widths × EN/AR = 330 checks, 0 overflow / 0 broken img / 0 text < 14px; lightbox behaviour verified in RTL. Fixed invisible form fields (pre-existing). Desktop nav now from `xl` (AR labels don't fit at 1024). See `docs/MISSING_IMAGES.md` |
+| 5a — Settings cache (no write on GET), media eager-loading, empty-language fallback | _(next commit)_ | 123 / 654 | `Setting::current()` = read-only, request-scoped + cached; `Setting::editable()` for writes. `HasTranslations` trait on 13 models |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 

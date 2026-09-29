@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Sluggable\HasSlug;
@@ -9,7 +10,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Tag extends Model
 {
-    use HasSlug;
+    use HasSlug, HasTranslations;
 
     protected $fillable = [
         'name_ar',
@@ -31,6 +32,6 @@ class Tag extends Model
 
     public function getNameAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->name_ar : $this->name_en;
+        return $this->translated('name') ?? '';
     }
 }

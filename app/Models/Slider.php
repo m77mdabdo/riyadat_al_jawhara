@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
@@ -11,7 +12,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Slider extends Model implements HasMedia
 {
-    use HasActiveScope, InteractsWithMedia;
+    use HasActiveScope, HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'title_ar',
@@ -59,16 +60,16 @@ class Slider extends Model implements HasMedia
 
     public function getTitleAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->title_ar : $this->title_en;
+        return $this->translated('title') ?? '';
     }
 
     public function getSubtitleAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->subtitle_ar : $this->subtitle_en;
+        return $this->translated('subtitle');
     }
 
     public function getButtonTextAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->button_text_ar : $this->button_text_en;
+        return $this->translated('button_text');
     }
 }

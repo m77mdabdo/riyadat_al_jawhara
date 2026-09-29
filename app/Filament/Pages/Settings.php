@@ -32,7 +32,7 @@ class Settings extends Page implements HasForms
 
     public function mount(): void
     {
-        $this->form->fill(Setting::current()->attributesToArray());
+        $this->form->fill($this->getSetting()->attributesToArray());
     }
 
     /**
@@ -41,7 +41,7 @@ class Settings extends Page implements HasForms
      */
     public function getSetting(): Setting
     {
-        return Setting::current();
+        return Setting::editable();
     }
 
     public function form(Forms\Form $form): Forms\Form
@@ -149,8 +149,10 @@ class Settings extends Page implements HasForms
     public function save(): void
     {
         $setting = $this->getSetting();
-        $setting->update($this->form->getState());
+        $setting->fill($this->form->getState())->save();
         $this->form->model($setting)->saveRelationships();
+        // Media uploads don't touch the settings row, so flush explicitly.
+        Setting::flushCache();
 
         Notification::make()
             ->title('Settings saved')

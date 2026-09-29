@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasTranslations;
 use App\Support\ServiceIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,7 +15,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Service extends Model implements HasMedia
 {
-    use HasActiveScope, HasSlug, InteractsWithMedia;
+    use HasActiveScope, HasSlug, HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'name_ar',
@@ -70,11 +71,11 @@ class Service extends Model implements HasMedia
 
     public function getNameAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->name_ar : $this->name_en;
+        return $this->translated('name') ?? '';
     }
 
     public function getDescriptionAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->description_ar : $this->description_en;
+        return $this->translated('description');
     }
 }

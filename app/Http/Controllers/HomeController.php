@@ -15,11 +15,11 @@ class HomeController extends Controller
     public function index(): View
     {
         return view('home', [
-            'sliders' => Slider::active()->ordered()->get(),
-            'services' => Service::active()->ordered()->get(),
-            'featuredProjects' => Project::active()->featured()->ordered()->take(6)->get(),
-            'stoneTypes' => StoneType::active()->ordered()->take(8)->get(),
-            'testimonials' => Testimonial::active()->ordered()->with('project')->get(),
+            'sliders' => Slider::active()->ordered()->with('media')->get(),
+            'services' => Service::active()->ordered()->with('media')->get(),
+            'featuredProjects' => Project::active()->featured()->ordered()->with('media')->take(6)->get(),
+            'stoneTypes' => StoneType::active()->ordered()->with('media')->take(8)->get(),
+            'testimonials' => Testimonial::active()->ordered()->with('media')->get(),
             'faqs' => Faq::active()->ordered()->take(4)->get(),
         ]);
     }

@@ -15,7 +15,7 @@ class BlogController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Post::published()->with(['blogCategory', 'tags']);
+        $query = Post::published()->with(['blogCategory', 'media']);
 
         if ($request->filled('category')) {
             $category = $request->string('category')->toString();
@@ -58,13 +58,14 @@ class BlogController extends Controller
             $request->session()->put($sessionKey, true);
         }
 
-        $post->load(['blogCategory', 'tags', 'author']);
+        $post->load(['blogCategory', 'tags', 'author', 'media']);
         $this->loadApprovedCommentTree($post);
 
         $related = Post::published()
             ->where('id', '!=', $post->id)
             ->when($post->blog_category_id, fn ($q) => $q->where('blog_category_id', $post->blog_category_id))
             ->latest('published_at')
+            ->with('media')
             ->take(3)
             ->get();
 

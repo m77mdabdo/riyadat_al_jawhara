@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -10,7 +11,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class TeamMember extends Model implements HasMedia
 {
-    use HasActiveScope, InteractsWithMedia;
+    use HasActiveScope, HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'name_ar',
@@ -39,11 +40,11 @@ class TeamMember extends Model implements HasMedia
 
     public function getNameAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->name_ar : $this->name_en;
+        return $this->translated('name') ?? '';
     }
 
     public function getPositionAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->position_ar : $this->position_en;
+        return $this->translated('position');
     }
 }

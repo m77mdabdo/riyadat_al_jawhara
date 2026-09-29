@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Setting;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -15,7 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // One Setting instance per request (reset between requests, queue jobs
+        // and tests), backed by the cache -- see Setting::current().
+        $this->app->scoped(Setting::CACHE_KEY, fn () => Setting::loadCurrent());
     }
 
     /**

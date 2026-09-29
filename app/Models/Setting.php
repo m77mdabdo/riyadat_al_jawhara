@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -10,7 +12,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Setting extends Model implements HasMedia
 {
-    use InteractsWithMedia;
+    use HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'phone',
@@ -108,9 +110,52 @@ class Setting extends Model implements HasMedia
         ]);
     }
 
+    public const CACHE_KEY = 'settings.current';
+
+    protected static function booted(): void
+    {
+        // Any change to the settings row invalidates the cache and this
+        // request's memoized copy.
+        static::saved(fn () => static::flushCache());
+        static::deleted(fn () => static::flushCache());
+    }
+
+    /**
+     * The site settings for reading. Memoized per request (scoped container
+     * instance) and cached across requests, so layouts, partials and
+     * controllers can all call it for one query at most -- usually none.
+     *
+     * Never writes: on a fresh database it returns an unsaved, empty
+     * instance instead of inserting a row during a GET request.
+     */
     public static function current(): self
     {
+        return app(self::CACHE_KEY);
+    }
+
+    /**
+     * Loads the row for the scoped container binding (see AppServiceProvider).
+     */
+    public static function loadCurrent(): self
+    {
+        $attributes = Cache::rememberForever(self::CACHE_KEY, fn () => static::query()->first()?->getAttributes());
+
+        return $attributes ? (new static)->newFromBuilder($attributes) : new static;
+    }
+
+    /**
+     * The settings row for writing (admin Settings page, seeders, tests):
+     * creates it if it doesn't exist yet.
+     */
+    public static function editable(): self
+    {
         return static::query()->firstOrCreate([]);
+    }
+
+    public static function flushCache(): void
+    {
+        Cache::forget(self::CACHE_KEY);
+        app()->forgetInstance(self::CACHE_KEY);
     }
 
     /**
@@ -146,36 +191,36 @@ class Setting extends Model implements HasMedia
 
     public function getAddressAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->address_ar : $this->address_en;
+        return $this->translated('address');
     }
 
     public function getWorkingHoursAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->working_hours_ar : $this->working_hours_en;
+        return $this->translated('working_hours');
     }
 
     public function getAboutAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->about_ar : $this->about_en;
+        return $this->translated('about');
     }
 
     public function getVisionAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->vision_ar : $this->vision_en;
+        return $this->translated('vision');
     }
 
     public function getMissionAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->mission_ar : $this->mission_en;
+        return $this->translated('mission');
     }
 
     public function getPrivacyPolicyAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->privacy_policy_ar : $this->privacy_policy_en;
+        return $this->translated('privacy_policy');
     }
 
     public function getTermsAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->terms_ar : $this->terms_en;
+        return $this->translated('terms');
     }
 }

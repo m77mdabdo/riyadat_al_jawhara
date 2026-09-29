@@ -28,14 +28,14 @@ class RichTextSanitizationTest extends TestCase
 
     public function test_privacy_policy_html_is_sanitized(): void
     {
-        Setting::current()->update(['privacy_policy_en' => self::PAYLOAD]);
+        Setting::editable()->update(['privacy_policy_en' => self::PAYLOAD]);
 
         $this->assertSanitized($this->get(route('legal.privacy'))->assertOk()->getContent());
     }
 
     public function test_terms_html_is_sanitized(): void
     {
-        Setting::current()->update(['terms_en' => self::PAYLOAD]);
+        Setting::editable()->update(['terms_en' => self::PAYLOAD]);
 
         $this->assertSanitized($this->get(route('legal.terms'))->assertOk()->getContent());
     }

@@ -147,7 +147,7 @@ class ContactContextTest extends TestCase
 
     public function test_contact_links_are_clickable_and_whatsapp_is_normalized(): void
     {
-        Setting::current()->update(['phone' => '+966 55 123 4567', 'email' => 'info@company.test', 'whatsapp' => '+966 55-123 4567']);
+        Setting::editable()->update(['phone' => '+966 55 123 4567', 'email' => 'info@company.test', 'whatsapp' => '+966 55-123 4567']);
 
         $html = $this->get(route('contact'))->assertOk()->getContent();
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +11,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class StoneCategory extends Model
 {
-    use HasSlug;
+    use HasSlug, HasTranslations;
 
     protected $fillable = [
         'name_ar',
@@ -38,6 +39,6 @@ class StoneCategory extends Model
 
     public function getNameAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->name_ar : $this->name_en;
+        return $this->translated('name') ?? '';
     }
 }

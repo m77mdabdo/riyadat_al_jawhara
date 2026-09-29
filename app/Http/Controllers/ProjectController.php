@@ -12,7 +12,7 @@ class ProjectController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Project::active()->ordered()->with(['service', 'stoneType']);
+        $query = Project::active()->ordered()->with('media');
 
         if ($request->filled('service')) {
             $query->whereHas('service', fn ($q) => $q->where('slug', $request->string('service')));
@@ -47,7 +47,7 @@ class ProjectController extends Controller
     {
         abort_unless($project->is_active, 404);
 
-        $project->load(['service', 'stoneType', 'stoneTypes']);
+        $project->load(['service', 'stoneType', 'stoneTypes', 'media']);
 
         return view('projects.show', [
             'project' => $project,

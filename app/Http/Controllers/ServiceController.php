@@ -10,7 +10,7 @@ class ServiceController extends Controller
     public function index(): View
     {
         return view('services.index', [
-            'services' => Service::active()->ordered()->get(),
+            'services' => Service::active()->ordered()->with('media')->get(),
         ]);
     }
 
@@ -20,7 +20,7 @@ class ServiceController extends Controller
 
         return view('services.show', [
             'service' => $service,
-            'projects' => $service->projects()->active()->ordered()->take(6)->get(),
+            'projects' => $service->projects()->active()->ordered()->with('media')->take(6)->get(),
         ]);
     }
 }

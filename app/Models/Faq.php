@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
 class Faq extends Model
 {
-    use HasActiveScope;
+    use HasActiveScope, HasTranslations;
 
     protected $fillable = [
         'question_ar',
@@ -24,11 +25,11 @@ class Faq extends Model
 
     public function getQuestionAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->question_ar : $this->question_en;
+        return $this->translated('question') ?? '';
     }
 
     public function getAnswerAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->answer_ar : $this->answer_en;
+        return $this->translated('answer') ?? '';
     }
 }

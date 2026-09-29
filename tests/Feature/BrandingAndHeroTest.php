@@ -76,7 +76,7 @@ class BrandingAndHeroTest extends TestCase
 
     public function test_extra_social_links_render_in_footer_and_json_ld(): void
     {
-        Setting::current()->update([
+        Setting::editable()->update([
             'linkedin_url' => 'https://www.linkedin.com/company/example',
             'x_url' => 'https://x.com/example',
             'youtube_url' => 'https://youtube.com/@example',

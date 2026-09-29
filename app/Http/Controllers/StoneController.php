@@ -22,7 +22,7 @@ class StoneController extends Controller
 
     public function index(Request $request): View
     {
-        $query = StoneType::active()->ordered()->with('stoneCategory');
+        $query = StoneType::active()->ordered()->with(['stoneCategory', 'media']);
 
         if ($request->filled('stone_category')) {
             $query->whereHas('stoneCategory', fn ($q) => $q->where('slug', $request->string('stone_category')));
@@ -76,11 +76,11 @@ class StoneController extends Controller
     {
         abort_unless($stoneType->is_active, 404);
 
-        $stoneType->load(['stoneCategory', 'stoneAttributes']);
+        $stoneType->load(['stoneCategory', 'stoneAttributes', 'media']);
 
         return view('stones.show', [
             'stoneType' => $stoneType,
-            'projects' => Project::active()->usingStone($stoneType->id)->ordered()->take(6)->get(),
+            'projects' => Project::active()->usingStone($stoneType->id)->ordered()->with('media')->take(6)->get(),
         ]);
     }
 }

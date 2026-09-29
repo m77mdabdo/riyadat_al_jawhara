@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
@@ -11,7 +12,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Testimonial extends Model implements HasMedia
 {
-    use HasActiveScope, InteractsWithMedia;
+    use HasActiveScope, HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'client_name',
@@ -45,6 +46,6 @@ class Testimonial extends Model implements HasMedia
 
     public function getCommentAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->comment_ar : $this->comment_en;
+        return $this->translated('comment') ?? '';
     }
 }
