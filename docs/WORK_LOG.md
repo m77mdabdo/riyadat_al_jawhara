@@ -28,7 +28,8 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 4 — UI/UX + responsive + missing-image pass | `29f350a` | 118 / 617 | Playwright (cached npx 1.62, no new deps): 15 pages × 11 widths × EN/AR = 330 checks, 0 overflow / 0 broken img / 0 text < 14px; lightbox behaviour verified in RTL. Fixed invisible form fields (pre-existing). Desktop nav now from `xl` (AR labels don't fit at 1024). See `docs/MISSING_IMAGES.md` |
 | 5a — Settings cache (no write on GET), media eager-loading, empty-language fallback | `2bbe480` | 123 / 654 | `Setting::current()` = read-only, request-scoped + cached; `Setting::editable()` for writes. `HasTranslations` trait on 13 models |
 | 5b — SEO: canonical, og:url, per-entity share images, twitter title/description, article meta, BreadcrumbList, FAQPage, sitemap (lastmod + FAQ + legal), robots | `f3c4f96` | 133 / 695 | Canonical drops filter/search params, keeps `?page=N`. Blog search results `noindex, follow`. Dynamic `/robots.txt` (absolute Sitemap line) is shadowed by `public/robots.txt` — see open questions |
-| 5c — Security: upload whitelist (JPG/PNG/WebP, 5 MB), model MIME rules, security headers + CSP (public + admin), secure cookies in production | _(next commit)_ | 140 / 734 | CSP verified with Playwright: 0 violations on 8 public pages + admin login/leads/projects/settings; Alpine, Livewire and the Maps embed work |
+| 5c — Security: upload whitelist (JPG/PNG/WebP, 5 MB), model MIME rules, security headers + CSP (public + admin), secure cookies in production | `df76cdf` | 140 / 734 | CSP verified with Playwright: 0 violations on 8 public pages + admin login/leads/projects/settings; Alpine, Livewire and the Maps embed work |
+| 5d — WebP responsive images (new `card` 800w / `large` 1600w conversions + srcset/sizes) | _(next commit)_ | 144 / 747 | Existing JPEG `thumb`/`medium` kept (share images + legacy media). Owner runs `media-library:regenerate --only-missing` after deploy |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
@@ -46,7 +47,7 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 
 - **robots.txt:** `public/robots.txt` was updated (Disallow `/admin`, `/lang/`) but cannot contain an absolute `Sitemap:` line without knowing the production domain. A dynamic `/robots.txt` route that adds it is implemented and tested, but the web server serves the static file first. Approve deleting `public/robots.txt` to switch to the dynamic one (or submit the sitemap in Search Console instead).
 
-- After deploying, run `php artisan media-library:regenerate --only-missing` so existing slider images get the new `hero` WebP conversion (until then the original file is used).
+- After deploying, run `php artisan media-library:regenerate --only-missing` so existing media gets the new WebP conversions (`hero` for sliders, `card`/`large` for covers and galleries). Until then pages fall back to the JPEG/original files.
 
 - Queue worker: lead emails are queued (`QUEUE_CONNECTION=database`), so they are only sent while `php artisan queue:work` runs. Production needs Supervisor (or switch to `sync`).
 - Lead emails are rendered in the app default locale (`APP_LOCALE`, currently `en`); strings exist in both AR and EN.

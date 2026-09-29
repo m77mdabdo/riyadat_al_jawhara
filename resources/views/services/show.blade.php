@@ -3,7 +3,7 @@
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             @if ($service->getFirstMedia('cover'))
                 <div class="aspect-[16/9] sm:aspect-[21/9] rounded-xl overflow-hidden mb-8">
-                    <x-media-image :model="$service" :alt="$service->name" :eager="true" class="h-full w-full" />
+                    <x-media-image :model="$service" :alt="$service->name" :eager="true" sizes="(min-width: 1024px) 960px, 100vw" class="h-full w-full" />
                 </div>
             @endif
             <div class="h-14 w-14 rounded-lg bg-charcoal flex items-center justify-center mb-6">

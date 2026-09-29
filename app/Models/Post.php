@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasCoverImage;
 use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasWebpConversions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,7 +19,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Post extends Model implements HasMedia
 {
-    use HasCoverImage, HasSlug, HasTranslations, InteractsWithMedia;
+    use HasCoverImage, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia;
 
     protected $fillable = [
         'title_ar',
@@ -60,6 +61,7 @@ class Post extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
+        $this->registerWebpConversions();
         $this->addMediaConversion('thumb')->width(400)->height(300)->nonQueued();
         $this->addMediaConversion('medium')->width(1200)->height(700)->nonQueued();
     }

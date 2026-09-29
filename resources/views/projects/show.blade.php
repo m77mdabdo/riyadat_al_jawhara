@@ -11,7 +11,7 @@
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="aspect-[16/9] rounded-xl bg-stone-200 overflow-hidden mb-8">
-                <x-media-image :model="$project" :alt="$project->title" :eager="true" class="h-full w-full" />
+                <x-media-image :model="$project" :alt="$project->title" :eager="true" sizes="(min-width: 1024px) 960px, 100vw" class="h-full w-full" />
             </div>
             <h1 class="text-page-title font-bold text-charcoal">{{ $project->title }}</h1>
             <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-600">

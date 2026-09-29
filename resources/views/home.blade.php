@@ -195,7 +195,7 @@
                             <p class="text-stone-200 text-sm leading-relaxed rtl:leading-loose">&ldquo;{{ $testimonial->comment }}&rdquo;</p>
                             <div class="mt-4 flex items-center gap-3">
                                 <div class="h-9 w-9 rounded-full overflow-hidden shrink-0">
-                                    <x-media-image :model="$testimonial" collection="client_photo" conversion="thumb" alt="" :width="200" :height="200" :placeholder-icon="false" class="h-full w-full" />
+                                    <x-media-image :model="$testimonial" collection="client_photo" conversion="thumb" alt="" :responsive="false" :width="200" :height="200" :placeholder-icon="false" class="h-full w-full" />
                                 </div>
                                 <p class="font-semibold text-sm">{{ $testimonial->client_name }}</p>
                             </div>

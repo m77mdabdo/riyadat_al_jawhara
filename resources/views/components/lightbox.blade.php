@@ -11,9 +11,20 @@
 @props(['media', 'alt'])
 
 @php
+    // Prefer the WebP renditions, then the JPEG conversions, then the original.
+    $pick = function ($item, array $names): string {
+        foreach ($names as $name) {
+            if ($item->hasGeneratedConversion($name)) {
+                return $item->getUrl($name);
+            }
+        }
+
+        return $item->getUrl();
+    };
+
     $items = $media->values()->map(fn ($item) => [
-        'thumb' => $item->hasGeneratedConversion('thumb') ? $item->getUrl('thumb') : $item->getUrl(),
-        'full' => $item->hasGeneratedConversion('medium') ? $item->getUrl('medium') : $item->getUrl(),
+        'thumb' => $pick($item, ['card', 'thumb']),
+        'full' => $pick($item, ['large', 'medium']),
     ]);
 @endphp
 

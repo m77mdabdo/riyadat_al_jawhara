@@ -2,7 +2,7 @@
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div class="aspect-square rounded-xl bg-stone-200 overflow-hidden">
-                <x-media-image :model="$stoneType" :alt="$stoneType->name" :eager="true" class="h-full w-full" />
+                <x-media-image :model="$stoneType" :alt="$stoneType->name" :eager="true" sizes="(min-width: 768px) 480px, 100vw" class="h-full w-full" />
             </div>
             <div>
                 <p class="text-sm font-semibold text-stone-600">{{ $stoneType->stoneCategory->name }}</p>

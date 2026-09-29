@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasWebpConversions;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -12,7 +13,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class TeamMember extends Model implements HasMedia
 {
-    use HasActiveScope, HasTranslations, InteractsWithMedia;
+    use HasActiveScope, HasTranslations, HasWebpConversions, InteractsWithMedia;
 
     protected $fillable = [
         'name_ar',
@@ -36,6 +37,7 @@ class TeamMember extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
+        $this->registerWebpConversions();
         $this->addMediaConversion('thumb')->width(300)->height(300)->nonQueued();
     }
 

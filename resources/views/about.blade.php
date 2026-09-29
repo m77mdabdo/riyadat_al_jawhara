@@ -44,7 +44,7 @@
                     @foreach ($teamMembers as $member)
                         <div class="text-center">
                             <div class="aspect-square rounded-full bg-stone-200 overflow-hidden mx-auto max-w-[160px]">
-                                <x-media-image :model="$member" collection="photo" conversion="thumb" :alt="$member->name" :width="300" :height="300" :placeholder-icon="false" class="h-full w-full" />
+                                <x-media-image :model="$member" collection="photo" conversion="thumb" :alt="$member->name" sizes="160px" :width="300" :height="300" :placeholder-icon="false" class="h-full w-full" />
                             </div>
                             <h3 class="mt-4 font-semibold text-charcoal">{{ $member->name }}</h3>
                             <p class="text-sm text-stone-600">{{ $member->position }}</p>

@@ -23,7 +23,7 @@
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             @if ($post->getFirstMedia('cover'))
                 <div class="aspect-[16/9] sm:aspect-[21/9] rounded-xl overflow-hidden mb-8">
-                    <x-media-image :model="$post" :alt="$post->title" :eager="true" class="h-full w-full" />
+                    <x-media-image :model="$post" :alt="$post->title" :eager="true" sizes="(min-width: 768px) 720px, 100vw" class="h-full w-full" />
                 </div>
             @endif
 
