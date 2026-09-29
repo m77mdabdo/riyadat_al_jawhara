@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Lead extends Model
 {
@@ -17,6 +19,8 @@ class Lead extends Model
         'city',
         'message',
         'status',
+        'assigned_to',
+        'follow_up_at',
         'source',
         'locale',
         'source_url',
@@ -27,7 +31,36 @@ class Lead extends Model
 
     protected $casts = [
         'consented_at' => 'datetime',
+        'follow_up_at' => 'date',
     ];
+
+    /**
+     * @var array<string, string> status value => admin label
+     */
+    public const STATUSES = [
+        'new' => 'New',
+        'contacted' => 'Contacted',
+        'in_progress' => 'In Progress',
+        'closed' => 'Closed',
+    ];
+
+    /**
+     * @var array<string, string> source value => admin label
+     */
+    public const SOURCES = [
+        'website' => 'Website',
+        'whatsapp' => 'WhatsApp',
+    ];
+
+    public function scopeOpen(Builder $query): Builder
+    {
+        return $query->where('status', '!=', 'closed');
+    }
+
+    public function scopeFollowUpDue(Builder $query): Builder
+    {
+        return $query->open()->whereNotNull('follow_up_at')->whereDate('follow_up_at', '<=', today());
+    }
 
     public function service(): BelongsTo
     {
@@ -42,5 +75,15 @@ class Lead extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(LeadNote::class)->latest();
     }
 }

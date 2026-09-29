@@ -79,7 +79,7 @@ class NewLeadNotification extends Notification implements ShouldQueue
             ->line(__('site.lead_mail.message').':')
             ->line($lead->message ?? $dash)
             ->line(__('site.lead_mail.language').': '.strtoupper((string) ($lead->locale ?: $dash)))
-            ->action(__('site.lead_mail.view_in_admin'), route('filament.admin.resources.leads.edit', $lead));
+            ->action(__('site.lead_mail.view_in_admin'), route('filament.admin.resources.leads.view', $lead));
 
         if ($lead->email) {
             $message->replyTo($lead->email, $lead->name);
