@@ -85,6 +85,33 @@ return [
         'faq' => 'Frequently Asked Questions',
         'cta_title' => 'Ready to Start Your Project?',
         'cta_subtitle' => 'Get a free consultation and quote from our team today',
+        'why_choose_us_subtitle' => 'One team for your stone, from the first idea to the final finish',
+        'why_items' => [
+            ['icon' => 'heroicon-o-arrows-right-left', 'title' => 'Supply to installation', 'description' => 'Sourcing, fabrication, installation and design handled by one accountable team.'],
+            ['icon' => 'heroicon-o-squares-2x2', 'title' => 'A curated stone collection', 'description' => 'Marble, granite, quartz and natural stone, with finishes and sizes for each application.'],
+            ['icon' => 'heroicon-o-scale', 'title' => 'Quality and precision', 'description' => 'Careful measurement, cutting and finishing, for a result that fits your space.'],
+            ['icon' => 'heroicon-o-clipboard-document-check', 'title' => 'A clear process', 'description' => 'From consultation and site measurement to handover, you know every next step.'],
+        ],
+        'categories_title' => 'Explore by stone',
+        'categories_subtitle' => 'Start from the material and see what suits your project',
+        'categories_cta' => 'Browse :name',
+        'stones_count' => '{0} Coming soon|{1} :count stone|[2,*] :count stones',
+        'heritage_title' => 'Heritage in stone',
+        'heritage_subtitle' => 'The stone traditions of the Kingdom that inspire our work',
+        'heritage_note' => 'Inspiration imagery. These are not projects by our company.',
+        'heritage_items' => [
+            'jeddah' => ['name' => 'Jeddah Al-Balad', 'caption' => 'Coral-stone houses and wooden rawasheen'],
+            'diriyah' => ['name' => 'Diriyah', 'caption' => 'Najdi mud-brick architecture of At-Turaif'],
+            'alula' => ['name' => 'AlUla', 'caption' => 'Sandstone cliffs shaped over millennia'],
+            'najdi' => ['name' => 'Najdi architecture', 'caption' => 'Triangular friezes and earthen walls'],
+        ],
+        'stats_title' => 'In numbers',
+        'stats' => [
+            'projects' => 'Projects completed',
+            'years' => 'Years of experience',
+            'cities' => 'Cities served',
+            'clients' => 'Clients served',
+        ],
     ],
 
     'process' => [
@@ -105,6 +132,7 @@ return [
         'our_mission' => 'Our Mission',
         'our_team' => 'Our Team',
         'hero_alt' => 'Designers reviewing a floor plan on a white marble table',
+        'banner_alt' => 'Granite and marble slabs stored upright in a stone workshop',
     ],
 
     'faq' => [

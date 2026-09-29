@@ -38,6 +38,8 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | Security — Laravel 11 email-rule CRLF advisory mitigation; composer.json metadata (`php ^8.4`) | `bee637f` | 230 / 1155 | Lock: content-hash + platform only, no package changes |
 | 7 — Docs: README, .env.example, DEPLOY.md | `991454d` | 230 / 1155 | Docs only |
 | **8 — Housekeeping** (branch `feature/phase-8-plus`) | `0db80ee` | 230 / 1156 | `public/robots.txt` deleted (dynamic route now served, test asserts no static file). Deleted exactly `storage/app/public/1/g1.jpg`, `…/conversions/g1-thumb.jpg`, `…/conversions/g1-medium.jpg` (stray test files; real media untouched). **Patch/minor updates only:** livewire/livewire v3.8.2→v3.8.10, league/commonmark 2.8.3→2.10.3, laravel/prompts v0.3.21→v0.3.24, nette/schema v1.3.5→v1.3.6, symfony/console, error-handler, http-foundation, http-kernel v7.4.14→v7.4.20, symfony/var-dumper v7.4.14→v7.4.18, symfony/event-dispatcher v8.1.1→v8.1.5, symfony/string v8.1.0→v8.1.7, symfony/service-contracts v3.7.1→v3.7.3, symfony/polyfill-intl-normalizer v1.38.0→v1.42.0. `composer audit`: only laravel/framework 11 advisories left (→ Phase 12). `npm audit --omit=dev`: 0. `SESSION_SECURE_COOKIE` already env-driven (Phase 5c, tested). DEPLOY.md: Supervisor / cron `--stop-when-empty` / sync + `schedule:run` |
+| **9 — URL-based localization** (`/ar`, `/en`, Arabic default) | `7b8a53d` | 255 / 1274 | `config/locales.php` (supported + default `ar`, independent of `APP_LOCALE` which now only drives admin/CLI/mail). `/` and legacy un-prefixed URLs → 301 `/ar/...` (raw query kept). `SetLocale` only acts on prefixed URLs (admin/Livewire unaffected) and runs before route-model binding. Tests default to `/en` URLs (`useLocale()`); new `LocalizationTest` (24 cases). Browser re-check: 330 checks clean, `lang`/`dir` correct everywhere, CSP 0 violations |
+| **10 — Visual upgrade + imagery** | _(next commit)_ | 268 / 1460 | **Design system:** warm tokens `sand`/`gold`/`terracotta` in `tailwind.config.js` (contrast table in comments: gold-600 for icons/lines on light, gold-400 on charcoal, terracotta-600 for text); Saudi motifs as inline-SVG Blade components (`motif.najdi-band`, `motif.geo-pattern` ≤ 5 %, `motif.mashrabiya-frame`), `section-heading`, `page-header`; gold `link-sweep`, staggered reveals, global reduced-motion. **Fonts self-hosted** via @fontsource (Cairo, Inter, Reem Kufi for AR display, Marcellus for EN display); Google Fonts CDN removed and dropped from the CSP. **Home:** curated hero + quote/WhatsApp CTAs (old grey video only if no curated photo), Why-choose-us (generic, no numbers), stone-category texture tiles → filtered catalogue, mashrabiya-framed featured projects, Najdi process connectors, Settings-driven stats (hidden when empty), heritage strip labelled as inspiration. Branded page header on Services/Stones/Projects/Blog/FAQ/About/Contact; card polish everywhere. **Imagery:** `config/site-images.php` manifest + `site-images:candidates` / `site-images:pick` / `site-images:review`; 8 slots chosen after visual vetting (auto-pick overridden for about, sandstone, Jeddah, AlUla; the Jeddah auto-pick was **the Prophet's Mosque — rejected**); **Diriyah and Najdi have no verifiable stock photo → honest pattern cards** (see Blocked). Credits: `docs/IMAGE_CREDITS.md`. Review page: `docs/visual-review/index.html` (before/after shots in git-ignored `docs/visual-review/shots/`). **Media Library: no records changed** (reasons in IMAGE_CREDITS.md). Browser: 330 checks clean, CSP 0 violations. Unused now: `components/marble-divider.blade.php` (kept; deletion not approved) |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
@@ -50,6 +52,7 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 7. `2026_09_29_130000_add_metadata_to_projects_table` — nullable `sector` (indexed), `area_m2`, `city_ar`, `city_en` on `projects`.
 8. `2026_09_29_130100_create_project_stone_type_table` — new pivot for additional stones per project.
 9. `2026_09_29_140000_add_extra_socials_to_settings_table` — nullable `linkedin_url`, `x_url`, `youtube_url` on `settings`.
+10. `2026_09_30_100000_add_stats_to_settings_table` — nullable `stat_projects_completed`, `stat_years_experience`, `stat_cities_served`, `stat_clients_served` on `settings` (home counters; hidden when empty).
 
 ## Open questions (earlier phases — status)
 
@@ -61,7 +64,9 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 
 ## Blocked / waiting for owner
 
-_(Phase 8+; items are added as they come up.)_
+- **Heritage photos (Phase 10):** Pexels/Pixabay have no verifiable photos of **Diriyah (At-Turaif)** or **Najdi architecture** (results were other countries, modern Riyadh, or the Saudi flag, which is forbidden). The strip shows honest pattern cards for those two until the owner provides licensed photos. Drop them in with `site-images:pick` after placing candidates, or add files `public/images/site/heritage-diriyah.webp` / `heritage-najdi.webp` (≤ 250 KB, ≤ 1920 px) and credit them.
+- **Real company photography** still replaces all project/service/stone/team imagery (see `docs/MISSING_IMAGES.md`).
+- **Company statistics:** the counters stay hidden until real figures are entered in Settings → Statistics.
 
 ## Stop points reached (waiting for the owner)
 

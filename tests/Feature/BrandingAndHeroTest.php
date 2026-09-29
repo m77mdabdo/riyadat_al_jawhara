@@ -6,6 +6,7 @@ use App\Filament\Pages\Settings;
 use App\Models\Setting;
 use App\Models\Slider;
 use App\Models\User;
+use App\Support\SiteImages;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -108,8 +109,21 @@ class BrandingAndHeroTest extends TestCase
         $this->assertSame('https://www.linkedin.com/company/example', Setting::current()->linkedin_url);
     }
 
-    public function test_hero_uses_video_and_poster_when_no_slide_has_an_image(): void
+    public function test_hero_uses_the_curated_photo_when_no_slide_has_an_image(): void
     {
+        Slider::create(['title_en' => 'Slide', 'title_ar' => 'شريحة', 'is_active' => true]);
+
+        $hero = SiteImages::url('hero');
+        $this->assertNotNull($hero, 'public/images/site/hero.webp is committed');
+
+        $this->get(route('home'))
+            ->assertSee('<link rel="preload" as="image" href="'.$hero.'"', false)
+            ->assertDontSee('videos/hero-background.mp4', false);
+    }
+
+    public function test_hero_falls_back_to_video_and_poster_without_a_curated_photo(): void
+    {
+        config(['site-images.slots' => []]); // no slot => SiteImages::exists() is false
         Slider::create(['title_en' => 'Slide', 'title_ar' => 'شريحة', 'is_active' => true]);
 
         $this->get(route('home'))

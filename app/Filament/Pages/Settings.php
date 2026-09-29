@@ -129,6 +129,15 @@ class Settings extends Page implements HasForms
                             ]),
                     ]),
 
+                Forms\Components\Section::make('Statistics (home page)')
+                    ->description('Real figures only. Leave a field empty to hide it; the section is hidden when all are empty.')
+                    ->schema([
+                        Forms\Components\TextInput::make('stat_projects_completed')->label('Projects completed')->numeric()->minValue(1)->maxValue(100000),
+                        Forms\Components\TextInput::make('stat_years_experience')->label('Years of experience')->numeric()->minValue(1)->maxValue(200),
+                        Forms\Components\TextInput::make('stat_cities_served')->label('Cities served')->numeric()->minValue(1)->maxValue(1000),
+                        Forms\Components\TextInput::make('stat_clients_served')->label('Clients served')->numeric()->minValue(1)->maxValue(1000000),
+                    ])->columns(4),
+
                 Forms\Components\Section::make('Social Links')
                     ->schema([
                         Forms\Components\TextInput::make('facebook_url')->url(),

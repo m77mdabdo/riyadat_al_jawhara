@@ -1,3 +1,12 @@
+/* Self-hosted fonts (font-display: swap, unicode-range subsets: the browser
+   only downloads the scripts a page actually uses). */
+@import '@fontsource-variable/cairo/wght.css';
+@import '@fontsource-variable/inter/wght.css';
+@import '@fontsource/reem-kufi/arabic-600.css';
+@import '@fontsource/reem-kufi/arabic-700.css';
+@import '@fontsource/reem-kufi/latin-600.css';
+@import '@fontsource/marcellus/latin-400.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -45,6 +54,19 @@
 }
 
 @layer base {
+    /* Display font for page and section headings: Reem Kufi (Arabic) paired
+       with Marcellus (English). Marcellus has one weight, so no faux bold. */
+    :lang(ar) :where(h1, h2, .font-display) {
+        font-family: theme('fontFamily.display-ar');
+    }
+
+    :lang(en) :where(h1, h2, .font-display) {
+        font-family: theme('fontFamily.display-en');
+        font-weight: 400;
+        font-synthesis: none;
+        letter-spacing: 0.01em;
+    }
+
     /* Preflight resets every border width to 0, and the site doesn't use the
        @tailwindcss/forms plugin -- so text fields, selects and textareas had a
        border colour but no border at all (invisible on white cards). Give every
@@ -107,4 +129,57 @@
 .prose iframe {
     max-width: 100%;
     height: auto;
+}
+
+/* ---------------------------------------------------------------------------
+   Phase 10 motion + motifs. Everything collapses to static under
+   prefers-reduced-motion.
+   --------------------------------------------------------------------------- */
+
+/* Gold underline that sweeps in on hover/focus (logical: grows from the
+   reading start, so it mirrors in RTL). */
+.link-sweep {
+    background-image: linear-gradient(theme('colors.gold.600'), theme('colors.gold.600'));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0 2px;
+    transition: background-size 300ms ease-out;
+}
+
+[dir='rtl'] .link-sweep {
+    background-position: 100% 100%;
+}
+
+.link-sweep:hover,
+.link-sweep:focus-visible,
+.group:hover .link-sweep {
+    background-size: 100% 2px;
+}
+
+/* Staggered reveal: x-reveal elements can set --reveal-delay. */
+.reveal-init {
+    transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .link-sweep {
+        transition: none;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Mashrabiya lattice border (see components/motif/mashrabiya-frame). */
+.mashrabiya-frame {
+    background:
+        repeating-linear-gradient(45deg, theme('colors.sand.300') 0 1px, transparent 1px 8px),
+        repeating-linear-gradient(-45deg, theme('colors.sand.300') 0 1px, transparent 1px 8px),
+        theme('colors.sand.100');
 }

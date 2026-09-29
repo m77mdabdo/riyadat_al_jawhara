@@ -43,7 +43,27 @@ class Setting extends Model implements HasMedia
         'privacy_policy_en',
         'terms_ar',
         'terms_en',
+        'stat_projects_completed',
+        'stat_years_experience',
+        'stat_cities_served',
+        'stat_clients_served',
     ];
+
+    /**
+     * Home-page counters: only the figures the company has entered, in
+     * display order. Empty array = the section is hidden.
+     *
+     * @return array<string, int> lang key (site.home.stats.*) => value
+     */
+    public function stats(): array
+    {
+        return array_filter([
+            'projects' => $this->stat_projects_completed,
+            'years' => $this->stat_years_experience,
+            'cities' => $this->stat_cities_served,
+            'clients' => $this->stat_clients_served,
+        ], fn ($value) => filled($value) && (int) $value > 0);
+    }
 
     /**
      * Static fallbacks shipped in public/ -- used until an admin uploads a

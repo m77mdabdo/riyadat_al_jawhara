@@ -54,8 +54,9 @@ class SecurityHeaders
         return implode('; ', [
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net",
-            "font-src 'self' data: https://fonts.gstatic.com https://fonts.bunny.net",
+            // Public fonts are self-hosted; Bunny Fonts is only used by the Filament admin.
+            "style-src 'self' 'unsafe-inline' https://fonts.bunny.net",
+            "font-src 'self' data: https://fonts.bunny.net",
             "img-src 'self' data: blob: https:",
             "media-src 'self'",
             // Google Maps embed on the contact page.

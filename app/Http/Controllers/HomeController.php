@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Faq;
 use App\Models\Project;
 use App\Models\Service;
+use App\Models\Setting;
 use App\Models\Slider;
+use App\Models\StoneCategory;
 use App\Models\StoneType;
 use App\Models\Testimonial;
 use Illuminate\View\View;
@@ -21,6 +23,10 @@ class HomeController extends Controller
             'stoneTypes' => StoneType::active()->ordered()->with('media')->take(8)->get(),
             'testimonials' => Testimonial::active()->ordered()->with('media')->get(),
             'faqs' => Faq::active()->ordered()->take(4)->get(),
+            'stoneCategories' => StoneCategory::ordered()
+                ->withCount(['stoneTypes' => fn ($query) => $query->active()])
+                ->get(),
+            'settings' => Setting::current(),
         ]);
     }
 }

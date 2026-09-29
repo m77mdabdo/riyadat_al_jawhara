@@ -22,14 +22,14 @@
             x-show="showTooltip"
             x-cloak
             x-transition.opacity.duration.300ms
-            class="absolute bottom-full w-64 max-w-[calc(100vw-2rem)] rounded-xl border border-stone-200 bg-white p-4 pr-8 text-sm text-stone-700 shadow-lg"
+            class="absolute bottom-full w-64 max-w-[calc(100vw-2rem)] rounded-xl border border-stone-200 bg-white p-4 pr-11 text-sm text-stone-700 shadow-lg"
             style="right: 0; left: auto; margin-bottom: 0.75rem;"
         >
             <button
                 @click="showTooltip = false"
                 type="button"
-                class="absolute h-8 w-8 flex items-center justify-center text-stone-400 hover:text-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1 rounded"
-                style="top: 0.25rem; right: 0.25rem; left: auto;"
+                class="absolute h-11 w-11 flex items-center justify-center text-stone-400 hover:text-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1 rounded"
+                style="top: 0; right: 0; left: auto;"
                 aria-label="{{ __('site.common.close') }}"
             >
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
