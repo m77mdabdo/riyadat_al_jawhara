@@ -31,7 +31,9 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 5c — Security: upload whitelist (JPG/PNG/WebP, 5 MB), model MIME rules, security headers + CSP (public + admin), secure cookies in production | `df76cdf` | 140 / 734 | CSP verified with Playwright: 0 violations on 8 public pages + admin login/leads/projects/settings; Alpine, Livewire and the Maps embed work |
 | 5d — WebP responsive images (new `card` 800w / `large` 1600w conversions + srcset/sizes) | `7f2f363` | 144 / 747 | Existing JPEG `thumb`/`medium` kept (share images + legacy media). Owner runs `media-library:regenerate --only-missing` after deploy |
 | 5e — Remove axios, `lang/ar.json` for framework strings | `53e536f` | 146 / 757 | Public JS 92.8 KB → 46.3 KB (gzip 34.1 → 16.7 KB). Re-verified after Phase 5: 330 visual checks clean; CSP 0 violations |
-| 6 — Tests + CI: factories for all 17 models, test matrix (blog, public pages + RTL, every admin resource × role, command, error pages), query budgets, GitHub Actions (Pint + PHPUnit + asset build) | _(next commit)_ | 228 / 1150 | Branded 403/419/429/503 pages added (comment throttle showed a raw 429). Pint fixed 5 pre-existing skeleton files so CI can enforce style repo-wide. Tests fake the public disk and skip Vite |
+| 6 — Tests + CI: factories for all 17 models, test matrix (blog, public pages + RTL, every admin resource × role, command, error pages), query budgets, GitHub Actions (Pint + PHPUnit + asset build) | `7e872a3` | 228 / 1150 | Branded 403/419/429/503 pages added (comment throttle showed a raw 429). Pint fixed 5 pre-existing skeleton files so CI can enforce style repo-wide. Tests fake the public disk and skip Vite |
+| Security — Laravel 11 email-rule CRLF advisory mitigation; composer.json metadata (`php ^8.4`) | `bee637f` | 230 / 1155 | Lock: content-hash + platform only, no package changes |
+| 7 — Docs: README, .env.example, DEPLOY.md | _(next commit)_ | 230 / 1155 | Docs only |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
@@ -46,6 +48,11 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 9. `2026_09_29_140000_add_extra_socials_to_settings_table` — nullable `linkedin_url`, `x_url`, `youtube_url` on `settings`.
 
 ## Open questions
+
+- **Dependency advisories (`composer audit`, 14 advisories in 3 packages), not upgraded because that needs approval:**
+  - `laravel/framework` 11.55 — CRLF injection in the `email` rule (high; fixed only in 12.60+), temporary signed URL path confusion (medium; the app uses no signed URLs except Filament's password-reset link). *Mitigated in code* for our email fields and mail headers. Recommended: plan a Laravel 12 upgrade.
+  - `livewire/livewire` 3.8.2 — DOM-based XSS during client-side state handling (medium; fixed in 3.8.3+). Livewire is only used by the admin panel. Recommended: `composer update livewire/livewire` (patch release).
+  - `league/commonmark` — several DoS / XSS advisories (fixed in 2.10+). The app never renders user-supplied Markdown (no `Str::markdown` on visitor input), so exposure is low. Recommended: update with the framework.
 
 - **robots.txt:** `public/robots.txt` was updated (Disallow `/admin`, `/lang/`) but cannot contain an absolute `Sitemap:` line without knowing the production domain. A dynamic `/robots.txt` route that adds it is implemented and tested, but the web server serves the static file first. Approve deleting `public/robots.txt` to switch to the dynamic one (or submit the sitemap in Search Console instead).
 
