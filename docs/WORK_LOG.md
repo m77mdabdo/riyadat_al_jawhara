@@ -1,6 +1,9 @@
 # Work Log — Production Readiness Roadmap
 
-Branch: `fix/phase-1a-critical` (created from local `main` @ `fefd2b5`).
+Branches:
+- `fix/phase-1a-critical` (from local `main` @ `fefd2b5`): Phases 1–7.
+- `feature/phase-8-plus` (from `fix/phase-1a-critical` @ `3db6e3a`): Phases 8–11 and 13 (`docs/MASTER_TASK.md`).
+- `upgrade/laravel-12` (from the final `feature/phase-8-plus`): Phase 12.
 Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this branch.
 
 ## Standing rules
@@ -34,6 +37,7 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 6 — Tests + CI: factories for all 17 models, test matrix (blog, public pages + RTL, every admin resource × role, command, error pages), query budgets, GitHub Actions (Pint + PHPUnit + asset build) | `7e872a3` | 228 / 1150 | Branded 403/419/429/503 pages added (comment throttle showed a raw 429). Pint fixed 5 pre-existing skeleton files so CI can enforce style repo-wide. Tests fake the public disk and skip Vite |
 | Security — Laravel 11 email-rule CRLF advisory mitigation; composer.json metadata (`php ^8.4`) | `bee637f` | 230 / 1155 | Lock: content-hash + platform only, no package changes |
 | 7 — Docs: README, .env.example, DEPLOY.md | `991454d` | 230 / 1155 | Docs only |
+| **8 — Housekeeping** (branch `feature/phase-8-plus`) | `0db80ee` | 230 / 1156 | `public/robots.txt` deleted (dynamic route now served, test asserts no static file). Deleted exactly `storage/app/public/1/g1.jpg`, `…/conversions/g1-thumb.jpg`, `…/conversions/g1-medium.jpg` (stray test files; real media untouched). **Patch/minor updates only:** livewire/livewire v3.8.2→v3.8.10, league/commonmark 2.8.3→2.10.3, laravel/prompts v0.3.21→v0.3.24, nette/schema v1.3.5→v1.3.6, symfony/console, error-handler, http-foundation, http-kernel v7.4.14→v7.4.20, symfony/var-dumper v7.4.14→v7.4.18, symfony/event-dispatcher v8.1.1→v8.1.5, symfony/string v8.1.0→v8.1.7, symfony/service-contracts v3.7.1→v3.7.3, symfony/polyfill-intl-normalizer v1.38.0→v1.42.0. `composer audit`: only laravel/framework 11 advisories left (→ Phase 12). `npm audit --omit=dev`: 0. `SESSION_SECURE_COOKIE` already env-driven (Phase 5c, tested). DEPLOY.md: Supervisor / cron `--stop-when-empty` / sync + `schedule:run` |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
@@ -47,21 +51,17 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 8. `2026_09_29_130100_create_project_stone_type_table` — new pivot for additional stones per project.
 9. `2026_09_29_140000_add_extra_socials_to_settings_table` — nullable `linkedin_url`, `x_url`, `youtube_url` on `settings`.
 
-## Open questions
+## Open questions (earlier phases — status)
 
-- **Dependency advisories (`composer audit`, 14 advisories in 3 packages), not upgraded because that needs approval:**
-  - `laravel/framework` 11.55 — CRLF injection in the `email` rule (high; fixed only in 12.60+), temporary signed URL path confusion (medium; the app uses no signed URLs except Filament's password-reset link). *Mitigated in code* for our email fields and mail headers. Recommended: plan a Laravel 12 upgrade.
-  - `livewire/livewire` 3.8.2 — DOM-based XSS during client-side state handling (medium; fixed in 3.8.3+). Livewire is only used by the admin panel. Recommended: `composer update livewire/livewire` (patch release).
-  - `league/commonmark` — several DoS / XSS advisories (fixed in 2.10+). The app never renders user-supplied Markdown (no `Str::markdown` on visitor input), so exposure is low. Recommended: update with the framework.
+- ~~Dependency advisories~~ → livewire and commonmark patched in Phase 8. `laravel/framework` 11 advisories remain until Phase 12 (email-rule CRLF mitigated in code).
+- ~~robots.txt~~ → resolved in Phase 8.
+- ~~Stray test files~~ → deleted in Phase 8.
+- After deploying, run `php artisan media-library:regenerate --only-missing` so existing media gets the WebP conversions (`hero`, `card`, `large`).
+- Lead emails are rendered in the app default locale (`APP_LOCALE`); strings exist in both AR and EN.
 
-- **robots.txt:** `public/robots.txt` was updated (Disallow `/admin`, `/lang/`) but cannot contain an absolute `Sitemap:` line without knowing the production domain. A dynamic `/robots.txt` route that adds it is implemented and tested, but the web server serves the static file first. Approve deleting `public/robots.txt` to switch to the dynamic one (or submit the sitemap in Search Console instead).
+## Blocked / waiting for owner
 
-- After deploying, run `php artisan media-library:regenerate --only-missing` so existing media gets the new WebP conversions (`hero` for sliders, `card`/`large` for covers and galleries). Until then pages fall back to the JPEG/original files.
-
-- Queue worker: lead emails are queued (`QUEUE_CONNECTION=database`), so they are only sent while `php artisan queue:work` runs. Production needs Supervisor (or switch to `sync`).
-- Lead emails are rendered in the app default locale (`APP_LOCALE`, currently `en`); strings exist in both AR and EN.
-- **Cleanup needed (not deleted without approval):** before the global `Storage::fake('public')` guard was added, one test run wrote 3 unreferenced files into the real media folder: `storage/app/public/1/g1.jpg`, `storage/app/public/1/conversions/g1-thumb.jpg`, `storage/app/public/1/conversions/g1-medium.jpg`. Safe to delete. The real media files in that folder were not touched.
-- Side effect: one early test run wrote a single fake "New quote request" entry to the local, git-ignored `storage/logs/laravel.log` (test since changed to the array mailer).
+_(Phase 8+; items are added as they come up.)_
 
 ## Stop points reached (waiting for the owner)
 
