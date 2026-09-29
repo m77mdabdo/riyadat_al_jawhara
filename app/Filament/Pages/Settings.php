@@ -2,9 +2,9 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Support\ImageUpload;
 use App\Models\Setting;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -46,13 +46,10 @@ class Settings extends Page implements HasForms
 
     public function form(Forms\Form $form): Forms\Form
     {
-        $image = fn (string $name, string $collection, string $label, string $help) => SpatieMediaLibraryFileUpload::make($name)
+        $image = fn (string $name, string $collection, string $label, string $help) => ImageUpload::make($name, $collection)
             ->label($label)
-            ->collection($collection)
-            ->image()
-            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
             ->maxSize(2048)
-            ->helperText($help);
+            ->helperText($help.' JPG, PNG or WebP, up to 2 MB.');
 
         return $form
             ->model($this->getSetting())

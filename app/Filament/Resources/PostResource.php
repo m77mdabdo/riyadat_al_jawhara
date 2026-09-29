@@ -4,14 +4,15 @@ namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\PostResource\Pages;
+use App\Filament\Support\ImageUpload;
 use App\Models\Post;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class PostResource extends Resource
 {
@@ -37,7 +38,7 @@ class PostResource extends Resource
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
                                 Forms\Components\Textarea::make('excerpt_en')
                                     ->label('Excerpt (EN)')
                                     ->rows(2)
@@ -89,9 +90,7 @@ class PostResource extends Resource
                     ->relationship('author', 'name')
                     ->searchable()
                     ->default(fn () => auth()->id()),
-                SpatieMediaLibraryFileUpload::make('cover')
-                    ->collection('cover')
-                    ->image()
+                ImageUpload::make('cover')
                     ->columnSpanFull(),
             ]);
     }

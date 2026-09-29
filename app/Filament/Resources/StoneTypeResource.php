@@ -4,10 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\StoneTypeResource\Pages;
+use App\Filament\Support\ImageUpload;
 use App\Models\StoneCategory;
 use App\Models\StoneType;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -94,12 +94,8 @@ class StoneTypeResource extends Resource
                     ->default(0),
                 Forms\Components\Toggle::make('is_active')
                     ->default(true),
-                SpatieMediaLibraryFileUpload::make('cover')
-                    ->collection('cover')
-                    ->image(),
-                SpatieMediaLibraryFileUpload::make('gallery')
-                    ->collection('gallery')
-                    ->image()
+                ImageUpload::make('cover'),
+                ImageUpload::make('gallery')
                     ->multiple()
                     ->reorderable()
                     ->columnSpanFull(),

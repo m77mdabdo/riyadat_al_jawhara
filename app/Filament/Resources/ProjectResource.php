@@ -4,11 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\ProjectResource\Pages;
+use App\Filament\Support\ImageUpload;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\StoneType;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -106,19 +106,11 @@ class ProjectResource extends Resource
                 Forms\Components\Toggle::make('is_featured'),
                 Forms\Components\Toggle::make('is_active')
                     ->default(true),
-                SpatieMediaLibraryFileUpload::make('cover')
-                    ->collection('cover')
-                    ->image()
+                ImageUpload::make('cover')
                     ->columnSpanFull(),
-                SpatieMediaLibraryFileUpload::make('before')
-                    ->collection('before')
-                    ->image(),
-                SpatieMediaLibraryFileUpload::make('after')
-                    ->collection('after')
-                    ->image(),
-                SpatieMediaLibraryFileUpload::make('gallery')
-                    ->collection('gallery')
-                    ->image()
+                ImageUpload::make('before'),
+                ImageUpload::make('after'),
+                ImageUpload::make('gallery')
                     ->multiple()
                     ->reorderable()
                     ->columnSpanFull(),

@@ -4,9 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\SliderResource\Pages;
+use App\Filament\Support\ImageUpload;
 use App\Models\Slider;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -64,9 +64,7 @@ class SliderResource extends Resource
                     ->default(0),
                 Forms\Components\Toggle::make('is_active')
                     ->default(true),
-                SpatieMediaLibraryFileUpload::make('image')
-                    ->collection('image')
-                    ->image()
+                ImageUpload::make('image')
                     ->columnSpanFull(),
             ]);
     }

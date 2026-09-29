@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -55,7 +56,7 @@ class Setting extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $mimes = ['image/jpeg', 'image/png', 'image/webp'];
+        $mimes = ImageUpload::MIME_TYPES;
 
         // Logos keep their original file (no conversion) so PNG transparency survives.
         $this->addMediaCollection('logo')->singleFile()->acceptsMimeTypes($mimes);

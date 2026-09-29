@@ -4,10 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\TestimonialResource\Pages;
+use App\Filament\Support\ImageUpload;
 use App\Models\Project;
 use App\Models\Testimonial;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -62,9 +62,7 @@ class TestimonialResource extends Resource
                     ->default(0),
                 Forms\Components\Toggle::make('is_active')
                     ->default(true),
-                SpatieMediaLibraryFileUpload::make('client_photo')
-                    ->collection('client_photo')
-                    ->image(),
+                ImageUpload::make('client_photo'),
             ]);
     }
 

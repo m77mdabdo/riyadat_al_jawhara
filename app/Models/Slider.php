@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -32,7 +33,7 @@ class Slider extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('image')->singleFile();
+        $this->addMediaCollection('image')->singleFile()->acceptsMimeTypes(ImageUpload::MIME_TYPES);
     }
 
     public function registerMediaConversions(?Media $media = null): void

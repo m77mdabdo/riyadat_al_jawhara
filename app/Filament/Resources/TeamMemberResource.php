@@ -4,9 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\TeamMemberResource\Pages;
+use App\Filament\Support\ImageUpload;
 use App\Models\TeamMember;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -62,9 +62,7 @@ class TeamMemberResource extends Resource
                     ->default(0),
                 Forms\Components\Toggle::make('is_active')
                     ->default(true),
-                SpatieMediaLibraryFileUpload::make('photo')
-                    ->collection('photo')
-                    ->image(),
+                ImageUpload::make('photo'),
             ]);
     }
 

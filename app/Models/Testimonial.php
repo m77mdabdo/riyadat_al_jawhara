@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +32,7 @@ class Testimonial extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('client_photo')->singleFile();
+        $this->addMediaCollection('client_photo')->singleFile()->acceptsMimeTypes(ImageUpload::MIME_TYPES);
     }
 
     public function registerMediaConversions(?Media $media = null): void

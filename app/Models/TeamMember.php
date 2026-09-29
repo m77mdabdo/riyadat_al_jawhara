@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
@@ -30,7 +31,7 @@ class TeamMember extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('photo')->singleFile();
+        $this->addMediaCollection('photo')->singleFile()->acceptsMimeTypes(ImageUpload::MIME_TYPES);
     }
 
     public function registerMediaConversions(?Media $media = null): void

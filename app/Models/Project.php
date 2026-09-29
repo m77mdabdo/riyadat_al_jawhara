@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasCoverImage;
 use App\Models\Concerns\HasTranslations;
@@ -63,10 +64,10 @@ class Project extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('cover')->singleFile();
-        $this->addMediaCollection('before');
-        $this->addMediaCollection('after');
-        $this->addMediaCollection('gallery');
+        $this->addMediaCollection('cover')->singleFile()->acceptsMimeTypes(ImageUpload::MIME_TYPES);
+        $this->addMediaCollection('before')->acceptsMimeTypes(ImageUpload::MIME_TYPES);
+        $this->addMediaCollection('after')->acceptsMimeTypes(ImageUpload::MIME_TYPES);
+        $this->addMediaCollection('gallery')->acceptsMimeTypes(ImageUpload::MIME_TYPES);
     }
 
     public function registerMediaConversions(?Media $media = null): void

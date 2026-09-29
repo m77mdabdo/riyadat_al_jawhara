@@ -4,10 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\ServiceResource\Pages;
+use App\Filament\Support\ImageUpload;
 use App\Models\Service;
 use App\Support\ServiceIcon;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -71,9 +71,7 @@ class ServiceResource extends Resource
                     ->default(0),
                 Forms\Components\Toggle::make('is_active')
                     ->default(true),
-                SpatieMediaLibraryFileUpload::make('cover')
-                    ->collection('cover')
-                    ->image()
+                ImageUpload::make('cover')
                     ->columnSpanFull(),
             ]);
     }
