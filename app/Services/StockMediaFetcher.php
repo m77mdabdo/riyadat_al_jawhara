@@ -69,7 +69,7 @@ class StockMediaFetcher
     /** @return array<int, string> */
     private function searchPexelsPhotos(string $query, int $count): array
     {
-        $key = env('PEXELS_API_KEY');
+        $key = config('services.pexels.key');
 
         if (! $key) {
             return [];
@@ -95,7 +95,7 @@ class StockMediaFetcher
     /** @return array<int, string> */
     private function searchPexelsVideos(string $query, int $count): array
     {
-        $key = env('PEXELS_API_KEY');
+        $key = config('services.pexels.key');
 
         if (! $key) {
             return [];
@@ -131,7 +131,7 @@ class StockMediaFetcher
     /** @return array<int, string> */
     private function searchPixabay(string $query, int $count): array
     {
-        $key = env('PIXABAY_API_KEY');
+        $key = config('services.pixabay.key');
 
         if (! $key) {
             return [];
@@ -160,7 +160,7 @@ class StockMediaFetcher
     /** @return array<int, string> */
     private function searchUnsplash(string $query, int $count): array
     {
-        $key = env('UNSPLASH_ACCESS_KEY');
+        $key = config('services.unsplash.key');
 
         if (! $key) {
             return [];

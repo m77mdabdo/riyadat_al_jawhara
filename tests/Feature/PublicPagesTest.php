@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\StoneType;
+use Database\Seeders\DemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,7 +17,7 @@ class PublicPagesTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed();
+        $this->seed(DemoSeeder::class);
     }
 
     public function test_core_public_pages_return_ok(): void

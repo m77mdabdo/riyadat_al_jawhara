@@ -17,6 +17,8 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 
 | Sub-phase | Commit | Tests (passed / assertions) | Notes |
 |---|---|---|---|
+| 1A — B1 reply leak, B2 user roles, B3 icon crash, L1/L2 contact spam | `c26b54e` | 23 / 98 | Allowed icons: truck, wrench-screwdriver, building-office-2, sparkles, cube. Pint fixed 3 pre-existing style issues in touched files |
+| 1B — Settings admin-only, rich-text sanitizing, Post trait, env→config, seeder split, `app:create-admin` | _(next commit)_ | 41 / 183 | `db:seed` now seeds roles only; demo via `--class=DemoSeeder`. Sanitizer = Filament's `sanitizeHtml()` (symfony/html-sanitizer, already installed) |
 
 ## Pending migrations (owner runs on MySQL)
 

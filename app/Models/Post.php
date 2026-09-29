@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\HasActiveScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +15,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Post extends Model implements HasMedia
 {
-    use HasActiveScope, HasSlug, InteractsWithMedia;
+    use HasSlug, InteractsWithMedia;
 
     protected $fillable = [
         'title_ar',

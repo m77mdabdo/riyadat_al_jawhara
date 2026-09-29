@@ -8,7 +8,7 @@
     <section class="py-16 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         @if ($settings->terms)
             <div class="prose prose-stone max-w-none rtl:leading-loose">
-                {!! $settings->terms !!}
+                {!! str($settings->terms)->sanitizeHtml() !!}
             </div>
         @else
             <p class="text-stone-600">{{ __('site.legal.content_missing') }}</p>

@@ -49,7 +49,7 @@
             </div>
 
             <div class="prose prose-stone max-w-none mt-8 rtl:leading-loose">
-                {!! $post->body !!}
+                {!! str($post->body)->sanitizeHtml() !!}
             </div>
 
             @if ($post->tags->isNotEmpty())

@@ -19,6 +19,16 @@ class Settings extends Page implements HasForms
 
     public ?array $data = [];
 
+    /**
+     * Settings control every public contact detail and the raw legal HTML,
+     * so only admins may open (or save) this page. Filament checks this for
+     * navigation, direct URL access and Livewire requests alike.
+     */
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasRole('admin') ?? false;
+    }
+
     public function mount(): void
     {
         $this->form->fill(Setting::current()->toArray());

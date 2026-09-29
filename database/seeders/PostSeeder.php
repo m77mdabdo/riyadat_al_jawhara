@@ -18,7 +18,8 @@ class PostSeeder extends Seeder
 {
     public function run(StockMediaFetcher $fetcher): void
     {
-        $author = User::where('email', 'admin@jra.sa')->first();
+        // Attribute demo posts to the first admin, if one has been created.
+        $author = User::role('admin')->first();
 
         $posts = [
             [
