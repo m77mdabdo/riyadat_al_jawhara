@@ -29,7 +29,7 @@ class ServiceIconTest extends TestCase
     {
         $service = $this->service('heroicon-o-does-not-exist');
 
-        $this->get('/')->assertOk();
+        $this->get(route('home'))->assertOk();
         $this->get(route('services.index'))->assertOk();
         $this->get(route('services.show', $service))->assertOk();
     }

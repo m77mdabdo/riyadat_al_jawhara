@@ -67,7 +67,7 @@ class ProjectMetadataTest extends TestCase
     {
         $project = $this->project('Villa', ['sector' => 'commercial', 'city_en' => 'Riyadh', 'city_ar' => 'الرياض']);
 
-        $this->get('/lang/ar');
+        $this->useLocale('ar');
         $this->get(route('projects.show', $project))->assertSee('الرياض')->assertSee('تجاري');
     }
 

@@ -22,10 +22,12 @@
     $metaDescription = \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/u', ' ', strip_tags((string) ($description ?: __('site.meta.default_description'))))), 160);
     $shareImage = $image ?: $jsonLdSettings->ogImageUrl();
 
-    // Canonical = this URL without filter/search query strings (those are
-    // views of the same page); only real pagination (?page=N, N > 1) is kept.
-    $page = (int) request()->query('page', 1);
-    $canonical = url()->current().($page > 1 ? '?page='.$page : '');
+    // Canonical = this page in the current language, without filter/search
+    // query strings (views of the same page); only ?page=N (N > 1) is kept.
+    // Each language version is its own canonical and they hreflang each other.
+    $canonical = \App\Support\LocalizedUrl::canonical(app()->getLocale());
+    $alternates = collect(\App\Support\LocalizedUrl::supported())
+        ->mapWithKeys(fn ($locale) => [$locale => \App\Support\LocalizedUrl::canonical($locale)]);
 
     $localBusiness = array_filter([
         '@context' => 'https://schema.org',
@@ -104,18 +106,10 @@
     <meta name="twitter:description" content="{{ $metaDescription }}">
     <meta name="twitter:image" content="{{ $shareImage }}">
 
-    {{--
-        hreflang note: this site switches language via a session flag (see
-        App\Http\Middleware\SetLocale), not a distinct URL per language, so
-        there is no separate Arabic/English URL to point hreflang="ar" and
-        hreflang="en" at -- both would resolve to this exact same URL, which
-        would be meaningless (or arguably incorrect) markup rather than a
-        genuine signal to search engines. Only the honest, self-referencing
-        x-default is included. Properly correct hreflang would require
-        URL-based locale routing (e.g. /ar/... and /en/...), which is a
-        bigger structural change out of scope for this phase.
-    --}}
-    <link rel="alternate" hreflang="x-default" href="{{ $canonical }}">
+    @foreach ($alternates as $locale => $alternateUrl)
+        <link rel="alternate" hreflang="{{ $locale }}" href="{{ $alternateUrl }}">
+    @endforeach
+    <link rel="alternate" hreflang="x-default" href="{{ $alternates[config('locales.default')] }}">
 
     <script type="application/ld+json">{!! json_encode($localBusiness, $jsonFlags) !!}</script>
     @if ($breadcrumbList)

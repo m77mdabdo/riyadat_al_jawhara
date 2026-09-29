@@ -50,7 +50,7 @@ class QueryBudgetTest extends TestCase
         }
         TeamMember::all()->each(fn ($member) => $member->addMedia(UploadedFile::fake()->image('photo.jpg', 300, 300))->toMediaCollection('photo'));
 
-        $this->get('/'); // warm the settings cache
+        $this->get(route('home')); // warm the settings cache
     }
 
     private function queryCount(string $url): int
@@ -67,7 +67,7 @@ class QueryBudgetTest extends TestCase
     public function test_pages_stay_within_their_query_budget(): void
     {
         $urls = [
-            'home' => '/',
+            'home' => route('home'),
             'services' => route('services.index'),
             'service' => route('services.show', Service::first()),
             'stones' => route('stones.index'),

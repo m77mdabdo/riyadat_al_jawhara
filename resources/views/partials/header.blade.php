@@ -56,8 +56,8 @@
 
             <div class="hidden xl:flex items-center gap-4 shrink-0">
                 <div class="flex items-center gap-1 text-sm font-semibold border border-stone-300 rounded-full overflow-hidden">
-                    <a href="{{ route('locale.switch', 'ar') }}" hreflang="ar" lang="ar" rel="nofollow" aria-label="{{ __('site.common.switch_to_arabic') }}" @if (app()->getLocale() === 'ar') aria-current="true" @endif class="px-3 py-1.5 {{ app()->getLocale() === 'ar' ? 'bg-charcoal text-cream' : 'text-stone-700 hover:bg-stone-100' }}">AR</a>
-                    <a href="{{ route('locale.switch', 'en') }}" hreflang="en" lang="en" rel="nofollow" aria-label="{{ __('site.common.switch_to_english') }}" @if (app()->getLocale() === 'en') aria-current="true" @endif class="px-3 py-1.5 {{ app()->getLocale() === 'en' ? 'bg-charcoal text-cream' : 'text-stone-700 hover:bg-stone-100' }}">EN</a>
+                    <a href="{{ \App\Support\LocalizedUrl::current('ar') }}" hreflang="ar" lang="ar" aria-label="{{ __('site.common.switch_to_arabic') }}" @if (app()->getLocale() === 'ar') aria-current="true" @endif class="px-3 py-1.5 {{ app()->getLocale() === 'ar' ? 'bg-charcoal text-cream' : 'text-stone-700 hover:bg-stone-100' }}">AR</a>
+                    <a href="{{ \App\Support\LocalizedUrl::current('en') }}" hreflang="en" lang="en" aria-label="{{ __('site.common.switch_to_english') }}" @if (app()->getLocale() === 'en') aria-current="true" @endif class="px-3 py-1.5 {{ app()->getLocale() === 'en' ? 'bg-charcoal text-cream' : 'text-stone-700 hover:bg-stone-100' }}">EN</a>
                 </div>
                 <x-button :href="route('contact')" size="sm" class="whitespace-nowrap">
                     {{ __('site.common.request_quote') }}
@@ -96,8 +96,8 @@
                 </a>
             @endforeach
             <div class="flex items-center gap-2 pt-3 px-3">
-                <a href="{{ route('locale.switch', 'ar') }}" hreflang="ar" lang="ar" rel="nofollow" aria-label="{{ __('site.common.switch_to_arabic') }}" @if (app()->getLocale() === 'ar') aria-current="true" @endif class="inline-flex h-11 min-w-11 items-center justify-center px-4 text-sm font-semibold rounded-full border border-stone-300 {{ app()->getLocale() === 'ar' ? 'bg-charcoal text-cream' : 'text-stone-600' }}">AR</a>
-                <a href="{{ route('locale.switch', 'en') }}" hreflang="en" lang="en" rel="nofollow" aria-label="{{ __('site.common.switch_to_english') }}" @if (app()->getLocale() === 'en') aria-current="true" @endif class="inline-flex h-11 min-w-11 items-center justify-center px-4 text-sm font-semibold rounded-full border border-stone-300 {{ app()->getLocale() === 'en' ? 'bg-charcoal text-cream' : 'text-stone-600' }}">EN</a>
+                <a href="{{ \App\Support\LocalizedUrl::current('ar') }}" hreflang="ar" lang="ar" aria-label="{{ __('site.common.switch_to_arabic') }}" @if (app()->getLocale() === 'ar') aria-current="true" @endif class="inline-flex h-11 min-w-11 items-center justify-center px-4 text-sm font-semibold rounded-full border border-stone-300 {{ app()->getLocale() === 'ar' ? 'bg-charcoal text-cream' : 'text-stone-600' }}">AR</a>
+                <a href="{{ \App\Support\LocalizedUrl::current('en') }}" hreflang="en" lang="en" aria-label="{{ __('site.common.switch_to_english') }}" @if (app()->getLocale() === 'en') aria-current="true" @endif class="inline-flex h-11 min-w-11 items-center justify-center px-4 text-sm font-semibold rounded-full border border-stone-300 {{ app()->getLocale() === 'en' ? 'bg-charcoal text-cream' : 'text-stone-600' }}">EN</a>
             </div>
             <x-button :href="route('contact')" size="sm" class="mx-3 mt-3 w-[calc(100%-1.5rem)] min-h-11">
                 {{ __('site.common.request_quote') }}

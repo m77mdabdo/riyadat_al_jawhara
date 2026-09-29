@@ -24,7 +24,7 @@ class FrontendMarkupTest extends TestCase
 
     public function test_header_has_faq_link_and_accessible_menu_button(): void
     {
-        $html = $this->get('/')->assertOk()->getContent();
+        $html = $this->get(route('home'))->assertOk()->getContent();
 
         // Desktop nav, mobile nav and footer.
         $this->assertSame(3, substr_count($html, 'href="'.route('faq').'"'));
@@ -45,7 +45,7 @@ class FrontendMarkupTest extends TestCase
 
     public function test_manifest_is_linked_and_valid(): void
     {
-        $this->get('/')->assertSee('<link rel="manifest" href="'.asset('site.webmanifest').'">', false);
+        $this->get(route('home'))->assertSee('<link rel="manifest" href="'.asset('site.webmanifest').'">', false);
 
         $manifest = json_decode(file_get_contents(public_path('site.webmanifest')), true, flags: JSON_THROW_ON_ERROR);
         foreach ($manifest['icons'] as $icon) {
@@ -71,7 +71,7 @@ class FrontendMarkupTest extends TestCase
         $stone = StoneType::create(['stone_category_id' => $category->id, 'name_en' => 'Carrara', 'name_ar' => 'كرارا', 'is_active' => true]);
         $project = Project::create(['title_en' => 'Villa', 'title_ar' => 'فيلا', 'is_active' => true, 'is_featured' => true]);
 
-        foreach (['/', route('services.index'), route('stones.index'), route('stones.show', $stone), route('projects.index'), route('projects.show', $project)] as $url) {
+        foreach ([route('home'), route('services.index'), route('stones.index'), route('stones.show', $stone), route('projects.index'), route('projects.show', $project)] as $url) {
             $html = $this->get($url)->assertOk()->getContent();
             $this->assertStringNotContainsString('src=""', $html, $url);
             $this->assertStringContainsString('JRA</span>', $html, $url); // placeholder badge
@@ -98,10 +98,10 @@ class FrontendMarkupTest extends TestCase
     public function test_hero_single_slide_has_no_controls_and_multiple_slides_get_pause(): void
     {
         Slider::create(['title_en' => 'One', 'title_ar' => 'واحد', 'is_active' => true]);
-        $this->get('/')->assertDontSee(__('site.common.pause_slideshow'))->assertSee('count: 1', false);
+        $this->get(route('home'))->assertDontSee(__('site.common.pause_slideshow'))->assertSee('count: 1', false);
 
         Slider::create(['title_en' => 'Two', 'title_ar' => 'اثنان', 'is_active' => true]);
-        $html = $this->get('/')->assertSee('count: 2', false)->getContent();
+        $html = $this->get(route('home'))->assertSee('count: 2', false)->getContent();
         $this->assertStringContainsString(__('site.common.pause_slideshow'), $html);
         $this->assertStringContainsString('prefers-reduced-motion: reduce', $html);
         $this->assertSame(1, substr_count($html, '<h1'), 'exactly one h1 on the page');
@@ -134,7 +134,7 @@ class FrontendMarkupTest extends TestCase
         $this->assertStringNotContainsString('dark:bg-gray-800', $html);
         $this->assertStringContainsString('rtl:rotate-180', $html);
 
-        $this->get('/lang/ar');
+        $this->useLocale('ar');
         $this->get(route('projects.index'))->assertSee('عرض 1–9 من أصل 12')->assertDontSee('&raquo;', false);
     }
 

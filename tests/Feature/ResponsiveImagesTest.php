@@ -49,7 +49,7 @@ class ResponsiveImagesTest extends TestCase
         $testimonial = Testimonial::create(['client_name' => 'Client', 'comment_en' => 'Great', 'comment_ar' => 'ممتاز', 'rating' => 5, 'is_active' => true]);
         $testimonial->addMedia(UploadedFile::fake()->image('face.jpg', 600, 600))->toMediaCollection('client_photo');
 
-        $html = $this->get('/')->getContent();
+        $html = $this->get(route('home'))->getContent();
 
         $this->assertStringContainsString($testimonial->getFirstMedia('client_photo')->getUrl('thumb'), $html);
         $this->assertStringNotContainsString('srcset=', $html);

@@ -29,7 +29,7 @@ class PublicPagesMatrixTest extends TestCase
         $this->get(route('stones.show', $stone))->assertNotFound();
         $this->get(route('projects.show', $project))->assertNotFound();
 
-        foreach (['/', route('services.index'), route('stones.index'), route('projects.index')] as $url) {
+        foreach ([route('home'), route('services.index'), route('stones.index'), route('projects.index')] as $url) {
             $this->get($url)->assertDontSee('Hidden Service')->assertDontSee('Hidden Stone')->assertDontSee('Hidden Project');
         }
     }
@@ -46,7 +46,7 @@ class PublicPagesMatrixTest extends TestCase
         Project::factory()->featured()->create(['title_en' => 'Featured One']);
         Project::factory()->create(['title_en' => 'Regular One']);
 
-        $this->get('/')->assertSee('Featured One')->assertDontSee('Regular One');
+        $this->get(route('home'))->assertSee('Featured One')->assertDontSee('Regular One');
     }
 
     public function test_project_filters_by_service(): void
@@ -78,7 +78,7 @@ class PublicPagesMatrixTest extends TestCase
 
         $this->get(route('faq'))->assertSee('Visible question?')->assertDontSee('Hidden question?');
         $this->get(route('about'))->assertSee('Visible Member')->assertDontSee('Hidden Member');
-        $this->get('/')->assertSee('Visible review')->assertDontSee('Hidden review');
+        $this->get(route('home'))->assertSee('Visible review')->assertDontSee('Hidden review');
     }
 
     public function test_faq_page_empty_state(): void
@@ -92,7 +92,7 @@ class PublicPagesMatrixTest extends TestCase
 
         Setting::editable()->update(['terms_en' => '<p>Our terms</p>', 'terms_ar' => '<p>الشروط</p>']);
         $this->get(route('legal.terms'))->assertSee('Our terms');
-        $this->get('/lang/ar');
+        $this->useLocale('ar');
         $this->get(route('legal.terms'))->assertSee('الشروط');
     }
 
@@ -100,17 +100,17 @@ class PublicPagesMatrixTest extends TestCase
     {
         $this->get('/no-such-page')->assertNotFound()->assertSee(__('site.errors.404_heading'));
 
-        $this->get('/lang/ar');
+        $this->useLocale('ar');
         $this->get('/no-such-page')->assertNotFound()->assertSee('dir="rtl"', false)->assertSee(__('site.errors.404_heading', [], 'ar'));
     }
 
     public function test_every_public_page_renders_rtl_arabic(): void
     {
         $this->seed(DemoSeeder::class);
-        $this->get('/lang/ar');
+        $this->useLocale('ar');
 
         $urls = [
-            '/', route('services.index'), route('services.show', Service::first()), route('stones.index'),
+            route('home'), route('services.index'), route('services.show', Service::first()), route('stones.index'),
             route('stones.show', StoneType::first()), route('projects.index'), route('projects.show', Project::first()),
             route('blog.index'), route('blog.show', Post::published()->first()), route('faq'), route('about'),
             route('contact'), route('legal.privacy'), route('legal.terms'),
@@ -121,9 +121,9 @@ class PublicPagesMatrixTest extends TestCase
         }
     }
 
-    public function test_locale_switch_ignores_unknown_locales(): void
+    public function test_unsupported_locale_prefix_is_not_a_language(): void
     {
-        $this->get('/lang/fr')->assertRedirect();
-        $this->get('/')->assertSee('<html lang="en" dir="ltr">', false);
+        $this->get('/fr')->assertNotFound();
+        $this->get('/fr/services')->assertNotFound();
     }
 }

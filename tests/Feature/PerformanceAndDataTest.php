@@ -32,7 +32,7 @@ class PerformanceAndDataTest extends TestCase
 
     public function test_get_requests_never_insert_a_settings_row(): void
     {
-        $this->get('/')->assertOk();
+        $this->get(route('home'))->assertOk();
         $this->get(route('contact'))->assertOk();
         $this->get(route('about'))->assertOk();
 
@@ -64,10 +64,10 @@ class PerformanceAndDataTest extends TestCase
         $service = Service::create(['name_en' => 'Stone Supply', 'name_ar' => '', 'description_en' => 'English only text', 'is_active' => true]);
         Faq::create(['question_en' => '', 'question_ar' => 'سؤال عربي فقط', 'answer_en' => 'Answer', 'answer_ar' => 'جواب', 'is_active' => true]);
 
-        $this->get('/lang/ar');
+        $this->useLocale('ar');
         $this->get(route('services.show', $service))->assertSee('Stone Supply')->assertSee('English only text');
 
-        $this->get('/lang/en');
+        $this->useLocale('en');
         $this->get(route('faq'))->assertSee('سؤال عربي فقط');
 
         app()->setLocale('ar');
@@ -83,7 +83,7 @@ class PerformanceAndDataTest extends TestCase
         // Give every project a cover so the list really renders images.
         Project::all()->each(fn (Project $p) => $p->addMedia(UploadedFile::fake()->image("p{$p->id}.jpg", 800, 600))->toMediaCollection('cover'));
 
-        foreach (['/', route('services.index'), route('stones.index'), route('projects.index'), route('blog.index'), route('about')] as $url) {
+        foreach ([route('home'), route('services.index'), route('stones.index'), route('projects.index'), route('blog.index'), route('about')] as $url) {
             $mediaQueries = collect($this->queriesFor($url))->filter(fn ($q) => str_contains($q, 'from "media"'))->count();
 
             // One eager-load query per model type on the page, never one per card.

@@ -82,7 +82,7 @@ class SeoTest extends TestCase
 
     public function test_breadcrumbs_are_localized(): void
     {
-        $this->get('/lang/ar');
+        $this->useLocale('ar');
         $crumbs = $this->jsonLd($this->get(route('stones.index'))->getContent(), 'BreadcrumbList');
 
         $this->assertSame([__('site.nav.home', [], 'ar'), __('site.stones.title', [], 'ar')], array_column($crumbs['itemListElement'], 'name'));
@@ -135,10 +135,5 @@ class SeoTest extends TestCase
 
         // No static file may shadow the dynamic route (the web server would serve it first).
         $this->assertFileDoesNotExist(public_path('robots.txt'));
-    }
-
-    public function test_language_switch_links_are_nofollow(): void
-    {
-        $this->get('/')->assertSee('hreflang="ar" lang="ar" rel="nofollow"', false);
     }
 }

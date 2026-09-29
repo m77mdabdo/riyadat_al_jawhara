@@ -33,7 +33,7 @@ class BrandingAndHeroTest extends TestCase
 
     public function test_defaults_are_used_until_branding_is_uploaded(): void
     {
-        $html = $this->get('/')->assertOk()->getContent();
+        $html = $this->get(route('home'))->assertOk()->getContent();
 
         $this->assertStringContainsString(asset(Setting::DEFAULT_LOGO), $html);
         $this->assertStringContainsString(asset(Setting::DEFAULT_LOGO_LIGHT), $html);
@@ -55,7 +55,7 @@ class BrandingAndHeroTest extends TestCase
         $this->assertTrue($setting->getFirstMedia('og_image')->hasGeneratedConversion('og'));
 
         auth()->logout();
-        $html = $this->get('/')->getContent();
+        $html = $this->get(route('home'))->getContent();
         $this->assertStringContainsString($setting->logoUrl(), $html);
         $this->assertStringContainsString('<meta property="og:image" content="'.$setting->ogImageUrl().'">', $html);
         $this->assertStringContainsString('-og.jpg', $setting->ogImageUrl());
@@ -82,7 +82,7 @@ class BrandingAndHeroTest extends TestCase
             'youtube_url' => 'https://youtube.com/@example',
         ]);
 
-        $html = $this->get('/')->assertOk()->getContent();
+        $html = $this->get(route('home'))->assertOk()->getContent();
 
         foreach (['LinkedIn', 'X', 'YouTube'] as $label) {
             $this->assertStringContainsString('aria-label="'.$label.'"', $html);
@@ -112,7 +112,7 @@ class BrandingAndHeroTest extends TestCase
     {
         Slider::create(['title_en' => 'Slide', 'title_ar' => 'شريحة', 'is_active' => true]);
 
-        $this->get('/')
+        $this->get(route('home'))
             ->assertSee('videos/hero-background.mp4', false)
             ->assertSee('<link rel="preload" as="image" href="'.asset('images/hero-poster.webp').'"', false);
     }
@@ -126,7 +126,7 @@ class BrandingAndHeroTest extends TestCase
         $heroUrl = $first->fresh()->heroImageUrl();
         $this->assertStringContainsString('first-slide-hero.webp', $heroUrl);
 
-        $this->get('/')
+        $this->get(route('home'))
             ->assertSee($heroUrl, false)
             ->assertSee('<link rel="preload" as="image" href="'.$heroUrl.'"', false)
             ->assertDontSee('videos/hero-background.mp4', false);

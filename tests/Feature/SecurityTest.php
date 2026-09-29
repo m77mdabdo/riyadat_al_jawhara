@@ -23,7 +23,7 @@ class SecurityTest extends TestCase
 
     public function test_public_pages_send_security_headers(): void
     {
-        $response = $this->get('/');
+        $response = $this->get(route('home'));
 
         $response->assertHeader('X-Content-Type-Options', 'nosniff')
             ->assertHeader('X-Frame-Options', 'SAMEORIGIN')

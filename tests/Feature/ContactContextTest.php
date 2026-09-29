@@ -96,7 +96,7 @@ class ContactContextTest extends TestCase
 
     public function test_locale_is_recorded(): void
     {
-        $this->get('/lang/ar');
+        $this->useLocale('ar');
         $this->post(route('contact.store'), $this->valid());
 
         $this->assertSame('ar', Lead::firstOrFail()->locale);

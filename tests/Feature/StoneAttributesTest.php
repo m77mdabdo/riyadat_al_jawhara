@@ -72,7 +72,7 @@ class StoneAttributesTest extends TestCase
     {
         $stone = $this->stone('Carrara', $this->marble, [$this->attr(StoneAttribute::FINISH, 'Honed')]);
 
-        $this->get('/lang/ar');
+        $this->useLocale('ar');
         $this->get(route('stones.show', $stone))->assertSee('Honed ع')->assertSee('التشطيب');
     }
 

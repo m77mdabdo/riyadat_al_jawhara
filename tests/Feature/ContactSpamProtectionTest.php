@@ -68,7 +68,7 @@ class ContactSpamProtectionTest extends TestCase
 
     public function test_throttle_message_is_translated_in_arabic(): void
     {
-        $this->get('/lang/ar');
+        $this->useLocale('ar');
 
         for ($i = 0; $i < 5; $i++) {
             $this->from(route('contact'))->post(route('contact.store'), $this->validLead());
