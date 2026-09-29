@@ -54,7 +54,7 @@ class ContactController extends Controller
         // Honeypot: bots that fill this hidden field get the normal success
         // response, but nothing is stored, so they can't tell they were caught.
         if (filled($data['website'] ?? null)) {
-            return back()->with('success', __('site.contact.success_message'));
+            return $this->thankYou();
         }
 
         $lead = Lead::create(Arr::except($data, ['website', 'consent']) + [
@@ -69,6 +69,24 @@ class ContactController extends Controller
 
         NewLeadNotification::dispatchFor($lead);
 
-        return back()->with('success', __('site.contact.success_message'));
+        return $this->thankYou()->with('lead_submitted', true);
+    }
+
+    /**
+     * Confirmation page after a submission (also the analytics conversion
+     * target). Reachable directly, but noindex and only fires the conversion
+     * event right after a real submission.
+     */
+    public function thanks(): View
+    {
+        return view('contact-thanks', [
+            'settings' => Setting::current(),
+            'justSubmitted' => (bool) session('lead_submitted'),
+        ]);
+    }
+
+    private function thankYou(): RedirectResponse
+    {
+        return redirect()->route('contact.thanks')->with('success', __('site.contact.success_message'));
     }
 }

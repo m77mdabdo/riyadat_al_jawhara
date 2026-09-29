@@ -173,7 +173,7 @@ class LocalizationTest extends TestCase
         foreach (['ar', 'en'] as $locale) {
             $this->from("/{$locale}/contact")
                 ->post("/{$locale}/contact", ['name' => "Lead {$locale}", 'phone' => '0500000000', 'message' => 'Quote', 'consent' => '1'])
-                ->assertRedirect("/{$locale}/contact")
+                ->assertRedirect("/{$locale}/contact/thank-you")
                 ->assertSessionHas('success', __('site.contact.success_message', [], $locale));
         }
 

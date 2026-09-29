@@ -24,7 +24,7 @@ class ContactSpamProtectionTest extends TestCase
     {
         $this->from(route('contact'))
             ->post(route('contact.store'), $this->validLead())
-            ->assertRedirect(route('contact'))
+            ->assertRedirect(route('contact.thanks'))
             ->assertSessionHas('success', __('site.contact.success_message'));
 
         $this->assertDatabaseHas('leads', ['name' => 'Real Customer', 'status' => 'new', 'source' => 'website']);
@@ -34,7 +34,7 @@ class ContactSpamProtectionTest extends TestCase
     {
         $this->from(route('contact'))
             ->post(route('contact.store'), $this->validLead(['website' => 'http://spam.example']))
-            ->assertRedirect(route('contact'))
+            ->assertRedirect(route('contact.thanks'))
             ->assertSessionHas('success', __('site.contact.success_message'));
 
         $this->assertSame(0, Lead::count());

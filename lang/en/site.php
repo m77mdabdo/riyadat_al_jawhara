@@ -241,6 +241,16 @@ return [
         'our_location' => 'Our Location',
         'working_hours' => 'Working Hours',
         'get_directions' => 'Get Directions',
+        'thanks_title' => 'Thank you',
+        'thanks_heading' => 'We received your request',
+        'thanks_next' => 'What happens next',
+        'thanks_browse' => 'Meanwhile, explore our work',
+        'thanks_back' => 'Back to home',
+        'thanks_steps' => [
+            'Our team reviews your request.',
+            'We contact you by phone or WhatsApp to discuss the details.',
+            'If needed, we arrange a site visit and prepare your quote.',
+        ],
     ],
 
     'lead_mail' => [

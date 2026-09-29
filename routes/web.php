@@ -48,6 +48,7 @@ Route::prefix('{locale}')
         Route::post('/contact', [ContactController::class, 'store'])
             ->middleware('throttle:contact')
             ->name('contact.store');
+        Route::get('/contact/thank-you', [ContactController::class, 'thanks'])->name('contact.thanks');
 
         Route::get('/privacy-policy', [LegalController::class, 'privacyPolicy'])->name('legal.privacy');
         Route::get('/terms-of-use', [LegalController::class, 'termsOfUse'])->name('legal.terms');
