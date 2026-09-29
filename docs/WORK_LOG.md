@@ -33,7 +33,7 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 5e — Remove axios, `lang/ar.json` for framework strings | `53e536f` | 146 / 757 | Public JS 92.8 KB → 46.3 KB (gzip 34.1 → 16.7 KB). Re-verified after Phase 5: 330 visual checks clean; CSP 0 violations |
 | 6 — Tests + CI: factories for all 17 models, test matrix (blog, public pages + RTL, every admin resource × role, command, error pages), query budgets, GitHub Actions (Pint + PHPUnit + asset build) | `7e872a3` | 228 / 1150 | Branded 403/419/429/503 pages added (comment throttle showed a raw 429). Pint fixed 5 pre-existing skeleton files so CI can enforce style repo-wide. Tests fake the public disk and skip Vite |
 | Security — Laravel 11 email-rule CRLF advisory mitigation; composer.json metadata (`php ^8.4`) | `bee637f` | 230 / 1155 | Lock: content-hash + platform only, no package changes |
-| 7 — Docs: README, .env.example, DEPLOY.md | _(next commit)_ | 230 / 1155 | Docs only |
+| 7 — Docs: README, .env.example, DEPLOY.md | `991454d` | 230 / 1155 | Docs only |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
@@ -62,3 +62,10 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 - Lead emails are rendered in the app default locale (`APP_LOCALE`, currently `en`); strings exist in both AR and EN.
 - **Cleanup needed (not deleted without approval):** before the global `Storage::fake('public')` guard was added, one test run wrote 3 unreferenced files into the real media folder: `storage/app/public/1/g1.jpg`, `storage/app/public/1/conversions/g1-thumb.jpg`, `storage/app/public/1/conversions/g1-medium.jpg`. Safe to delete. The real media files in that folder were not touched.
 - Side effect: one early test run wrote a single fake "New quote request" entry to the local, git-ignored `storage/logs/laravel.log` (test since changed to the array mailer).
+
+## Stop points reached (waiting for the owner)
+
+1. **URL-based locale routing (`/ar/...`, `/en/...`) and the default language.** A design is proposed in the final report; nothing is implemented. The site still uses the session-based switch with an `x-default` hreflang only.
+2. **Credentials needed:** production SMTP (lead emails, password resets), analytics IDs, error-monitoring DSN.
+3. **Real business content needed:** photos (see `docs/MISSING_IMAGES.md`), phone/WhatsApp/email/address/map pin, legally reviewed Privacy Policy and Terms, real testimonials and team (with consent), real stone specifications.
+4. **No stock images were downloaded** and `fetch:stock-media` was never run against the real storage.
