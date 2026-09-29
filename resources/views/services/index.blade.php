@@ -1,4 +1,4 @@
-<x-layout :title="__('site.services.title')">
+<x-layout :title="__('site.services.title')" :description="__('site.services.meta_description')" :breadcrumbs="[['name' => __('site.services.title'), 'url' => route('services.index')]]">
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-page-title font-bold text-charcoal">{{ __('site.services.title') }}</h1>

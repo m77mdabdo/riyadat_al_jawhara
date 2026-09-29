@@ -45,6 +45,7 @@ Route::get('/terms-of-use', [LegalController::class, 'termsOfUse'])->name('legal
 Route::get('/lang/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 // A fallback route (rather than relying on Laravel's default no-match handling)
 // ensures unmatched URLs still pass through the 'web' middleware group -- most

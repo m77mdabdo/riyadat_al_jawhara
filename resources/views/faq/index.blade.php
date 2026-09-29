@@ -1,4 +1,18 @@
-<x-layout :title="__('site.faq.title')" :description="__('site.faq.subtitle')">
+<x-layout :title="__('site.faq.title')" :description="__('site.faq.subtitle')" :breadcrumbs="[['name' => __('site.faq.title'), 'url' => route('faq')]]">
+    @if ($faqs->isNotEmpty())
+        @push('head')
+            <script type="application/ld+json">{!! json_encode([
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'mainEntity' => $faqs->map(fn ($faq) => [
+                    '@type' => 'Question',
+                    'name' => $faq->question,
+                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq->answer],
+                ])->values()->all(),
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
+        @endpush
+    @endif
+
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-page-title font-bold text-charcoal">{{ __('site.faq.title') }}</h1>

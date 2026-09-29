@@ -26,7 +26,8 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 3d — Settings branding (logo, light logo, default OG image), LinkedIn/X/YouTube, slider images in hero | `815d81e` | 97 / 444 | Branding via Media Library on `Setting` (JPG/PNG/WebP ≤ 2 MB). Hero: slide image if present, else poster/video (video skipped when any slide has an image). Mobile monogram logo stays static |
 | 3e — Admin password reset + profile page (current password required for email/password change), one password policy | `d553d62` | 105 / 492 | Policy: min 12 chars, letters + numbers (profile, reset, Users form, `app:create-admin`). Reset emails need a real mailer in production |
 | 4 — UI/UX + responsive + missing-image pass | `29f350a` | 118 / 617 | Playwright (cached npx 1.62, no new deps): 15 pages × 11 widths × EN/AR = 330 checks, 0 overflow / 0 broken img / 0 text < 14px; lightbox behaviour verified in RTL. Fixed invisible form fields (pre-existing). Desktop nav now from `xl` (AR labels don't fit at 1024). See `docs/MISSING_IMAGES.md` |
-| 5a — Settings cache (no write on GET), media eager-loading, empty-language fallback | _(next commit)_ | 123 / 654 | `Setting::current()` = read-only, request-scoped + cached; `Setting::editable()` for writes. `HasTranslations` trait on 13 models |
+| 5a — Settings cache (no write on GET), media eager-loading, empty-language fallback | `2bbe480` | 123 / 654 | `Setting::current()` = read-only, request-scoped + cached; `Setting::editable()` for writes. `HasTranslations` trait on 13 models |
+| 5b — SEO: canonical, og:url, per-entity share images, twitter title/description, article meta, BreadcrumbList, FAQPage, sitemap (lastmod + FAQ + legal), robots | _(next commit)_ | 133 / 695 | Canonical drops filter/search params, keeps `?page=N`. Blog search results `noindex, follow`. Dynamic `/robots.txt` (absolute Sitemap line) is shadowed by `public/robots.txt` — see open questions |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
@@ -41,6 +42,8 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 9. `2026_09_29_140000_add_extra_socials_to_settings_table` — nullable `linkedin_url`, `x_url`, `youtube_url` on `settings`.
 
 ## Open questions
+
+- **robots.txt:** `public/robots.txt` was updated (Disallow `/admin`, `/lang/`) but cannot contain an absolute `Sitemap:` line without knowing the production domain. A dynamic `/robots.txt` route that adds it is implemented and tested, but the web server serves the static file first. Approve deleting `public/robots.txt` to switch to the dynamic one (or submit the sitemap in Search Console instead).
 
 - After deploying, run `php artisan media-library:regenerate --only-missing` so existing slider images get the new `hero` WebP conversion (until then the original file is used).
 

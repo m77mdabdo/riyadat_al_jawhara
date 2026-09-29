@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasCoverImage;
 use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +18,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class StoneType extends Model implements HasMedia
 {
-    use HasActiveScope, HasSlug, HasTranslations, InteractsWithMedia;
+    use HasActiveScope, HasCoverImage, HasSlug, HasTranslations, InteractsWithMedia;
 
     protected $fillable = [
         'stone_category_id',

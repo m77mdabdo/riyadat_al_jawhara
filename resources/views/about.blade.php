@@ -1,4 +1,4 @@
-<x-layout :title="__('site.about.title')" :description="$settings->about">
+<x-layout :title="__('site.about.title')" :description="$settings->about" :breadcrumbs="[['name' => __('site.about.title'), 'url' => route('about')]]">
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-page-title font-bold text-charcoal">{{ __('site.about.title') }}</h1>

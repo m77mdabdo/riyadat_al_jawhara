@@ -1,4 +1,4 @@
-<x-layout :title="__('site.legal.privacy_policy_title')">
+<x-layout :title="__('site.legal.privacy_policy_title')" :description="$settings->privacy_policy" :breadcrumbs="[['name' => __('site.legal.privacy_policy_title'), 'url' => route('legal.privacy')]]">
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-page-title font-bold text-charcoal">{{ __('site.legal.privacy_policy_title') }}</h1>

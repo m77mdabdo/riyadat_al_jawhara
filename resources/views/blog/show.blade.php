@@ -1,4 +1,4 @@
-<x-layout :title="$post->title" :description="$post->excerpt">
+<x-layout :title="$post->title" :description="$post->excerpt ?: $post->body" :image="$post->coverImageUrl()" type="article" :published-at="$post->published_at" :modified-at="$post->updated_at" :breadcrumbs="[['name' => __('site.blog.title'), 'url' => route('blog.index')], ['name' => $post->title, 'url' => route('blog.show', $post)]]">
     @push('head')
         @php
             $articleLd = array_filter([
@@ -12,7 +12,7 @@
                     '@type' => 'Person',
                     'name' => $post->author->name,
                 ] : null,
-                'image' => $post->getFirstMediaUrl('cover') ?: null,
+                'image' => $post->coverImageUrl(),
                 'mainEntityOfPage' => url()->current(),
             ]);
         @endphp

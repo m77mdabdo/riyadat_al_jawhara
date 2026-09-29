@@ -105,6 +105,7 @@ return [
     'services' => [
         'title' => 'Our Services',
         'related_projects' => 'Related Projects',
+        'meta_description' => 'Natural stone and marble services: supply, installation, facade design and interior stone decor across Saudi Arabia.',
     ],
 
     'stones' => [
@@ -121,6 +122,7 @@ return [
         'any' => 'Any',
         'clear_filters' => 'Clear filters',
         'results_count' => ':count stones',
+        'meta_description' => 'Browse our marble, granite, quartz and natural stone collection by finish, colour and application.',
     ],
 
     'projects' => [
@@ -148,6 +150,7 @@ return [
             'government' => 'Government',
             'industrial' => 'Industrial',
         ],
+        'meta_description' => 'Residential and commercial stone and marble projects completed by our team across Saudi Arabia.',
     ],
 
     'blog' => [
