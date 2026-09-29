@@ -55,8 +55,8 @@ class SitemapController extends Controller
 
     /**
      * robots.txt with an absolute Sitemap line built from the current host.
-     * Only reached once public/robots.txt is removed (the web server serves
-     * the static file first) -- see docs/WORK_LOG.md.
+     * There must be no public/robots.txt: the web server would serve that
+     * static file before Laravel sees the request.
      */
     public function robots(): Response
     {

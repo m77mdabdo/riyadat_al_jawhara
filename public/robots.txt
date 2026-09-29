@@ -1,6 +1,0 @@
-# Static fallback. The app also serves /robots.txt dynamically (with an
-# absolute "Sitemap:" line for the real domain) once this file is removed --
-# the web server serves this file before Laravel sees the request.
-User-agent: *
-Disallow: /admin
-Disallow: /lang/

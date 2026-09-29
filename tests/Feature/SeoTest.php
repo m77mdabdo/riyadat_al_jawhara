@@ -128,13 +128,13 @@ class SeoTest extends TestCase
     {
         $this->get('/robots.txt')
             ->assertOk()
+            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
             ->assertSee('Disallow: /admin')
             ->assertSee('Disallow: /lang/')
             ->assertSee('Sitemap: '.route('sitemap'));
 
-        $static = file_get_contents(public_path('robots.txt'));
-        $this->assertStringContainsString('Disallow: /admin', $static);
-        $this->assertStringContainsString('Disallow: /lang/', $static);
+        // No static file may shadow the dynamic route (the web server would serve it first).
+        $this->assertFileDoesNotExist(public_path('robots.txt'));
     }
 
     public function test_language_switch_links_are_nofollow(): void
