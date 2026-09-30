@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\StoneCategoryResource\Pages;
+use App\Filament\Support\ImageUpload;
 use App\Models\StoneCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -37,6 +38,10 @@ class StoneCategoryResource extends Resource
                                     ->maxLength(255)
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                                Forms\Components\Textarea::make('description_en')
+                                    ->label('Description (EN)')
+                                    ->rows(3)
+                                    ->maxLength(2000),
                             ]),
                         Forms\Components\Tabs\Tab::make('Arabic')
                             ->schema([
@@ -44,6 +49,10 @@ class StoneCategoryResource extends Resource
                                     ->label('الاسم (AR)')
                                     ->required()
                                     ->maxLength(255),
+                                Forms\Components\Textarea::make('description_ar')
+                                    ->label('الوصف (AR)')
+                                    ->rows(3)
+                                    ->maxLength(2000),
                             ]),
                     ]),
                 Forms\Components\TextInput::make('slug')
@@ -53,6 +62,10 @@ class StoneCategoryResource extends Resource
                 Forms\Components\TextInput::make('order')
                     ->numeric()
                     ->default(0),
+                ImageUpload::make('cover')
+                    ->label('Category image')
+                    ->helperText('Shown on the home tiles and the category landing section. JPG, PNG or WebP, up to 5 MB. Without it, a stone texture is used.')
+                    ->columnSpanFull(),
             ]);
     }
 

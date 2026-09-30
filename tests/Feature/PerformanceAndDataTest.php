@@ -87,7 +87,9 @@ class PerformanceAndDataTest extends TestCase
             $mediaQueries = collect($this->queriesFor($url))->filter(fn ($q) => str_contains($q, 'from "media"'))->count();
 
             // One eager-load query per model type on the page, never one per card.
-            $this->assertLessThanOrEqual(6, $mediaQueries, $url);
+            // Home shows 7 media-bearing types (slides, services, projects, stones,
+            // stone categories, testimonials, settings logo); others at most 6.
+            $this->assertLessThanOrEqual($url === route('home') ? 7 : 6, $mediaQueries, $url);
         }
 
         $projectsPage = collect($this->queriesFor(route('projects.index')))->filter(fn ($q) => str_contains($q, 'from "media"'));

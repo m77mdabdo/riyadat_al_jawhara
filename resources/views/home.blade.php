@@ -161,7 +161,7 @@
                     @foreach ($stoneCategories as $category)
                         @php
                             $tileSlot = config('site-images.category_tiles.'.$category->slug, 'texture-marble');
-                            $tileUrl = \App\Support\SiteImages::url($tileSlot);
+                            $tileUrl = $category->coverImageUrl('card') ?? \App\Support\SiteImages::url($tileSlot);
                         @endphp
                         <a href="{{ route('stones.index', ['stone_category' => $category->slug]) }}" x-reveal style="--reveal-delay: {{ $loop->index * 90 }}ms"
                            class="group relative flex min-h-48 flex-col justify-end overflow-hidden rounded-xl border border-sand-200 bg-sand-100 p-6 transition-all hover:-translate-y-1 hover:shadow-lg">

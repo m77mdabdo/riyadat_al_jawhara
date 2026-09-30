@@ -51,6 +51,24 @@
             $keptFilters = array_filter($activeFilters);
         @endphp
 
+        @if ($activeCategoryModel && ($activeCategoryModel->description || $activeCategoryModel->getFirstMedia('cover')))
+            {{-- Category landing section --}}
+            <div class="mb-10 grid grid-cols-1 md:grid-cols-5 gap-6 items-center rounded-xl border border-sand-200 bg-sand-100 p-4 sm:p-6">
+                @if ($activeCategoryModel->getFirstMedia('cover'))
+                    <div class="md:col-span-2 aspect-[4/3] overflow-hidden rounded-lg">
+                        <x-media-image :model="$activeCategoryModel" conversion="medium" :alt="$activeCategoryModel->name" sizes="(min-width: 768px) 40vw, 100vw" class="h-full w-full" />
+                    </div>
+                @endif
+                <div @class(['md:col-span-3' => $activeCategoryModel->getFirstMedia('cover'), 'md:col-span-5' => ! $activeCategoryModel->getFirstMedia('cover')])>
+                    <h2 class="text-section-title font-bold text-charcoal break-words">{{ $activeCategoryModel->name }}</h2>
+                    <x-motif.najdi-band variant="underline" class="mt-3" />
+                    @if ($activeCategoryModel->description)
+                        <p class="mt-4 text-stone-700 leading-relaxed rtl:leading-loose break-words">{{ $activeCategoryModel->description }}</p>
+                    @endif
+                </div>
+            </div>
+        @endif
+
         <div class="flex flex-wrap gap-2 mb-6">
             <a href="{{ route('stones.index', $keptFilters) }}" class="inline-flex min-h-11 items-center px-4 py-2 rounded-full text-sm font-medium {{ $activeCategory === '' ? 'bg-charcoal text-cream' : 'bg-white border border-stone-300 text-stone-700 hover:bg-stone-100' }}">
                 {{ __('site.common.all') }}

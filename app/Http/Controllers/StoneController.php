@@ -63,7 +63,8 @@ class StoneController extends Controller
 
         return view('stones.index', [
             'stoneTypes' => $query->get(),
-            'categories' => StoneCategory::ordered()->get(),
+            'categories' => $categories = StoneCategory::ordered()->with('media')->get(),
+            'activeCategoryModel' => $categories->firstWhere('slug', $request->string('stone_category')->toString()),
             'activeCategory' => $request->string('stone_category')->toString(),
             'attributeFilters' => self::ATTRIBUTE_FILTERS,
             'filterOptions' => $filterOptions,

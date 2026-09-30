@@ -23,7 +23,7 @@ class HomeController extends Controller
             'stoneTypes' => StoneType::active()->ordered()->with('media')->take(8)->get(),
             'testimonials' => Testimonial::active()->ordered()->with('media')->get(),
             'faqs' => Faq::active()->ordered()->take(4)->get(),
-            'stoneCategories' => StoneCategory::ordered()
+            'stoneCategories' => StoneCategory::ordered()->with('media')
                 ->withCount(['stoneTypes' => fn ($query) => $query->active()])
                 ->get(),
             'settings' => Setting::current(),
