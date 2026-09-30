@@ -209,7 +209,7 @@ class LeadResource extends Resource
                     ->query(fn (Builder $query): Builder => $query->where('assigned_to', auth()->id())),
                 Tables\Filters\Filter::make('follow_up_due')
                     ->label(__('Follow-up due'))
-                    ->query(fn (Builder $query): Builder => $query->followUpDue()),
+                    ->query(fn (Builder $query): Builder => $query->scopes(['followUpDue'])),
                 Tables\Filters\Filter::make('created_at')
                     ->form([
                         Forms\Components\DatePicker::make('from'),

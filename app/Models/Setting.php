@@ -6,6 +6,7 @@ use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\LogsAdminActivity;
 use App\Support\FragmentCache;
+use Database\Factories\SettingFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -16,6 +17,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Setting extends Model implements HasMedia
 {
+    /** @use HasFactory<SettingFactory> */
     use HasFactory, HasTranslations, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
@@ -90,9 +92,9 @@ class Setting extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('og')
+            ->nonQueued()
             ->performOnCollections('og_image')
-            ->fit(Fit::Crop, 1200, 630)
-            ->nonQueued();
+            ->fit(Fit::Crop, 1200, 630);
     }
 
     public function logoUrl(): string
@@ -164,7 +166,7 @@ class Setting extends Model implements HasMedia
     {
         $attributes = Cache::rememberForever(self::CACHE_KEY, fn () => static::query()->first()?->getAttributes());
 
-        return $attributes ? (new static)->newFromBuilder($attributes) : new static;
+        return $attributes ? (new self)->newFromBuilder($attributes) : new self;
     }
 
     /**

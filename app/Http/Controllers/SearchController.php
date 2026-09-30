@@ -46,6 +46,9 @@ class SearchController extends Controller
         return view('search.index', ['term' => $term, 'results' => $paginator]);
     }
 
+    /**
+     * @return Collection<int, array{type: string, title: string, excerpt: string, url: string}>
+     */
     private function search(string $like): Collection
     {
         $match = function (Builder $query, array $columns) use ($like) {

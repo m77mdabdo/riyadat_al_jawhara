@@ -20,12 +20,13 @@ class SiteImagesReview extends Command
 
     public function handle(): int
     {
-        $slots = config('site-images.slots');
+        $slots = config()->array('site-images.slots');
         $choices = SiteImages::choices();
 
         $slotHtml = collect($slots)->map(function (array $slot, string $key) use ($choices) {
             $file = storage_path("app/stock-candidates/{$key}/candidates.json");
-            $candidates = is_file($file) ? json_decode(file_get_contents($file), true) : [];
+            /** @var list<array<string, mixed>> $candidates */
+            $candidates = is_file($file) ? json_decode(file_get_contents($file), true, flags: JSON_THROW_ON_ERROR) : [];
             $chosen = $choices[$key]['id'] ?? null;
 
             $cards = collect($candidates)->map(function (array $c) use ($key, $chosen) {

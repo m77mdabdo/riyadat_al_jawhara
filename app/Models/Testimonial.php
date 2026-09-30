@@ -7,6 +7,7 @@ use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
+use Database\Factories\TestimonialFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Testimonial extends Model implements HasMedia
 {
+    /** @use HasFactory<TestimonialFactory> */
     use HasActiveScope, HasFactory, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
@@ -41,9 +43,10 @@ class Testimonial extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->registerWebpConversions();
-        $this->addMediaConversion('thumb')->width(200)->height(200)->nonQueued();
+        $this->addMediaConversion('thumb')->nonQueued()->width(200)->height(200);
     }
 
+    /** @return BelongsTo<Project, $this> */
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);

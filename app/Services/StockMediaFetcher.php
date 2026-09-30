@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Spatie\Image\Image;
@@ -85,7 +86,7 @@ class StockMediaFetcher
             return [];
         }
 
-        return collect($response->json('photos', []))
+        return $response->collect('photos')
             ->pluck('src.large2x')
             ->filter()
             ->values()
@@ -114,7 +115,7 @@ class StockMediaFetcher
         $urls = [];
 
         foreach ($response->json('videos', []) as $video) {
-            $files = collect($video['video_files'] ?? []);
+            $files = collect(Arr::wrap($video['video_files'] ?? []));
 
             $file = $files->firstWhere('quality', 'sd')
                 ?? $files->where('quality', 'hd')->sortBy('width')->first()
@@ -149,7 +150,7 @@ class StockMediaFetcher
             return [];
         }
 
-        return collect($response->json('hits', []))
+        return $response->collect('hits')
             ->take($count)
             ->pluck('largeImageURL')
             ->filter()
@@ -176,7 +177,7 @@ class StockMediaFetcher
             return [];
         }
 
-        return collect($response->json('results', []))
+        return $response->collect('results')
             ->pluck('urls.regular')
             ->filter()
             ->values()

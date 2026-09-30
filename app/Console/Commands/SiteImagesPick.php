@@ -32,7 +32,8 @@ class SiteImagesPick extends Command
                 continue;
             }
 
-            $candidates = json_decode(file_get_contents($listFile), true);
+            /** @var list<array<string, mixed>> $candidates */
+            $candidates = json_decode(file_get_contents($listFile), true, flags: JSON_THROW_ON_ERROR);
             $wanted = $this->argument('candidate');
             $choice = $wanted
                 ? collect($candidates)->firstWhere('id', $wanted)
@@ -64,6 +65,9 @@ class SiteImagesPick extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * @param  array<string, array<string, mixed>>  $state
+     */
     private function writeCredits(array $state): void
     {
         $slots = config('site-images.slots');

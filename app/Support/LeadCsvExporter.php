@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Lead;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -18,6 +19,9 @@ class LeadCsvExporter
         'Message', 'Status', 'Assigned to', 'Follow-up date', 'Source', 'Language', 'Consent at',
     ];
 
+    /**
+     * @param  Builder<Lead>  $query
+     */
     public static function download(Builder $query, ?string $filename = null): StreamedResponse
     {
         $filename ??= 'leads-'.now()->format('Y-m-d-His').'.csv';
@@ -29,7 +33,7 @@ class LeadCsvExporter
 
             $query->with(['service', 'stoneType', 'project', 'assignee'])
                 ->orderBy('id')
-                ->chunk(500, function ($leads) use ($out) {
+                ->chunk(500, function (EloquentCollection $leads) use ($out) {
                     foreach ($leads as $lead) {
                         fputcsv($out, array_map([self::class, 'safeCell'], self::row($lead)));
                     }
@@ -55,10 +59,10 @@ class LeadCsvExporter
             $lead->stoneType?->name_en,
             $lead->project?->title_en,
             $lead->message,
-            Lead::STATUSES[$lead->status] ?? $lead->status,
+            Lead::STATUSES[$lead->status],
             $lead->assignee?->name,
             $lead->follow_up_at?->format('Y-m-d'),
-            Lead::SOURCES[$lead->source] ?? $lead->source,
+            Lead::SOURCES[$lead->source],
             $lead->locale,
             $lead->consented_at?->format('Y-m-d H:i'),
         ];

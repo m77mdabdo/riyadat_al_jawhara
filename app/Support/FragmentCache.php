@@ -19,6 +19,9 @@ class FragmentCache
 
     public const TTL = 86400;
 
+    /**
+     * @param  Closure(): string  $render
+     */
     public static function remember(string $key, Closure $render, int $ttl = self::TTL): string
     {
         $version = Cache::rememberForever(self::VERSION_KEY, fn () => Str::random(12));

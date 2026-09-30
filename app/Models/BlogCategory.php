@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\LogsAdminActivity;
+use Database\Factories\BlogCategoryFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class BlogCategory extends Model
 {
+    /** @use HasFactory<BlogCategoryFactory> */
     use HasFactory, HasSlug, HasTranslations, LogsAdminActivity;
 
     protected $fillable = [
@@ -22,6 +24,10 @@ class BlogCategory extends Model
         'order',
     ];
 
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('order');
@@ -34,6 +40,7 @@ class BlogCategory extends Model
             ->saveSlugsTo('slug');
     }
 
+    /** @return HasMany<Post, $this> */
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class);

@@ -19,10 +19,10 @@ trait HasWebpConversions
     {
         foreach (self::WEBP_WIDTHS as $name => $width) {
             $this->addMediaConversion($name)
+                ->nonQueued()
                 ->width($width)
                 ->format('webp')
-                ->quality(80)
-                ->nonQueued();
+                ->quality(80);
         }
     }
 }

@@ -9,6 +9,7 @@ use App\Models\Concerns\HasSeoOverrides;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
+use Database\Factories\StoneTypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,6 +24,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class StoneType extends Model implements HasMedia
 {
+    /** @use HasFactory<StoneTypeFactory> */
     use HasActiveScope, HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
@@ -68,10 +70,11 @@ class StoneType extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->registerWebpConversions();
-        $this->addMediaConversion('thumb')->width(400)->height(300)->nonQueued();
-        $this->addMediaConversion('medium')->width(1200)->height(700)->nonQueued();
+        $this->addMediaConversion('thumb')->nonQueued()->width(400)->height(300);
+        $this->addMediaConversion('medium')->nonQueued()->width(1200)->height(700);
     }
 
+    /** @return BelongsTo<StoneCategory, $this> */
     public function stoneCategory(): BelongsTo
     {
         return $this->belongsTo(StoneCategory::class);
@@ -81,12 +84,15 @@ class StoneType extends Model implements HasMedia
      * Projects where this is the primary stone (projects.stone_type_id).
      * Use Project::usingStone() to include projects that list it as an
      * additional material.
+     *
+     * @return HasMany<Project, $this>
      */
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class);
     }
 
+    /** @return HasMany<Lead, $this> */
     public function leads(): HasMany
     {
         return $this->hasMany(Lead::class);
@@ -95,27 +101,33 @@ class StoneType extends Model implements HasMedia
     /**
      * All specification values. The per-type relations below are what the
      * admin form and views use; they share the same pivot table.
+     *
+     * @return BelongsToMany<StoneAttribute, $this>
      */
     public function stoneAttributes(): BelongsToMany
     {
         return $this->belongsToMany(StoneAttribute::class)->orderBy('stone_attributes.order');
     }
 
+    /** @return BelongsToMany<StoneAttribute, $this> */
     public function finishes(): BelongsToMany
     {
         return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::FINISH);
     }
 
+    /** @return BelongsToMany<StoneAttribute, $this> */
     public function colours(): BelongsToMany
     {
         return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::COLOUR);
     }
 
+    /** @return BelongsToMany<StoneAttribute, $this> */
     public function sizes(): BelongsToMany
     {
         return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::SIZE);
     }
 
+    /** @return BelongsToMany<StoneAttribute, $this> */
     public function applications(): BelongsToMany
     {
         return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::APPLICATION);
@@ -130,6 +142,7 @@ class StoneType extends Model implements HasMedia
     {
         return $this->stoneAttributes
             ->where('is_active', true)
+            ->toBase()
             ->groupBy('type')
             ->sortBy(fn ($group, string $type) => array_search($type, array_keys(StoneAttribute::TYPES), true));
     }

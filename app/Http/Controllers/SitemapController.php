@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\StoneType;
 use App\Support\FragmentCache;
 use App\Support\LocalizedUrl;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -32,35 +33,33 @@ class SitemapController extends Controller
 
         // Each page is listed once per language; every entry carries
         // hreflang alternates for all languages (+ x-default).
-        $pages = collect([
-            ['route' => 'home', 'params' => [], 'priority' => '1.0', 'lastmod' => $latest(Project::active())],
-            ['route' => 'services.index', 'params' => [], 'priority' => '0.8', 'lastmod' => $latest(Service::active())],
-            ['route' => 'stones.index', 'params' => [], 'priority' => '0.8', 'lastmod' => $latest(StoneType::active())],
-            ['route' => 'projects.index', 'params' => [], 'priority' => '0.8', 'lastmod' => $latest(Project::active())],
-            ['route' => 'blog.index', 'params' => [], 'priority' => '0.7', 'lastmod' => $latest(Post::published())],
-            ['route' => 'gallery', 'params' => [], 'priority' => '0.6', 'lastmod' => $latest(Project::active())],
-            ['route' => 'faq', 'params' => [], 'priority' => '0.5', 'lastmod' => $latest(Faq::active())],
-            ['route' => 'about', 'params' => [], 'priority' => '0.6', 'lastmod' => $settingsUpdated],
-            ['route' => 'contact', 'params' => [], 'priority' => '0.6', 'lastmod' => $settingsUpdated],
-            ['route' => 'legal.privacy', 'params' => [], 'priority' => '0.2', 'lastmod' => $settingsUpdated],
-            ['route' => 'legal.terms', 'params' => [], 'priority' => '0.2', 'lastmod' => $settingsUpdated],
-        ]);
+        $pages = [
+            $this->page('home', [], '1.0', $latest(Project::active())),
+            $this->page('services.index', [], '0.8', $latest(Service::active())),
+            $this->page('stones.index', [], '0.8', $latest(StoneType::active())),
+            $this->page('projects.index', [], '0.8', $latest(Project::active())),
+            $this->page('blog.index', [], '0.7', $latest(Post::published())),
+            $this->page('gallery', [], '0.6', $latest(Project::active())),
+            $this->page('faq', [], '0.5', $latest(Faq::active())),
+            $this->page('about', [], '0.6', $settingsUpdated),
+            $this->page('contact', [], '0.6', $settingsUpdated),
+            $this->page('legal.privacy', [], '0.2', $settingsUpdated),
+            $this->page('legal.terms', [], '0.2', $settingsUpdated),
+        ];
 
-        Service::active()->get()->each(
-            fn (Service $service) => $pages->push(['route' => 'services.show', 'params' => ['service' => $service], 'priority' => '0.7', 'lastmod' => $service->updated_at])
-        );
-
-        StoneType::active()->get()->each(
-            fn (StoneType $stoneType) => $pages->push(['route' => 'stones.show', 'params' => ['stoneType' => $stoneType], 'priority' => '0.7', 'lastmod' => $stoneType->updated_at])
-        );
-
-        Project::active()->get()->each(
-            fn (Project $project) => $pages->push(['route' => 'projects.show', 'params' => ['project' => $project], 'priority' => '0.6', 'lastmod' => $project->updated_at])
-        );
-
-        Post::published()->get()->each(
-            fn (Post $post) => $pages->push(['route' => 'blog.show', 'params' => ['post' => $post], 'priority' => '0.5', 'lastmod' => $post->updated_at])
-        );
+        foreach (Service::active()->get() as $service) {
+            $pages[] = $this->page('services.show', ['service' => $service], '0.7', $service->updated_at);
+        }
+        foreach (StoneType::active()->get() as $stoneType) {
+            $pages[] = $this->page('stones.show', ['stoneType' => $stoneType], '0.7', $stoneType->updated_at);
+        }
+        foreach (Project::active()->get() as $project) {
+            $pages[] = $this->page('projects.show', ['project' => $project], '0.6', $project->updated_at);
+        }
+        foreach (Post::published()->get() as $post) {
+            $pages[] = $this->page('blog.show', ['post' => $post], '0.5', $post->updated_at);
+        }
+        $pages = collect($pages);
 
         $locales = LocalizedUrl::supported();
 
@@ -78,6 +77,15 @@ class SitemapController extends Controller
         });
 
         return view('sitemap', ['urls' => $urls])->render();
+    }
+
+    /**
+     * @param  array<string, mixed>  $params
+     * @return array{route: string, params: array<string, mixed>, priority: string, lastmod: ?CarbonInterface}
+     */
+    private function page(string $route, array $params, string $priority, ?CarbonInterface $lastmod): array
+    {
+        return ['route' => $route, 'params' => $params, 'priority' => $priority, 'lastmod' => $lastmod];
     }
 
     /**

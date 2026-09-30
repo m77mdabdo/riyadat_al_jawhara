@@ -6,6 +6,7 @@ use App\Models\Lead;
 use App\Models\Project;
 use App\Models\WhatsappClick;
 use App\Support\LocalizedUrl;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
@@ -51,7 +52,7 @@ class WhatsappClickController extends Controller
         return response()->noContent();
     }
 
-    private function leadFor(Request $request, string $type, $context, ?string $locale, ?string $page): ?Lead
+    private function leadFor(Request $request, string $type, Model $context, ?string $locale, ?string $page): ?Lead
     {
         $sessionKey = "whatsapp_lead.{$type}.{$context->getKey()}";
 
@@ -59,7 +60,7 @@ class WhatsappClickController extends Controller
             return Lead::find($request->session()->get($sessionKey));
         }
 
-        $label = $type === 'project' ? $context->title_en : $context->name_en;
+        $label = $context->getAttribute($type === 'project' ? 'title_en' : 'name_en');
 
         $lead = Lead::create([
             'name' => 'WhatsApp visitor',

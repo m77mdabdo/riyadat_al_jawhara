@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\LogsAdminActivity;
+use Database\Factories\StoneAttributeFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,6 +20,7 @@ use Spatie\Sluggable\SlugOptions;
  */
 class StoneAttribute extends Model
 {
+    /** @use HasFactory<StoneAttributeFactory> */
     use HasActiveScope, HasFactory, HasSlug, HasTranslations, LogsAdminActivity;
 
     public const FINISH = 'finish';
@@ -63,11 +65,16 @@ class StoneAttribute extends Model
             ->extraScope(fn (Builder $builder) => $builder->where('type', $this->type));
     }
 
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeOfType(Builder $query, string $type): Builder
     {
         return $query->where('type', $type);
     }
 
+    /** @return BelongsToMany<StoneType, $this> */
     public function stoneTypes(): BelongsToMany
     {
         return $this->belongsToMany(StoneType::class);

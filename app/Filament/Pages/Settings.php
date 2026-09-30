@@ -10,6 +10,9 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 
+/**
+ * @property Forms\Form $form
+ */
 class Settings extends Page implements HasForms
 {
     use InteractsWithForms;
@@ -18,6 +21,7 @@ class Settings extends Page implements HasForms
 
     protected static string $view = 'filament.pages.settings';
 
+    /** @var array<string, mixed>|null */
     public ?array $data = [];
 
     /**

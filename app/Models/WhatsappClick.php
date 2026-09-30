@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\WhatsappClickFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class WhatsappClick extends Model
 {
+    /** @use HasFactory<WhatsappClickFactory> */
     use HasFactory;
 
     public const UPDATED_AT = null;
@@ -34,6 +36,7 @@ class WhatsappClick extends Model
         'lead_id',
     ];
 
+    /** @return BelongsTo<Lead, $this> */
     public function lead(): BelongsTo
     {
         return $this->belongsTo(Lead::class);

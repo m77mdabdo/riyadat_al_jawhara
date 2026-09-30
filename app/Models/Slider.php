@@ -6,6 +6,7 @@ use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\LogsAdminActivity;
+use Database\Factories\SliderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Image\Enums\Fit;
@@ -15,6 +16,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Slider extends Model implements HasMedia
 {
+    /** @use HasFactory<SliderFactory> */
     use HasActiveScope, HasFactory, HasTranslations, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
@@ -40,9 +42,9 @@ class Slider extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumb')->width(400)->height(300)->nonQueued();
-        $this->addMediaConversion('medium')->width(1200)->height(700)->nonQueued();
-        $this->addMediaConversion('hero')->fit(Fit::Max, 1920, 1080)->format('webp')->quality(80)->nonQueued();
+        $this->addMediaConversion('thumb')->nonQueued()->width(400)->height(300);
+        $this->addMediaConversion('medium')->nonQueued()->width(1200)->height(700);
+        $this->addMediaConversion('hero')->nonQueued()->fit(Fit::Max, 1920, 1080)->format('webp')->quality(80);
     }
 
     /**

@@ -5,11 +5,13 @@ namespace App\Models;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\LogsAdminActivity;
+use Database\Factories\FaqFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Faq extends Model
 {
+    /** @use HasFactory<FaqFactory> */
     use HasActiveScope, HasFactory, HasTranslations, LogsAdminActivity;
 
     protected $fillable = [

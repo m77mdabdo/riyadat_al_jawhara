@@ -9,6 +9,7 @@ use App\Models\Concerns\HasSeoOverrides;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
+use Database\Factories\ProjectFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +25,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Project extends Model implements HasMedia
 {
+    /** @use HasFactory<ProjectFactory> */
     use HasActiveScope, HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
@@ -84,20 +86,26 @@ class Project extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->registerWebpConversions();
-        $this->addMediaConversion('thumb')->width(400)->height(300)->nonQueued();
-        $this->addMediaConversion('medium')->width(1200)->height(700)->nonQueued();
+        $this->addMediaConversion('thumb')->nonQueued()->width(400)->height(300);
+        $this->addMediaConversion('medium')->nonQueued()->width(1200)->height(700);
     }
 
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeFeatured(Builder $query): Builder
     {
         return $query->where('is_featured', true);
     }
 
+    /** @return BelongsTo<Service, $this> */
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
 
+    /** @return BelongsTo<StoneType, $this> */
     public function stoneType(): BelongsTo
     {
         return $this->belongsTo(StoneType::class);
@@ -106,6 +114,8 @@ class Project extends Model implements HasMedia
     /**
      * Additional stones used in the project. `stone_type_id` stays the
      * primary stone; see allStoneTypes() for the combined list.
+     *
+     * @return BelongsToMany<StoneType, $this>
      */
     public function stoneTypes(): BelongsToMany
     {
@@ -114,6 +124,9 @@ class Project extends Model implements HasMedia
 
     /**
      * Projects that use the stone either as primary or additional material.
+     *
+     * @param  Builder<self>  $query
+     * @return Builder<self>
      */
     public function scopeUsingStone(Builder $query, int $stoneTypeId): Builder
     {
@@ -178,6 +191,7 @@ class Project extends Model implements HasMedia
             ->get();
     }
 
+    /** @return HasMany<Testimonial, $this> */
     public function testimonials(): HasMany
     {
         return $this->hasMany(Testimonial::class);

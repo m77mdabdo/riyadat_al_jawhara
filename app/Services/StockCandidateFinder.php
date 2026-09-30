@@ -47,7 +47,7 @@ class StockCandidateFinder
             return [];
         }
 
-        return collect($response->json('photos', []))->values()->map(fn (array $photo, int $rank) => [
+        return $response->collect('photos')->values()->map(fn (array $photo, int $rank) => [
             'id' => 'pexels-'.$photo['id'],
             'source' => 'Pexels',
             'rank' => $rank,
@@ -85,7 +85,7 @@ class StockCandidateFinder
             return [];
         }
 
-        return collect($response->json('hits', []))->take($count)->values()->map(fn (array $hit, int $rank) => [
+        return $response->collect('hits')->take($count)->values()->map(fn (array $hit, int $rank) => [
             'id' => 'pixabay-'.$hit['id'],
             'source' => 'Pixabay',
             'rank' => $rank,
@@ -103,6 +103,9 @@ class StockCandidateFinder
     /**
      * Downloads a candidate as WebP no wider than $maxWidth and no larger than
      * $maxKb, lowering quality step by step until it fits.
+     */
+    /**
+     * @param  array<string, mixed>  $candidate
      */
     public function download(array $candidate, string $destination, int $maxWidth = 1920, int $maxKb = 250): ?string
     {
@@ -152,6 +155,7 @@ class StockCandidateFinder
      * - calm area: low detail in the middle band leaves room for headline text
      * - resolution: enough pixels for the slot
      *
+     * @param  array<string, mixed>  $candidate
      * @return array{score: float, brightness: float, warmth: float, calm: float}
      */
     public function score(string $path, array $candidate, bool $needsTextSpace = false): array

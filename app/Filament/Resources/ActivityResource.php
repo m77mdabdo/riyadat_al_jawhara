@@ -40,6 +40,7 @@ class ActivityResource extends Resource
         return __('admin.activity.plural');
     }
 
+    /** @return Builder<Activity> */
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->with(['causer', 'subject']);

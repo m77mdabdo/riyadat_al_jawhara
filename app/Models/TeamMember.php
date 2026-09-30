@@ -7,6 +7,7 @@ use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
+use Database\Factories\TeamMemberFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -15,6 +16,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class TeamMember extends Model implements HasMedia
 {
+    /** @use HasFactory<TeamMemberFactory> */
     use HasActiveScope, HasFactory, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
@@ -40,7 +42,7 @@ class TeamMember extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->registerWebpConversions();
-        $this->addMediaConversion('thumb')->width(300)->height(300)->nonQueued();
+        $this->addMediaConversion('thumb')->nonQueued()->width(300)->height(300);
     }
 
     public function getNameAttribute(): string

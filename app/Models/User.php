@@ -18,6 +18,7 @@ class User extends Authenticatable implements FilamentUser
     use HasFactory, HasRoles, LogsAdminActivity, Notifiable;
 
     /** Never log password hashes or tokens. */
+    /** @var list<string> */
     protected array $activityLogOnly = ['name', 'email'];
 
     /**

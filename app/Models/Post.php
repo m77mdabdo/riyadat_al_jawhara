@@ -8,6 +8,7 @@ use App\Models\Concerns\HasSeoOverrides;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
+use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Post extends Model implements HasMedia
 {
+    /** @use HasFactory<PostFactory> */
     use HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
@@ -45,6 +47,10 @@ class Post extends Model implements HasMedia
         'views_count' => 'integer',
     ];
 
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('is_published', true)->where('published_at', '<=', now());
@@ -65,30 +71,35 @@ class Post extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->registerWebpConversions();
-        $this->addMediaConversion('thumb')->width(400)->height(300)->nonQueued();
-        $this->addMediaConversion('medium')->width(1200)->height(700)->nonQueued();
+        $this->addMediaConversion('thumb')->nonQueued()->width(400)->height(300);
+        $this->addMediaConversion('medium')->nonQueued()->width(1200)->height(700);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
     }
 
+    /** @return BelongsTo<BlogCategory, $this> */
     public function blogCategory(): BelongsTo
     {
         return $this->belongsTo(BlogCategory::class);
     }
 
+    /** @return BelongsToMany<Tag, $this> */
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
     }
 
+    /** @return HasMany<Comment, $this> */
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
+    /** @return HasMany<Comment, $this> */
     public function approvedComments(): HasMany
     {
         return $this->hasMany(Comment::class)->where('status', 'approved')->whereNull('parent_id');

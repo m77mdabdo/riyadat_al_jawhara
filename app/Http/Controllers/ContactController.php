@@ -42,8 +42,8 @@ class ContactController extends Controller
             'services' => $services,
             'stoneTypes' => $stoneTypes,
             'selectedProject' => $project,
-            'selectedServiceId' => $service?->id ?? $project?->service_id,
-            'selectedStoneTypeId' => $stoneType?->id ?? $project?->stone_type_id,
+            'selectedServiceId' => $service->id ?? $project?->service_id,
+            'selectedStoneTypeId' => $stoneType->id ?? $project?->stone_type_id,
         ]);
     }
 

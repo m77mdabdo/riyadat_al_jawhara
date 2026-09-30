@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\StoneAttribute;
 use App\Models\StoneCategory;
 use App\Models\StoneType;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\File;
 use Mpdf\Mpdf;
 
@@ -38,7 +39,7 @@ class CataloguePdf
         return $this->cached("spec-{$stone->id}-{$locale}", function () use ($stone, $locale) {
             $stone->loadMissing(['stoneCategory', 'stoneAttributes', 'media']);
 
-            return $this->render($locale, collect([$stone->stoneCategory->setRelation('stoneTypes', collect([$stone]))]), $stone);
+            return $this->render($locale, new EloquentCollection([$stone->stoneCategory->setRelation('stoneTypes', new EloquentCollection([$stone]))]), $stone);
         });
     }
 
@@ -72,7 +73,10 @@ class CataloguePdf
         ])), 0, 12);
     }
 
-    private function categories()
+    /**
+     * @return EloquentCollection<int, StoneCategory>
+     */
+    private function categories(): EloquentCollection
     {
         return StoneCategory::ordered()
             ->with(['stoneTypes' => fn ($q) => $q->active()->ordered()->with(['stoneAttributes', 'media'])])
@@ -81,7 +85,10 @@ class CataloguePdf
             ->values();
     }
 
-    private function render(string $locale, $categories, ?StoneType $single): string
+    /**
+     * @param  EloquentCollection<int, StoneCategory>  $categories
+     */
+    private function render(string $locale, EloquentCollection $categories, ?StoneType $single): string
     {
         $previous = app()->getLocale();
         app()->setLocale($locale);

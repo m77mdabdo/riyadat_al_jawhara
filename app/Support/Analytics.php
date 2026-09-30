@@ -14,6 +14,9 @@ class Analytics
         return is_string($id) && preg_match('/^G-[A-Z0-9]{4,20}$/', $id) ? $id : null;
     }
 
+    /**
+     * @return array{domain: string, src: string}|null
+     */
     public static function plausible(): ?array
     {
         $domain = config('analytics.plausible_domain');
@@ -33,6 +36,8 @@ class Analytics
 
     /**
      * Client config for resources/js/analytics.js (null when disabled).
+     *
+     * @return array<string, mixed>|null
      */
     public static function clientConfig(): ?array
     {

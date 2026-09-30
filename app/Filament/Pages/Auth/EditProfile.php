@@ -33,7 +33,7 @@ class EditProfile extends BaseEditProfile
                     ->password()
                     ->revealable(filament()->arePasswordsRevealable())
                     ->currentPassword()
-                    ->required(fn (Get $get): bool => filled($get('password')) || $get('email') !== $this->getUser()->email)
+                    ->required(fn (Get $get): bool => filled($get('password')) || $get('email') !== $this->getUser()->getAttribute('email'))
                     ->helperText(__('Required to change your email or password.'))
                     ->dehydrated(false),
             ]);

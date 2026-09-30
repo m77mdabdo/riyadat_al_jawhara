@@ -110,7 +110,7 @@ class StoneTypeResource extends Resource
      * Multi-select bound to one of the per-type relations on StoneType, so each
      * select only lists (and only syncs) values of its own type.
      */
-    private static function attributeSelect(string $relationship, string $label): Forms\Components\Select
+    protected static function attributeSelect(string $relationship, string $label): Forms\Components\Select
     {
         return Forms\Components\Select::make($relationship)
             ->label(__($label))

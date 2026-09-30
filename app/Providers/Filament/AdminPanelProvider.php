@@ -49,12 +49,12 @@ class AdminPanelProvider extends PanelProvider
             ->profile(EditProfile::class, isSimple: false)
             ->brandName('JRA Admin')
             ->userMenuItems([
-                MenuItem::make('locale-ar')
+                'locale-ar' => MenuItem::make()
                     ->label('العربية')
                     ->icon('heroicon-o-language')
                     ->postAction(fn (): string => route('admin.locale', 'ar'))
                     ->visible(fn (): bool => app()->getLocale() !== 'ar'),
-                MenuItem::make('locale-en')
+                'locale-en' => MenuItem::make()
                     ->label('English')
                     ->icon('heroicon-o-language')
                     ->postAction(fn (): string => route('admin.locale', 'en'))

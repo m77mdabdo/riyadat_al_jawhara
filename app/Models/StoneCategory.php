@@ -7,6 +7,7 @@ use App\Models\Concerns\HasCoverImage;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
+use Database\Factories\StoneCategoryFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,6 +20,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class StoneCategory extends Model implements HasMedia
 {
+    /** @use HasFactory<StoneCategoryFactory> */
     use HasCoverImage, HasFactory, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
@@ -38,7 +40,7 @@ class StoneCategory extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->registerWebpConversions();
-        $this->addMediaConversion('medium')->width(1200)->height(700)->nonQueued();
+        $this->addMediaConversion('medium')->nonQueued()->width(1200)->height(700);
     }
 
     public function getDescriptionAttribute(): ?string
@@ -46,6 +48,10 @@ class StoneCategory extends Model implements HasMedia
         return $this->translated('description');
     }
 
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('order');
@@ -58,6 +64,7 @@ class StoneCategory extends Model implements HasMedia
             ->saveSlugsTo('slug');
     }
 
+    /** @return HasMany<StoneType, $this> */
     public function stoneTypes(): HasMany
     {
         return $this->hasMany(StoneType::class);
