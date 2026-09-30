@@ -43,9 +43,15 @@
                         </dl>
                     </div>
                 @endif
-                <x-button :href="route('contact', ['stone_type' => $stoneType->slug])" class="mt-6">
-                    {{ __('site.common.request_quote') }}
-                </x-button>
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <x-button :href="route('contact', ['stone_type' => $stoneType->slug])">
+                        {{ __('site.common.request_quote') }}
+                    </x-button>
+                    <x-button :href="route('stones.spec-sheet', $stoneType)" variant="outline" target="_blank" rel="noopener">
+                        <x-heroicon-o-arrow-down-tray class="h-4 w-4" aria-hidden="true" /> {{ __('site.catalogue.spec_sheet') }}
+                    </x-button>
+                    <a href="{{ route('stones.catalogue') }}" target="_blank" rel="noopener" class="link-sweep inline-flex min-h-11 items-center text-sm font-semibold text-charcoal">{{ __('site.catalogue.download') }}</a>
+                </div>
             </div>
         </div>
     </section>

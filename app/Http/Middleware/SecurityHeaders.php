@@ -32,7 +32,11 @@ class SecurityHeaders
 
         // The Vite dev server (npm run dev) injects scripts from another
         // origin; only send a CSP for built assets.
-        if (! Vite::isRunningHot()) {
+        // No CSP on PDFs (the catalogue): object-src 'none' can stop the
+        // browser's built-in PDF viewer from rendering them inline.
+        $isPdf = str_starts_with((string) $response->headers->get('Content-Type'), 'application/pdf');
+
+        if (! Vite::isRunningHot() && ! $isPdf) {
             $headers['Content-Security-Policy'] = self::contentSecurityPolicy();
         }
 

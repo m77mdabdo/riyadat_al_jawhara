@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FallbackController;
 use App\Http\Controllers\FaqController;
@@ -32,7 +33,13 @@ Route::prefix('{locale}')
         Route::get('/services/{service:slug}', [ServiceController::class, 'show'])->name('services.show');
 
         Route::get('/stones', [StoneController::class, 'index'])->name('stones.index');
+        Route::get('/stones/catalogue.pdf', [CatalogueController::class, 'catalogue'])
+            ->middleware('throttle:20,1')
+            ->name('stones.catalogue');
         Route::get('/stones/{stoneType:slug}', [StoneController::class, 'show'])->name('stones.show');
+        Route::get('/stones/{stoneType:slug}/spec-sheet.pdf', [CatalogueController::class, 'specSheet'])
+            ->middleware('throttle:20,1')
+            ->name('stones.spec-sheet');
 
         Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
         Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');

@@ -1,5 +1,11 @@
 <x-layout :title="__('site.stones.title')" :description="__('site.stones.meta_description')" :breadcrumbs="[['name' => __('site.stones.title'), 'url' => route('stones.index')]]">
-    <x-page-header :title="__('site.stones.title')" :subtitle="__('site.stones.meta_description')" texture="texture-quartz" />
+    <x-page-header :title="__('site.stones.title')" :subtitle="__('site.stones.meta_description')" texture="texture-quartz">
+        <div class="mt-6">
+            <x-button :href="route('stones.catalogue')" variant="outline" target="_blank" rel="noopener">
+                <x-heroicon-o-arrow-down-tray class="h-4 w-4" aria-hidden="true" /> {{ __('site.catalogue.download') }}
+            </x-button>
+        </div>
+    </x-page-header>
 
     <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{
             active: 0,

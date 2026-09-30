@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Setting;
+use App\Models\StoneAttribute;
+use App\Models\StoneCategory;
+use App\Models\StoneType;
+use App\Services\CataloguePdf;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -30,6 +34,13 @@ class AppServiceProvider extends ServiceProvider
         // Default {locale} for URLs generated outside a public request (CLI,
         // queued mail, sitemap); SetLocale overrides it per request.
         URL::defaults(['locale' => config('locales.default')]);
+
+        // Catalogue PDFs are fingerprinted by the stone data; also clear the
+        // cached files whenever that data changes.
+        foreach ([StoneType::class, StoneCategory::class, StoneAttribute::class] as $model) {
+            $model::saved(fn () => app(CataloguePdf::class)->flush());
+            $model::deleted(fn () => app(CataloguePdf::class)->flush());
+        }
 
         // One password policy for every place a password is set: profile page,
         // password reset, and app:create-admin.

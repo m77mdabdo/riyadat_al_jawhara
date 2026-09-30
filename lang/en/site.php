@@ -195,6 +195,15 @@ return [
         'meta_description' => 'Browse our marble, granite, quartz and natural stone collection by finish, colour and application.',
     ],
 
+    'catalogue' => [
+        'title' => 'Stone catalogue',
+        'download' => 'Download the catalogue (PDF)',
+        'spec_sheet' => 'Download spec sheet (PDF)',
+        'generated' => 'Updated :date',
+        'disclaimer' => 'Natural stone varies in colour and veining; please confirm with a sample before ordering.',
+        'page' => 'Page {PAGENO} of {nbpg}',
+    ],
+
     'projects' => [
         'title' => 'Our Projects',
         'client' => 'Client',
