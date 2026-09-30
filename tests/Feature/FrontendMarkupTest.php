@@ -50,7 +50,18 @@ class FrontendMarkupTest extends TestCase
         $manifest = json_decode(file_get_contents(public_path('site.webmanifest')), true, flags: JSON_THROW_ON_ERROR);
         foreach ($manifest['icons'] as $icon) {
             $this->assertFileExists(public_path(ltrim($icon['src'], '/')));
+            [$w, $h] = getimagesize(public_path(ltrim($icon['src'], '/')));
+            $this->assertSame($icon['sizes'], "{$w}x{$h}", $icon['src']);
         }
+
+        // PWA basics: theme colours, maskable icons, a start URL that doesn't redirect.
+        $this->assertSame('#2B2B2B', $manifest['theme_color']);
+        $this->assertNotEmpty($manifest['background_color']);
+        $maskable = collect($manifest['icons'])->where('purpose', 'maskable')->pluck('sizes')->all();
+        $this->assertContains('192x192', $maskable);
+        $this->assertContains('512x512', $maskable);
+        $this->get($manifest['start_url'])->assertOk();
+        $this->assertFileDoesNotExist(public_path('sw.js'), 'no service worker (out of scope)');
     }
 
     public function test_every_static_image_referenced_in_views_exists(): void
