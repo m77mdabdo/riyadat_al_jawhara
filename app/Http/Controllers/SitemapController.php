@@ -28,6 +28,7 @@ class SitemapController extends Controller
             ['route' => 'stones.index', 'params' => [], 'priority' => '0.8', 'lastmod' => $latest(StoneType::active())],
             ['route' => 'projects.index', 'params' => [], 'priority' => '0.8', 'lastmod' => $latest(Project::active())],
             ['route' => 'blog.index', 'params' => [], 'priority' => '0.7', 'lastmod' => $latest(Post::published())],
+            ['route' => 'gallery', 'params' => [], 'priority' => '0.6', 'lastmod' => $latest(Project::active())],
             ['route' => 'faq', 'params' => [], 'priority' => '0.5', 'lastmod' => $latest(Faq::active())],
             ['route' => 'about', 'params' => [], 'priority' => '0.6', 'lastmod' => $settingsUpdated],
             ['route' => 'contact', 'params' => [], 'priority' => '0.6', 'lastmod' => $settingsUpdated],

@@ -40,6 +40,7 @@ return [
         'contact' => 'Contact Us',
         'blog' => 'News',
         'faq' => 'FAQ',
+        'gallery' => 'Gallery',
     ],
 
     'common' => [
@@ -133,6 +134,17 @@ return [
         'our_team' => 'Our Team',
         'hero_alt' => 'Designers reviewing a floor plan on a white marble table',
         'banner_alt' => 'Granite and marble slabs stored upright in a stone workshop',
+    ],
+
+    'gallery' => [
+        'title' => 'Gallery',
+        'subtitle' => 'Stone in detail: textures, finishes and completed spaces',
+        'filter_type' => 'Filter by type',
+        'filter_stone' => 'Filter by stone',
+        'projects' => 'Projects',
+        'stones' => 'Stones',
+        'any_stone' => 'Any stone',
+        'empty' => 'No images yet for this selection.',
     ],
 
     'faq' => [

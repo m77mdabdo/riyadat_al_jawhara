@@ -5,6 +5,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FallbackController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\LocaleController;
@@ -40,6 +41,8 @@ Route::prefix('{locale}')
         Route::post('/blog/{post:slug}/comments', [BlogController::class, 'storeComment'])
             ->middleware('throttle:5,1')
             ->name('blog.comments.store');
+
+        Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery');
 
         Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 

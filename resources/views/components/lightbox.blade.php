@@ -7,8 +7,11 @@
     - Escape closes; arrow keys / swipe navigate. In RTL the arrow keys are
       mirrored so "next" always follows reading direction.
     - Page scroll is locked while open. Only the active image is loaded.
+    - layout="masonry" (gallery page): natural-aspect tiles in CSS columns,
+      with real width/height so there is no layout shift. Without $alt, each
+      item is described by its own project/stone name.
 --}}
-@props(['media', 'alt'])
+@props(['media', 'alt' => null, 'layout' => 'grid'])
 
 @php
     // Prefer the WebP renditions, then the JPEG conversions, then the original.
@@ -22,10 +25,28 @@
         return $item->getUrl();
     };
 
-    $items = $media->values()->map(fn ($item) => [
-        'thumb' => $pick($item, ['card', 'thumb']),
-        'full' => $pick($item, ['large', 'medium']),
-    ]);
+    $thumbConversion = function ($item): ?string {
+        foreach (['card', 'thumb'] as $name) {
+            if ($item->hasGeneratedConversion($name)) {
+                return $name;
+            }
+        }
+
+        return null;
+    };
+
+    $items = $media->values()->map(function ($item) use ($pick, $thumbConversion, $alt) {
+        $conversion = $thumbConversion($item);
+        $size = rescue(fn () => getimagesize($conversion ? $item->getPath($conversion) : $item->getPath()), null, false) ?: [4, 3];
+
+        return [
+            'thumb' => $pick($item, ['card', 'thumb']),
+            'full' => $pick($item, ['large', 'medium']),
+            'alt' => $alt ?? ($item->model?->title ?? $item->model?->name ?? ''),
+            'width' => $size[0],
+            'height' => $size[1],
+        ];
+    });
 @endphp
 
 <div
@@ -63,13 +84,23 @@
     }"
     {{ $attributes }}
 >
+    @if ($layout === 'masonry')
+        <div class="columns-2 sm:columns-3 lg:columns-4 gap-3 sm:gap-4">
+            @foreach ($items as $index => $item)
+                <button type="button" @click="show({{ $index }}, $el)" class="group mb-3 sm:mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg bg-stone-200" aria-label="{{ __('site.common.view_image') }} {{ $index + 1 }} / {{ $items->count() }}: {{ $item['alt'] }}">
+                    <img src="{{ $item['thumb'] }}" alt="" width="{{ $item['width'] }}" height="{{ $item['height'] }}" loading="lazy" decoding="async" class="h-auto w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] transition-transform duration-700 group-hover:scale-105">
+                </button>
+            @endforeach
+        </div>
+    @else
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
         @foreach ($items as $index => $item)
-            <button type="button" @click="show({{ $index }}, $el)" class="aspect-square rounded-lg overflow-hidden bg-stone-200" aria-label="{{ __('site.common.view_image') }} {{ $index + 1 }} / {{ $items->count() }}: {{ $alt }}">
+            <button type="button" @click="show({{ $index }}, $el)" class="aspect-square rounded-lg overflow-hidden bg-stone-200" aria-label="{{ __('site.common.view_image') }} {{ $index + 1 }} / {{ $items->count() }}: {{ $item['alt'] }}">
                 <img src="{{ $item['thumb'] }}" alt="" width="400" height="300" loading="lazy" decoding="async" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] hover:scale-105 transition-transform duration-300">
             </button>
         @endforeach
     </div>
+    @endif
 
     <div
         x-show="open"
@@ -78,7 +109,7 @@
         x-transition.opacity.duration.200ms
         role="dialog"
         aria-modal="true"
-        aria-label="{{ $alt }}"
+        aria-label="{{ $alt ?? __('site.projects.gallery') }}"
         class="fixed inset-0 z-[70] bg-charcoal/95 flex items-center justify-center p-4 sm:p-12"
         @click.self="hide()"
         @keydown.escape.window="open && hide()"
@@ -102,7 +133,7 @@
         @endif
 
         <template x-if="open">
-            <img :src="items[active].full" alt="{{ $alt }}" decoding="async" class="max-h-lightbox max-w-full rounded-lg object-contain saturate-[0.92] contrast-[1.03] sepia-[0.04]">
+            <img :src="items[active].full" :alt="items[active].alt" decoding="async" class="max-h-lightbox max-w-full rounded-lg object-contain saturate-[0.92] contrast-[1.03] sepia-[0.04]">
         </template>
 
         <p class="absolute bottom-4 inset-x-0 text-center text-sm text-stone-300" aria-live="polite"><bdi x-text="`${active + 1} / ${items.length}`"></bdi></p>

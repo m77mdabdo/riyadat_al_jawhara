@@ -4,6 +4,7 @@
         ['route' => 'services.index', 'label' => __('site.nav.services')],
         ['route' => 'stones.index', 'label' => __('site.nav.stones')],
         ['route' => 'projects.index', 'label' => __('site.nav.projects')],
+        ['route' => 'gallery', 'label' => __('site.nav.gallery')],
         ['route' => 'blog.index', 'label' => __('site.nav.blog')],
         ['route' => 'faq', 'label' => __('site.nav.faq')],
         ['route' => 'about', 'label' => __('site.nav.about')],
