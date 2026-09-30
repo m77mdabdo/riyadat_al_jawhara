@@ -2,30 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Catalogue\GenerateCatalogue;
 use App\Models\StoneType;
-use App\Services\CataloguePdf;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CatalogueController extends Controller
 {
-    public function catalogue(CataloguePdf $pdf): BinaryFileResponse
+    public function catalogue(GenerateCatalogue $generate): BinaryFileResponse
     {
-        $locale = app()->getLocale();
-
-        return response()->file($pdf->catalogue($locale), [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="jra-stone-catalogue-'.$locale.'.pdf"',
-        ]);
+        return $this->pdf($generate->handle(app()->getLocale()));
     }
 
-    public function specSheet(CataloguePdf $pdf, StoneType $stoneType): BinaryFileResponse
+    public function specSheet(GenerateCatalogue $generate, StoneType $stoneType): BinaryFileResponse
     {
         abort_unless($stoneType->is_active, 404);
-        $locale = app()->getLocale();
 
-        return response()->file($pdf->specSheet($stoneType, $locale), [
+        return $this->pdf($generate->handle(app()->getLocale(), $stoneType));
+    }
+
+    /**
+     * @param  array{path: string, filename: string}  $file
+     */
+    private function pdf(array $file): BinaryFileResponse
+    {
+        return response()->file($file['path'], [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="'.$stoneType->slug.'-'.$locale.'.pdf"',
+            'Content-Disposition' => 'inline; filename="'.$file['filename'].'"',
         ]);
     }
 }

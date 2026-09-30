@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CommentStatus;
+use App\Actions\Comments\StoreComment;
 use App\Http\Requests\StoreCommentRequest;
 use App\Models\BlogCategory;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Support\Like;
+use App\Support\VisitorContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -94,26 +95,11 @@ class BlogController extends Controller
         $post->setRelation('approvedComments', $byParent->get(0, collect())->values());
     }
 
-    public function storeComment(StoreCommentRequest $request, Post $post): RedirectResponse
+    public function storeComment(StoreCommentRequest $request, Post $post, StoreComment $storeComment): RedirectResponse
     {
         abort_unless($post->is_published, 404);
 
-        $data = $request->validated();
-
-        // Honeypot: bots that fill this field are silently marked as spam,
-        // not rejected, so they don't learn the submission was caught.
-        $isSpam = filled($data['website'] ?? null);
-
-        Comment::create([
-            'post_id' => $post->id,
-            'parent_id' => $data['parent_id'] ?? null,
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'body' => $data['body'],
-            'status' => ($isSpam ? CommentStatus::Spam : CommentStatus::Pending)->value,
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-        ]);
+        $storeComment->handle($post, $request->validated(), VisitorContext::fromRequest($request));
 
         return back()
             ->with('success', __('site.blog.comment_pending_notice'))

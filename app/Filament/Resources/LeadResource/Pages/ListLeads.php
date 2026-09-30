@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\LeadResource\Pages;
 
+use App\Actions\Leads\ExportLeadsCsv;
 use App\Filament\Resources\LeadResource;
-use App\Support\LeadCsvExporter;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -21,7 +21,7 @@ class ListLeads extends ListRecords
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('gray')
                 ->visible(fn (): bool => auth()->user()?->hasRole('admin') ?? false)
-                ->action(fn () => LeadCsvExporter::download($this->getFilteredTableQuery())),
+                ->action(fn () => app(ExportLeadsCsv::class)->handle($this->getFilteredTableQuery())),
             Actions\CreateAction::make(),
         ];
     }

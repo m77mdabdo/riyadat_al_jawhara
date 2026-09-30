@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Contracts\CatalogueGenerator;
 use App\Models\BlogCategory;
 use App\Models\Faq;
 use App\Models\Post;
@@ -15,7 +16,7 @@ use App\Models\StoneType;
 use App\Models\Tag;
 use App\Models\TeamMember;
 use App\Models\Testimonial;
-use App\Services\CataloguePdf;
+use App\Services\Catalogue\MpdfCatalogueGenerator;
 use App\Support\FragmentCache;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
@@ -36,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
         // One Setting instance per request (reset between requests, queue jobs
         // and tests), backed by the cache -- see Setting::current().
         $this->app->scoped(Setting::CACHE_KEY, fn () => Setting::loadCurrent());
+
+        $this->app->singleton(CatalogueGenerator::class, MpdfCatalogueGenerator::class);
     }
 
     /**
@@ -56,8 +59,8 @@ class AppServiceProvider extends ServiceProvider
         // cached files whenever that data changes.
         // Settings (contact line, logo) and media are printed in the PDFs too.
         foreach ([StoneType::class, StoneCategory::class, StoneAttribute::class, Setting::class, Media::class] as $model) {
-            $model::saved(fn () => app(CataloguePdf::class)->flush());
-            $model::deleted(fn () => app(CataloguePdf::class)->flush());
+            $model::saved(fn () => app(CatalogueGenerator::class)->flush());
+            $model::deleted(fn () => app(CatalogueGenerator::class)->flush());
         }
 
         // Rendered fragments (home sections, sitemap): any public content

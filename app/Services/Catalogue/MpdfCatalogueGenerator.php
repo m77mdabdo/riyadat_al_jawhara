@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Catalogue;
 
+use App\Contracts\CatalogueGenerator;
 use App\Models\Setting;
 use App\Models\StoneAttribute;
 use App\Models\StoneCategory;
@@ -17,7 +18,7 @@ use Mpdf\Mpdf;
  * any change to stones, categories or attributes produces a new file; model
  * events (AppServiceProvider) also clear the folder.
  */
-class CataloguePdf
+class MpdfCatalogueGenerator implements CatalogueGenerator
 {
     public function directory(): string
     {

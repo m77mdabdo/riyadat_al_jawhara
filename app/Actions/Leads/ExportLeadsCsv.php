@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support;
+namespace App\Actions\Leads;
 
 use App\Enums\LeadSource;
 use App\Enums\LeadStatus;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * Cells that a spreadsheet would treat as a formula are prefixed with an
  * apostrophe (OWASP "CSV injection" guidance).
  */
-class LeadCsvExporter
+class ExportLeadsCsv
 {
     public const HEADERS = [
         'ID', 'Received', 'Name', 'Phone', 'Email', 'City', 'Service', 'Stone type', 'Project',
@@ -24,7 +24,7 @@ class LeadCsvExporter
     /**
      * @param  Builder<Lead>  $query
      */
-    public static function download(Builder $query, ?string $filename = null): StreamedResponse
+    public function handle(Builder $query, ?string $filename = null): StreamedResponse
     {
         $filename ??= 'leads-'.now()->format('Y-m-d-His').'.csv';
 

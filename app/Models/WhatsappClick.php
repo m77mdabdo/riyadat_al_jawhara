@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * An anonymous click on a WhatsApp button (see WhatsappClickController).
+ * An anonymous click on a WhatsApp button (see App\Actions\Leads\RecordWhatsappClick).
  */
 class WhatsappClick extends Model
 {

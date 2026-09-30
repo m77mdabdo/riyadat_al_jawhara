@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\LeadSource;
-use App\Enums\LeadStatus;
+use App\Actions\Leads\CreateLead;
 use App\Http\Requests\StoreLeadRequest;
-use App\Models\Lead;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\Setting;
 use App\Models\StoneType;
-use App\Notifications\NewLeadNotification;
+use App\Support\VisitorContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class ContactController extends Controller
@@ -49,29 +45,12 @@ class ContactController extends Controller
         ]);
     }
 
-    public function store(StoreLeadRequest $request): RedirectResponse
+    public function store(StoreLeadRequest $request, CreateLead $createLead): RedirectResponse
     {
-        $data = $request->validated();
+        $lead = $createLead->handle($request->validated(), VisitorContext::fromRequest($request));
 
-        // Honeypot: bots that fill this hidden field get the normal success
-        // response, but nothing is stored, so they can't tell they were caught.
-        if (filled($data['website'] ?? null)) {
-            return $this->thankYou();
-        }
-
-        $lead = Lead::create(Arr::except($data, ['website', 'consent']) + [
-            'status' => LeadStatus::New->value,
-            'source' => LeadSource::Website->value,
-            'locale' => app()->getLocale(),
-            'source_url' => Str::limit((string) $request->headers->get('referer'), 2040, ''),
-            'ip_address' => $request->ip(),
-            'user_agent' => Str::limit((string) $request->userAgent(), 500, ''),
-            'consented_at' => now(),
-        ]);
-
-        NewLeadNotification::dispatchFor($lead);
-
-        return $this->thankYou()->with('lead_submitted', true);
+        // A caught bot (honeypot) sees the same page, without the conversion flag.
+        return $lead ? $this->thankYou()->with('lead_submitted', true) : $this->thankYou();
     }
 
     /**

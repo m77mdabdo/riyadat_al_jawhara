@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Actions\Leads\ExportLeadsCsv;
 use App\Enums\LeadSource;
 use App\Enums\LeadStatus;
 use App\Filament\Resources\LeadResource;
@@ -12,7 +13,6 @@ use App\Filament\Resources\LeadResource\RelationManagers\NotesRelationManager;
 use App\Models\Lead;
 use App\Models\LeadNote;
 use App\Models\User;
-use App\Support\LeadCsvExporter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
@@ -161,13 +161,13 @@ class LeadWorkflowTest extends TestCase
         $this->lead(['name' => 'Second', 'status' => LeadStatus::Closed->value]);
 
         ob_start();
-        LeadCsvExporter::download(Lead::query())->sendContent();
+        app(ExportLeadsCsv::class)->handle(Lead::query())->sendContent();
         $csv = ob_get_clean();
 
         $this->assertStringStartsWith("\xEF\xBB\xBF", $csv);
         $lines = array_values(array_filter(explode("\n", substr($csv, 3))));
         $this->assertCount(3, $lines);
-        $this->assertSame(LeadCsvExporter::HEADERS, str_getcsv($lines[0]));
+        $this->assertSame(ExportLeadsCsv::HEADERS, str_getcsv($lines[0]));
         $this->assertStringContainsString("'=HYPERLINK", $lines[1]);
         $this->assertStringContainsString('الرياض', $lines[1]);
         $this->assertStringContainsString('Closed', $lines[2]);
@@ -175,11 +175,11 @@ class LeadWorkflowTest extends TestCase
 
     public function test_safe_cell_prefixes_formula_triggers(): void
     {
-        $this->assertSame("'=1+1", LeadCsvExporter::safeCell('=1+1'));
-        $this->assertSame("'+966 55", LeadCsvExporter::safeCell('+966 55'));
-        $this->assertSame("'@SUM(A1)", LeadCsvExporter::safeCell('@SUM(A1)'));
-        $this->assertSame('0500000000', LeadCsvExporter::safeCell('0500000000'));
-        $this->assertSame('', LeadCsvExporter::safeCell(null));
+        $this->assertSame("'=1+1", ExportLeadsCsv::safeCell('=1+1'));
+        $this->assertSame("'+966 55", ExportLeadsCsv::safeCell('+966 55'));
+        $this->assertSame("'@SUM(A1)", ExportLeadsCsv::safeCell('@SUM(A1)'));
+        $this->assertSame('0500000000', ExportLeadsCsv::safeCell('0500000000'));
+        $this->assertSame('', ExportLeadsCsv::safeCell(null));
     }
 
     public function test_assignee_options_include_staff_only(): void

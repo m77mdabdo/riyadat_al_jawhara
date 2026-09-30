@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Contracts\CatalogueGenerator;
 use App\Models\Setting;
 use App\Models\StoneCategory;
 use App\Models\StoneType;
-use App\Services\CataloguePdf;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
@@ -72,7 +72,7 @@ class CataloguePdfTest extends TestCase
     public function test_pdf_is_cached_and_regenerated_when_stones_change(): void
     {
         $stone = StoneType::factory()->create();
-        $pdf = app(CataloguePdf::class);
+        $pdf = app(CatalogueGenerator::class);
 
         $first = $pdf->catalogue('en');
         $this->assertSame($first, $pdf->catalogue('en'), 'second call reuses the cached file');
@@ -129,7 +129,7 @@ class CataloguePdfTest extends TestCase
     public function test_cached_pdf_is_rebuilt_when_settings_change(): void
     {
         StoneType::factory()->create();
-        $pdf = app(CataloguePdf::class);
+        $pdf = app(CatalogueGenerator::class);
         $first = $pdf->catalogue('en');
 
         $this->travel(1)->minutes();
