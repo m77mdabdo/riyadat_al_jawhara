@@ -234,4 +234,4 @@ To clear everything when something looks stale: `php artisan optimize:clear`.
 
 - Security headers (CSP, `X-Frame-Options`, `nosniff`, Referrer and Permissions policies; HSTS over HTTPS in production) are sent by `App\Http\Middleware\SecurityHeaders` on both the site and the admin panel. If you add third-party scripts (analytics, chat), their domains must be added to the CSP there.
 - Admin uploads accept only JPG, PNG and WebP (no SVG), up to 5 MB.
-- Run `composer audit` and `npm audit --omit=dev` before every release. `docs/WORK_LOG.md` records the current status.
+- Run `composer audit` and `npm audit --omit=dev` before every release.

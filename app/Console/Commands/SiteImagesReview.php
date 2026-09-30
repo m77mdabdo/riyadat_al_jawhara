@@ -7,16 +7,17 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
 /**
- * Builds docs/visual-review/index.html: a self-contained page (inline CSS,
+ * Builds the site-images review page (config site-images.review_path): a
+ * self-contained page (inline CSS,
  * embedded thumbnails and fonts) showing every image slot's candidates with
- * their IDs and the chosen one, the Phase 10 moodboard, and before/after
- * screenshots (linked from docs/visual-review/shots/, which is git-ignored).
+ * their IDs and the chosen one, the design moodboard, and before/after
+ * screenshots (from a shots/ folder next to the page, if present).
  */
 class SiteImagesReview extends Command
 {
     protected $signature = 'site-images:review';
 
-    protected $description = 'Build the self-contained visual review page (docs/visual-review/index.html)';
+    protected $description = 'Build the self-contained page for choosing static site images';
 
     public function handle(): int
     {
@@ -72,7 +73,7 @@ class SiteImagesReview extends Command
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>JRA — Visual review (Phase 10)</title>
+<title>JRA — Site images review</title>
 <style>
 {$fontFaces}
 body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:#F8F6F3;color:#2B2B2B;line-height:1.5}
@@ -111,7 +112,7 @@ table{border-collapse:collapse;width:100%;font-size:13px}td,th{border:1px solid 
 <h2>Image slots and candidates</h2>
 {$slotHtml}
 <h2>Before / after</h2>
-<p>Full-page screenshots (390 px and 1440 px, Arabic and English). Files live in <code>docs/visual-review/shots/</code> (git-ignored; regenerate with the Playwright scripts described in the work log).</p>
+<p>Full-page screenshots (390 px and 1440 px, Arabic and English). Files are read from a <code>shots/</code> folder next to this page, if present.</p>
 {$shots}
 </main>
 </body>
@@ -120,7 +121,7 @@ HTML;
 
         File::ensureDirectoryExists(dirname(config('site-images.review_path')));
         File::put(config('site-images.review_path'), $html);
-        $this->info('Wrote docs/visual-review/index.html ('.round(strlen($html) / 1024).' KB)');
+        $this->info('Wrote '.config('site-images.review_path').' ('.round(strlen($html) / 1024).' KB)');
 
         return self::SUCCESS;
     }

@@ -110,8 +110,6 @@ docs/                                   work log, image inventory
 ## Documentation
 
 - [`DEPLOY.md`](DEPLOY.md): server requirements, first deploy, updates, queue, backups, logs.
-- [`PROJECT_AUDIT_REPORT.md`](PROJECT_AUDIT_REPORT.md): the original technical audit (baseline).
-- [`docs/WORK_LOG.md`](docs/WORK_LOG.md): what was changed, phase by phase, plus pending migrations and open questions.
 - [`docs/MISSING_IMAGES.md`](docs/MISSING_IMAGES.md): every image slot and which real photos the company must supply.
 - [`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md): everything the owner must provide or do before launch.
-- [`docs/IMAGE_CREDITS.md`](docs/IMAGE_CREDITS.md): source and licence of every static stock image; [`docs/visual-review/index.html`](docs/visual-review/index.html) for picking alternatives.
+- [`docs/IMAGE_CREDITS.md`](docs/IMAGE_CREDITS.md): source and licence of every static stock image.

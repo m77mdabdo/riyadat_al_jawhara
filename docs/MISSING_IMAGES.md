@@ -1,6 +1,6 @@
 # Images & Media — Inventory and What the Company Must Supply
 
-Audit date: 2026-09-29 (Phase 4). This lists every image slot on the public site, whether a file exists, and what a real photo should look like.
+Audit date: 2026-09-29. This lists every image slot on the public site, whether a file exists, and what a real photo should look like.
 
 **Key point:** the code no longer shows a broken image anywhere. Every Media Library slot renders through `<x-media-image>`, which falls back to the branded `<x-image-placeholder>` when nothing has been uploaded, and to the original file when a resized version hasn't been generated yet. What remains is a **content** task: replacing stock and demo photography with real company photos.
 
@@ -8,7 +8,7 @@ Status legend:
 - **OK**: the file exists and is final (brand asset).
 - **Stock**: the file exists, but it is a stock or demo photo (Pexels) and must be replaced before launch.
 - **Placeholder**: nothing is uploaded; the branded placeholder is shown.
-- **Missing**: referenced, but the file does not exist. None remain after this phase.
+- **Missing**: referenced, but the file does not exist. None remain.
 
 ## 1. Static files in `public/` (checked on disk)
 
@@ -34,7 +34,7 @@ The counts are a **read-only** query of the local database on 2026-09-29. Every 
 
 | Model → collection | Where it's used | Local DB | Status | Recommended size / ratio | Real photo needed? |
 |---|---|---|---|---|---|
-| Slider → `image` | Home hero background per slide (**new** in Phase 3d; falls back to poster/video) | 3 of 3 slides | Stock | 1920×1080 (16:9), subject centred | **Yes** |
+| Slider → `image` | Home hero background per slide (falls back to poster/video) | 3 of 3 slides | Stock | 1920×1080 (16:9), subject centred | **Yes** |
 | Service → `cover` | Service cards (4:3) and service page banner (16:9 mobile / 21:9 desktop) | 4 of 4 | Stock | 1600×900; keep the subject in the centre 4:3 area | **Yes**: the company's own work per service |
 | StoneType → `cover` | Stone cards (square), stone preview (4:3), stone page (square) | 5 of 5 | Stock | 1200×1200 (square), close-up slab texture | **Yes**: real slabs or tiles from stock |
 | StoneType → `gallery` | Stone page gallery + lightbox | 10 files / 5 stones | Stock | 1600×1200, several finishes and applications | **Yes** |
@@ -44,7 +44,7 @@ The counts are a **read-only** query of the local database on 2026-09-29. Every 
 | Post → `cover` | Blog cards (4:3), article banner, `Article` JSON-LD image | 8 of 10 posts | Stock; **2 posts show the placeholder** | 1600×900 | Recommended |
 | TeamMember → `photo` | About page team grid (circle crop) | 4 of 4 | Stock (stock portraits of invented people) | 600×600, face centred | **Yes**: real staff, with their consent, or remove the section |
 | Testimonial → `client_photo` | Home testimonials (36px circle) | 3 of 4; **1 shows the placeholder** | Stock (invented clients) | 200×200 | Only with the client's permission; otherwise leave empty (the placeholder is fine) |
-| Setting → `logo`, `logo_light`, `og_image` | Branding (**new**, Phase 3d) | not uploaded | Placeholder → static brand files | See section 1 | Optional |
+| Setting → `logo`, `logo_light`, `og_image` | Branding | not uploaded | Placeholder → static brand files | See section 1 | Optional |
 
 ## 3. Code-level guarantees (verified)
 

@@ -2,7 +2,7 @@
 
 Branch: `upgrade/laravel-12`, created from the final `feature/phase-8-plus` (`57ccbd5`). `feature/phase-8-plus` stays on Laravel 11 and is fully usable on its own.
 
-Written 2026-09-30, **before** the upgrade (MASTER_TASK Phase 12, step 1). The results are in section 6.
+Written 2026-09-30, before the upgrade. The results are in section 6.
 
 ## 1. Why: Laravel 11 is out of security support
 

@@ -16,7 +16,7 @@ use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
- * Phase 10: design system, homepage enrichment, imagery guarantees.
+ * Design system, homepage sections and imagery guarantees.
  */
 class VisualSystemTest extends TestCase
 {

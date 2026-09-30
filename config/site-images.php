@@ -9,7 +9,8 @@
 | for, the size budget, and which candidate was chosen. Files live in
 | public/images/site/{slot}.webp.
 |
-| To swap an image: open docs/visual-review/index.html, pick another candidate
+| To swap an image: run `php artisan site-images:review`, open the page it
+| writes (storage/app/site-images/review.html), pick another candidate
 | ID for the slot, then run
 |
 |     php artisan site-images:pick {slot} {candidate-id}
@@ -29,7 +30,7 @@ return [
     // Where the chosen-image state and generated docs live (overridable in tests).
     'state_path' => resource_path('data/site-images.json'),
     'credits_path' => base_path('docs/IMAGE_CREDITS.md'),
-    'review_path' => base_path('docs/visual-review/index.html'),
+    'review_path' => storage_path('app/site-images/review.html'),
 
     'slots' => [
         'hero' => [
@@ -100,7 +101,7 @@ return [
 
     /*
     | Stone-category landing tiles on the home page: category slug => texture
-    | slot, used until the category has its own image (Phase 11).
+    | slot, used until the category has its own image.
     */
     'category_tiles' => [
         'marble' => 'texture-marble',

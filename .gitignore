@@ -29,3 +29,4 @@ yarn-error.log
 /.internal/
 /.kilo/
 /storage/framework/phpstan
+/storage/media-library/

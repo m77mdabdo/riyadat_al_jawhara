@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /**
- * Guards the Phase 4 UI/accessibility work at the markup level
+ * Guards the UI/accessibility work at the markup level
  * (visual checks were done separately with Playwright screenshots).
  */
 class FrontendMarkupTest extends TestCase
