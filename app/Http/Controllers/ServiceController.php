@@ -20,7 +20,7 @@ class ServiceController extends Controller
 
         return view('services.show', [
             'service' => $service,
-            'projects' => $service->projects()->active()->ordered()->with('media')->take(6)->get(),
+            'projects' => $service->projects()->active()->ordered()->with('media')->take(config('site.lists.related_projects'))->get(),
         ]);
     }
 }

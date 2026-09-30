@@ -62,8 +62,8 @@ class Settings extends Page implements HasForms
     {
         $image = fn (string $name, string $collection, string $label, string $help) => ImageUpload::make($name, $collection)
             ->label($label)
-            ->maxSize(2048)
-            ->helperText(__($help).' '.__('JPG, PNG or WebP, up to 2 MB.'));
+            ->maxSize((int) config('site.uploads.branding_max_kb'))
+            ->helperText(__($help).' '.__('JPG, PNG or WebP, up to :size MB.', ['size' => round(config('site.uploads.branding_max_kb') / 1024)]));
 
         return $form
             ->model($this->getSetting())
@@ -171,7 +171,8 @@ class Settings extends Page implements HasForms
         $setting = $this->getSetting();
         $setting->fill($this->form->getState())->save();
         $this->form->model($setting)->saveRelationships();
-        // Media uploads don't touch the settings row, so flush explicitly.
+        // Media uploads don't touch the settings row, so flush explicitly
+        // (the media observer already cleared the public caches).
         Setting::flushCache();
 
         Notification::make()

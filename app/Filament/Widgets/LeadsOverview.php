@@ -15,6 +15,7 @@ class LeadsOverview extends BaseWidget
     protected function getStats(): array
     {
         $due = Lead::followUpDue()->count();
+        $days = (int) config('site.dashboard_whatsapp_days');
 
         return [
             Stat::make(__('New Leads'), Lead::where('status', LeadStatus::New->value)->count())
@@ -24,8 +25,8 @@ class LeadsOverview extends BaseWidget
                 ->description($due > 0 ? __('Due today or overdue') : __('Nothing overdue'))
                 ->color($due > 0 ? 'danger' : 'success')
                 ->url(route('filament.admin.resources.leads.index', ['tableFilters[follow_up_due][isActive]' => true])),
-            Stat::make(__('WhatsApp Clicks (30 days)'), WhatsappClick::where('created_at', '>=', now()->subDays(30))->count())
-                ->description(Lead::where('source', LeadSource::Whatsapp->value)->where('created_at', '>=', now()->subDays(30))->count().' '.__('with a known page context → leads'))
+            Stat::make(__('WhatsApp Clicks (:days days)', ['days' => $days]), WhatsappClick::where('created_at', '>=', now()->subDays($days))->count())
+                ->description(Lead::where('source', LeadSource::Whatsapp->value)->where('created_at', '>=', now()->subDays($days))->count().' '.__('with a known page context → leads'))
                 ->color('success'),
             Stat::make(__('Total Leads'), Lead::count())
                 ->description(__('All time'))

@@ -79,8 +79,6 @@
     "Is active": "مفعّل",
     "Is featured": "مميز",
     "Is published": "منشور",
-    "JPG, PNG or WebP, up to 2 MB.": "JPG أو PNG أو WebP، حتى 2 ميغابايت.",
-    "JPG, PNG or WebP, up to 5 MB.": "JPG أو PNG أو WebP، حتى 5 ميغابايت.",
     "Language": "اللغة",
     "Leads": "العملاء المحتملون",
     "Leads per Month": "العملاء المحتملون شهريًا",
@@ -146,7 +144,6 @@
     "Settings": "الإعدادات",
     "Settings saved": "تم حفظ الإعدادات",
     "Show client name on the website": "إظهار اسم العميل على الموقع",
-    "Shown on the home tiles and the category landing section. JPG, PNG or WebP, up to 5 MB. Without it, a stone texture is used.": "تظهر في مربعات الصفحة الرئيسية وفي قسم التصنيف. JPG أو PNG أو WebP، حتى 5 ميغابايت. بدونها تُستخدم خامة حجر.",
     "Sizes / Thickness": "المقاسات / السماكة",
     "Slug": "الرابط المختصر",
     "Snapchat url": "رابط سناب شات",
@@ -187,7 +184,6 @@
     "Views": "المشاهدات",
     "Visible in the portfolio": "الظاهرة في معرض الأعمال",
     "Vision (EN)": "الرؤية (EN)",
-    "WhatsApp Clicks (30 days)": "نقرات واتساب (30 يومًا)",
     "Whatsapp": "واتساب",
     "When": "الوقت",
     "With country code, e.g. 966501234567. Spaces and \"+\" are removed on save.": "مع رمز الدولة، مثل 966501234567. تُحذف المسافات وعلامة \"+\" عند الحفظ.",
@@ -248,5 +244,8 @@
     "Industrial": "صناعي",
     "Editor": "محرر",
     "Administrator": "مدير",
-    "A page of this site like /contact opens in the visitor's language automatically. Full https:// links are used as they are.": "صفحات الموقع مثل /contact تُفتح تلقائيًا بلغة الزائر. الروابط الكاملة التي تبدأ بـ https:// تُستخدم كما هي."
+    "A page of this site like /contact opens in the visitor's language automatically. Full https:// links are used as they are.": "صفحات الموقع مثل /contact تُفتح تلقائيًا بلغة الزائر. الروابط الكاملة التي تبدأ بـ https:// تُستخدم كما هي.",
+    "WhatsApp Clicks (:days days)": "نقرات واتساب (:days يومًا)",
+    "JPG, PNG or WebP, up to :size MB.": "JPG أو PNG أو WebP، حتى :size ميغابايت.",
+    "Shown on the home tiles and the category landing section. JPG, PNG or WebP, up to :size MB. Without it, a stone texture is used.": "تظهر في مربعات الصفحة الرئيسية وفي قسم التصنيف. JPG أو PNG أو WebP، حتى :size ميغابايت. بدونها تُستخدم خامة حجر."
 }

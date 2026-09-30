@@ -65,7 +65,7 @@ class StoneCategoryResource extends Resource
                     ->default(0),
                 ImageUpload::make('cover')
                     ->label(__('Category image'))
-                    ->helperText(__('Shown on the home tiles and the category landing section. JPG, PNG or WebP, up to 5 MB. Without it, a stone texture is used.'))
+                    ->helperText(__('Shown on the home tiles and the category landing section. JPG, PNG or WebP, up to :size MB. Without it, a stone texture is used.', ['size' => round(ImageUpload::maxKb() / 1024)]))
                     ->columnSpanFull(),
             ]);
     }

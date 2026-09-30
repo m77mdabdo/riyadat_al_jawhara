@@ -1,5 +1,4 @@
 @php
-    $settings = \App\Models\Setting::current();
     $rtl = $locale === 'ar';
     $logo = $settings->getFirstMedia('logo')?->getPath() ?? public_path(\App\Models\Setting::DEFAULT_LOGO);
     // Local file for mPDF (no HTTP fetches): WebP card, else JPEG thumb, else original.

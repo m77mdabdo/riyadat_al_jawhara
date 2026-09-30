@@ -13,8 +13,11 @@ class ImageUpload
 {
     public const MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-    /** Kilobytes. */
-    public const MAX_SIZE = 5120;
+    /** Upload cap in kilobytes (config/site.php). */
+    public static function maxKb(): int
+    {
+        return (int) config('site.uploads.max_kb');
+    }
 
     public static function make(string $name, ?string $collection = null): SpatieMediaLibraryFileUpload
     {
@@ -22,7 +25,7 @@ class ImageUpload
             ->collection($collection ?? $name)
             ->image()
             ->acceptedFileTypes(self::MIME_TYPES)
-            ->maxSize(self::MAX_SIZE)
-            ->helperText(__('JPG, PNG or WebP, up to 5 MB.'));
+            ->maxSize(self::maxKb())
+            ->helperText(__('JPG, PNG or WebP, up to :size MB.', ['size' => round(self::maxKb() / 1024)]));
     }
 }

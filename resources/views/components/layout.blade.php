@@ -15,7 +15,7 @@
     'waContext' => null,
 ])
 @php
-    $jsonLdSettings = \App\Models\Setting::current();
+    $jsonLdSettings = $settings;
     $siteName = __('site.meta.site_name');
 
     $pageTitle = $title ? $title.' | '.$siteName : $siteName.' | '.__('site.meta.tagline');

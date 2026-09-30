@@ -40,7 +40,7 @@ class GalleryController extends Controller
             })
             ->with('model')
             ->orderByDesc('id')
-            ->paginate(24)
+            ->paginate(config('site.pagination.gallery'))
             ->withQueryString();
 
         return view('gallery.index', [

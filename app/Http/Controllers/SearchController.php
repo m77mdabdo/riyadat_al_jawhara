@@ -21,10 +21,6 @@ use Illuminate\View\View;
  */
 class SearchController extends Controller
 {
-    private const PER_TYPE = 50;
-
-    private const PER_PAGE = 12;
-
     public function index(Request $request): View
     {
         $term = trim(Str::limit((string) $request->query('q', ''), 100, ''));
@@ -35,10 +31,11 @@ class SearchController extends Controller
         }
 
         $page = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = (int) config('site.pagination.search');
         $paginator = new LengthAwarePaginator(
-            $results->forPage($page, self::PER_PAGE)->values(),
+            $results->forPage($page, $perPage)->values(),
             $results->count(),
-            self::PER_PAGE,
+            $perPage,
             $page,
             ['path' => $request->url(), 'query' => ['q' => $term]],
         );
@@ -52,27 +49,28 @@ class SearchController extends Controller
     private function search(string $term): Collection
     {
         $match = fn (Builder $query, array $columns) => Like::anyColumn($query, $columns, $term);
+        $perType = (int) config('site.lists.search_per_type');
 
         $bilingual = fn (string ...$fields) => collect($fields)->flatMap(fn ($f) => ["{$f}_ar", "{$f}_en"])->all();
 
         $services = Service::active()->ordered()->tap(fn ($q) => $match($q, $bilingual('name', 'description')))
-            ->limit(self::PER_TYPE)->get()
+            ->limit($perType)->get()
             ->map(fn (Service $s) => $this->item('service', $s->name, $s->description, route('services.show', $s)));
 
         $stones = StoneType::active()->ordered()->tap(fn ($q) => $match($q, $bilingual('name', 'origin', 'description')))
-            ->limit(self::PER_TYPE)->get()
+            ->limit($perType)->get()
             ->map(fn (StoneType $s) => $this->item('stone', $s->name, $s->description, route('stones.show', $s)));
 
         $projects = Project::active()->ordered()->tap(fn ($q) => $match($q, $bilingual('title', 'description', 'location', 'city')))
-            ->limit(self::PER_TYPE)->get()
+            ->limit($perType)->get()
             ->map(fn (Project $p) => $this->item('project', $p->title, $p->description, route('projects.show', $p)));
 
         $posts = Post::published()->latest('published_at')->tap(fn ($q) => $match($q, $bilingual('title', 'excerpt', 'body')))
-            ->limit(self::PER_TYPE)->get()
+            ->limit($perType)->get()
             ->map(fn (Post $p) => $this->item('post', $p->title, $p->excerpt ?: $p->body, route('blog.show', $p)));
 
         $faqs = Faq::active()->ordered()->tap(fn ($q) => $match($q, $bilingual('question', 'answer')))
-            ->limit(self::PER_TYPE)->get()
+            ->limit($perType)->get()
             ->map(fn (Faq $f) => $this->item('faq', $f->question, $f->answer, route('faq').'#faq-'.$f->id));
 
         return $services->concat($stones)->concat($projects)->concat($posts)->concat($faqs)->values();

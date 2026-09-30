@@ -21,7 +21,7 @@ class SitemapController extends Controller
     {
         // Flushed on content changes; the one-hour TTL also picks up posts
         // whose publish date has passed.
-        $xml = FragmentCache::remember('sitemap', fn () => $this->build(), 3600);
+        $xml = FragmentCache::remember('sitemap', fn () => $this->build(), (int) config('site.cache.sitemap_ttl'));
 
         return response($xml, 200)->header('Content-Type', 'application/xml; charset=UTF-8');
     }

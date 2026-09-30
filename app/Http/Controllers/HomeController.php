@@ -21,10 +21,10 @@ class HomeController extends Controller
         // locale and reuse it until content changes (FragmentCache::flush()).
         $sections = FragmentCache::remember('home.sections', fn () => view('home.sections', [
             'services' => Service::active()->ordered()->with('media')->get(),
-            'featuredProjects' => Project::active()->featured()->ordered()->with('media')->take(6)->get(),
-            'stoneTypes' => StoneType::active()->ordered()->with('media')->take(8)->get(),
+            'featuredProjects' => Project::active()->featured()->ordered()->with('media')->take(config('site.lists.home_featured_projects'))->get(),
+            'stoneTypes' => StoneType::active()->ordered()->with('media')->take(config('site.lists.home_stones'))->get(),
             'testimonials' => Testimonial::active()->ordered()->with('media')->get(),
-            'faqs' => Faq::active()->ordered()->take(4)->get(),
+            'faqs' => Faq::active()->ordered()->take(config('site.lists.home_faqs'))->get(),
             'stoneCategories' => StoneCategory::ordered()->with('media')
                 ->withCount(['stoneTypes' => fn ($query) => $query->active()])
                 ->get(),

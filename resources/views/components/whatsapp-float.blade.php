@@ -1,7 +1,3 @@
-@php
-    $settings = $settings ?? \App\Models\Setting::current();
-@endphp
-
 @if ($settings->whatsapp_url)
     {{-- A landmark so the float isn't "content outside any region" for screen readers. --}}
     <aside

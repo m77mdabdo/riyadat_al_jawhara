@@ -83,7 +83,7 @@ class StoneController extends Controller
 
         return view('stones.show', [
             'stoneType' => $stoneType,
-            'projects' => Project::active()->usingStone($stoneType->id)->ordered()->with('media')->take(6)->get(),
+            'projects' => Project::active()->usingStone($stoneType->id)->ordered()->with('media')->take(config('site.lists.related_projects'))->get(),
         ]);
     }
 }

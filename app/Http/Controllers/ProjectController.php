@@ -34,7 +34,7 @@ class ProjectController extends Controller
         }
 
         return view('projects.index', [
-            'projects' => $query->paginate(9)->withQueryString(),
+            'projects' => $query->paginate(config('site.pagination.projects'))->withQueryString(),
             'services' => Service::active()->ordered()->get(),
             'stoneTypes' => StoneType::active()->ordered()->get(),
             'activeService' => $request->string('service')->toString(),

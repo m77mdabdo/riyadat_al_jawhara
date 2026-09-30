@@ -17,12 +17,10 @@ class FragmentCache
 {
     public const VERSION_KEY = 'fragment-cache:version';
 
-    public const TTL = 86400;
-
     /**
      * @param  Closure(): string  $render
      */
-    public static function remember(string $key, Closure $render, int $ttl = self::TTL): string
+    public static function remember(string $key, Closure $render, ?int $ttl = null): string
     {
         $version = Cache::rememberForever(self::VERSION_KEY, fn () => Str::random(12));
 
@@ -30,7 +28,7 @@ class FragmentCache
         // and translated text.
         $scope = request()->getSchemeAndHttpHost().':'.app()->getLocale();
 
-        return Cache::remember("fragment:{$version}:{$scope}:{$key}", $ttl, $render);
+        return Cache::remember("fragment:{$version}:{$scope}:{$key}", $ttl ?? (int) config('site.cache.fragment_ttl'), $render);
     }
 
     public static function flush(): void

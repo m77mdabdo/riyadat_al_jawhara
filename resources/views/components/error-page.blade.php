@@ -14,7 +14,7 @@
 <body class="bg-cream text-charcoal {{ app()->getLocale() === 'ar' ? 'font-arabic' : 'font-sans' }} antialiased min-h-screen flex items-center justify-center px-4 py-16">
     <main class="max-w-lg w-full text-center">
         <a href="{{ route('home') }}" class="inline-block mb-10">
-            <img src="{{ rescue(fn () => \App\Models\Setting::current()->logoUrl(), asset(\App\Models\Setting::DEFAULT_LOGO), false) }}" alt="{{ __('site.meta.site_name') }}" width="138" height="120" decoding="async" class="h-12 w-auto mx-auto">
+            <img src="{{ $settings?->logoUrl() ?? asset(\App\Models\Setting::DEFAULT_LOGO) }}" alt="{{ __('site.meta.site_name') }}" width="138" height="120" decoding="async" class="h-12 w-auto mx-auto">
         </a>
 
         <p class="text-sm font-semibold text-stone-600 tracking-[0.2em]">{{ $code }}</p>

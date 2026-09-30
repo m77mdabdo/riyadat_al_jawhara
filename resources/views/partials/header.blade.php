@@ -1,23 +1,4 @@
-@php
-    $navLinks = [
-        ['route' => 'home', 'label' => __('site.nav.home')],
-        ['route' => 'services.index', 'label' => __('site.nav.services')],
-        ['route' => 'stones.index', 'label' => __('site.nav.stones')],
-        ['route' => 'projects.index', 'label' => __('site.nav.projects')],
-        ['route' => 'gallery', 'label' => __('site.nav.gallery')],
-        ['route' => 'blog.index', 'label' => __('site.nav.blog')],
-        ['route' => 'faq', 'label' => __('site.nav.faq')],
-        ['route' => 'about', 'label' => __('site.nav.about')],
-        ['route' => 'contact', 'label' => __('site.nav.contact')],
-    ];
-
-    // "services.index" is also active on "services.show", etc.
-    $isActive = function (string $route): bool {
-        $base = str_ends_with($route, '.index') ? substr($route, 0, -6) : $route;
-
-        return request()->routeIs($route, $base.'.*');
-    };
-@endphp
+{{-- $navLinks: App\View\Composers\NavigationComposer --}}
 
 <header
     class="bg-cream/95 backdrop-blur border-b border-stone-200 sticky top-0 z-40"
@@ -39,7 +20,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between gap-4 h-20">
             <a href="{{ route('home') }}" class="flex min-h-11 items-center shrink-0" aria-label="{{ __('site.meta.site_name') }} — {{ __('site.nav.home') }}">
-                <img src="{{ ($settings ?? \App\Models\Setting::current())->logoUrl() }}" alt="{{ __('site.meta.site_name') }}" width="147" height="128" decoding="async" class="hidden sm:block h-14 w-auto">
+                <img src="{{ $settings->logoUrl() }}" alt="{{ __('site.meta.site_name') }}" width="147" height="128" decoding="async" class="hidden sm:block h-14 w-auto">
                 <img src="{{ asset('logo-monogram-header-black@2x.png') }}" alt="{{ __('site.meta.site_name') }}" width="212" height="128" decoding="async" class="block sm:hidden h-10 w-auto">
             </a>
 
@@ -47,9 +28,9 @@
                  especially with the longer Arabic labels; below that the menu button is used. --}}
             <nav class="hidden xl:flex items-center gap-6" aria-label="{{ __('site.common.main_navigation') }}">
                 @foreach ($navLinks as $link)
-                    <a href="{{ route($link['route']) }}"
-                       @if ($isActive($link['route'])) aria-current="page" @endif
-                       class="whitespace-nowrap text-sm font-medium transition-colors {{ $isActive($link['route']) ? 'text-charcoal border-b-2 border-charcoal pb-1' : 'text-stone-600 hover:text-charcoal' }}">
+                    <a href="{{ $link['url'] }}"
+                       @if ($link['active']) aria-current="page" @endif
+                       class="whitespace-nowrap text-sm font-medium transition-colors {{ $link['active'] ? 'text-charcoal border-b-2 border-charcoal pb-1' : 'text-stone-600 hover:text-charcoal' }}">
                         {{ $link['label'] }}
                     </a>
                 @endforeach
@@ -96,9 +77,9 @@
             aria-label="{{ __('site.common.main_navigation') }}"
         >
             @foreach ($navLinks as $link)
-                <a href="{{ route($link['route']) }}"
-                   @if ($isActive($link['route'])) aria-current="page" @endif
-                   class="flex min-h-11 items-center rounded-md px-3 text-base font-medium {{ $isActive($link['route']) ? 'bg-stone-100 text-charcoal' : 'text-stone-700 hover:bg-stone-100' }}">
+                <a href="{{ $link['url'] }}"
+                   @if ($link['active']) aria-current="page" @endif
+                   class="flex min-h-11 items-center rounded-md px-3 text-base font-medium {{ $link['active'] ? 'bg-stone-100 text-charcoal' : 'text-stone-700 hover:bg-stone-100' }}">
                     {{ $link['label'] }}
                 </a>
             @endforeach

@@ -36,7 +36,7 @@ class BlogController extends Controller
         }
 
         return view('blog.index', [
-            'posts' => $query->latest('published_at')->paginate(9)->withQueryString(),
+            'posts' => $query->latest('published_at')->paginate(config('site.pagination.posts'))->withQueryString(),
             'categories' => BlogCategory::ordered()->get(),
             'tags' => Tag::orderBy('name_en')->get(),
             'activeCategory' => $request->string('category')->toString(),
@@ -64,7 +64,7 @@ class BlogController extends Controller
             ->when($post->blog_category_id, fn ($q) => $q->where('blog_category_id', $post->blog_category_id))
             ->latest('published_at')
             ->with('media')
-            ->take(3)
+            ->take(config('site.lists.related_posts'))
             ->get();
 
         return view('blog.show', [

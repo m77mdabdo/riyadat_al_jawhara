@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\LogsAdminActivity;
-use App\Support\FragmentCache;
 use Database\Factories\SettingFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -206,7 +205,6 @@ class Setting extends Model implements HasMedia
     {
         Cache::forget(self::CACHE_KEY);
         app()->forgetInstance(self::CACHE_KEY);
-        FragmentCache::flush();
     }
 
     /**

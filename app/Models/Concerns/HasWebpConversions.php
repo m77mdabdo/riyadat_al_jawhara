@@ -13,11 +13,9 @@ namespace App\Models\Concerns;
  */
 trait HasWebpConversions
 {
-    public const WEBP_WIDTHS = ['card' => 800, 'large' => 1600];
-
     protected function registerWebpConversions(): void
     {
-        foreach (self::WEBP_WIDTHS as $name => $width) {
+        foreach (config('site.webp_widths') as $name => $width) {
             $this->addMediaConversion($name)
                 ->nonQueued()
                 ->width($width)

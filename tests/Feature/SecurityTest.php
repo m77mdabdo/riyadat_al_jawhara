@@ -77,7 +77,7 @@ class SecurityTest extends TestCase
         $this->actingAs(tap(User::factory()->create())->assignRole('admin'));
 
         Livewire::test(CreateProject::class)
-            ->fillForm(['title_en' => 'Big', 'title_ar' => 'ك', 'slug' => 'big', 'cover' => [UploadedFile::fake()->image('big.jpg')->size(ImageUpload::MAX_SIZE + 100)]])
+            ->fillForm(['title_en' => 'Big', 'title_ar' => 'ك', 'slug' => 'big', 'cover' => [UploadedFile::fake()->image('big.jpg')->size(ImageUpload::maxKb() + 100)]])
             ->call('create')
             ->assertHasFormErrors(['cover']);
 

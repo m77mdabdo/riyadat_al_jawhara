@@ -1,7 +1,3 @@
-@php
-    $settings = $settings ?? \App\Models\Setting::current();
-@endphp
-
 <footer class="bg-charcoal text-cream mt-auto">
     <x-motif.najdi-band tone="light" class="bg-charcoal pt-4" />
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -13,14 +9,10 @@
         <div>
             <h2 class="text-base font-semibold mb-4">{{ __('site.footer.quick_links') }}</h2>
             <ul class="text-sm text-stone-300">
-                <li><a href="{{ route('services.index') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.services') }}</a></li>
-                <li><a href="{{ route('stones.index') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.stones') }}</a></li>
-                <li><a href="{{ route('projects.index') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.projects') }}</a></li>
-                <li><a href="{{ route('gallery') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.gallery') }}</a></li>
-                <li><a href="{{ route('blog.index') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.blog') }}</a></li>
-                <li><a href="{{ route('faq') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.faq') }}</a></li>
-                <li><a href="{{ route('about') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.about') }}</a></li>
-                <li><a href="{{ route('contact') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.contact') }}</a></li>
+                @foreach ($navLinks as $link)
+                    @continue($link['route'] === 'home')
+                    <li><a href="{{ $link['url'] }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ $link['label'] }}</a></li>
+                @endforeach
             </ul>
         </div>
 

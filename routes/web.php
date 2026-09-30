@@ -35,11 +35,11 @@ Route::prefix('{locale}')
 
         Route::get('/stones', [StoneController::class, 'index'])->name('stones.index');
         Route::get('/stones/catalogue.pdf', [CatalogueController::class, 'catalogue'])
-            ->middleware('throttle:20,1')
+            ->middleware('throttle:catalogue')
             ->name('stones.catalogue');
         Route::get('/stones/{stoneType:slug}', [StoneController::class, 'show'])->name('stones.show');
         Route::get('/stones/{stoneType:slug}/spec-sheet.pdf', [CatalogueController::class, 'specSheet'])
-            ->middleware('throttle:20,1')
+            ->middleware('throttle:catalogue')
             ->name('stones.spec-sheet');
 
         Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
@@ -48,13 +48,13 @@ Route::prefix('{locale}')
         Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
         Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('blog.show');
         Route::post('/blog/{post:slug}/comments', [BlogController::class, 'storeComment'])
-            ->middleware('throttle:5,1')
+            ->middleware('throttle:comments')
             ->name('blog.comments.store');
 
         Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery');
 
         Route::get('/search', [SearchController::class, 'index'])
-            ->middleware('throttle:60,1')
+            ->middleware('throttle:search')
             ->name('search');
 
         Route::get('/faq', [FaqController::class, 'index'])->name('faq');
