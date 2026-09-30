@@ -5,11 +5,21 @@
 --}}
 @props(['title', 'subtitle' => null, 'texture' => 'texture-marble'])
 
-@php $textureUrl = \App\Support\SiteImages::url($texture); @endphp
+@php
+    $textureUrl = \App\Support\SiteImages::url($texture);
+    $textureSrcset = \App\Support\SiteImages::srcset($texture);
+@endphp
+
+@if ($textureUrl)
+    {{-- The header band is the LCP element on inner pages. --}}
+    @push('head')
+        <link rel="preload" as="image" href="{{ $textureUrl }}" imagesrcset="{{ $textureSrcset }}" imagesizes="100vw" fetchpriority="high">
+    @endpush
+@endif
 
 <section class="relative overflow-hidden bg-sand-100 border-b border-sand-200">
     @if ($textureUrl)
-        <img src="{{ $textureUrl }}" alt="" width="1280" height="853" loading="eager" decoding="async" class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-40" aria-hidden="true">
+        <img src="{{ $textureUrl }}" srcset="{{ $textureSrcset }}" sizes="100vw" alt="" width="1280" height="853" loading="eager" fetchpriority="high" decoding="async" class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-40" aria-hidden="true">
     @endif
     <div class="absolute inset-0 bg-gradient-to-b from-cream/80 via-cream/70 to-sand-100/90" aria-hidden="true"></div>
     <x-motif.geo-pattern />

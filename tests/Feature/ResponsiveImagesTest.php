@@ -41,7 +41,8 @@ class ResponsiveImagesTest extends TestCase
         $html = $this->get(route('projects.index'))->getContent();
 
         $this->assertStringContainsString($media->getUrl('medium'), $html);
-        $this->assertStringNotContainsString('srcset=', $html);
+        // (Static site images such as the page-header texture have their own srcset.)
+        $this->assertDoesNotMatchRegularExpression('/srcset="[^"]*old-/', $html);
     }
 
     public function test_small_avatars_do_not_get_a_large_srcset(): void
@@ -52,7 +53,7 @@ class ResponsiveImagesTest extends TestCase
         $html = $this->get(route('home'))->getContent();
 
         $this->assertStringContainsString($testimonial->getFirstMedia('client_photo')->getUrl('thumb'), $html);
-        $this->assertStringNotContainsString('srcset=', $html);
+        $this->assertDoesNotMatchRegularExpression('/srcset="[^"]*face-/', $html);
     }
 
     public function test_lightbox_prefers_webp_renditions(): void

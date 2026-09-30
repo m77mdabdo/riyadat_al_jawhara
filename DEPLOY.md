@@ -148,6 +148,26 @@ Scheduled tasks:
 | `privacy:prune` | daily 03:15 | Sets `ip_address` and `user_agent` to NULL on comments and leads older than `PRIVACY_RETENTION_DAYS` (default 180). The comments and leads themselves are kept. Preview with `php artisan privacy:prune --dry-run` |
 | `activitylog:clean` | weekly, Monday 03:30 | Deletes admin activity-log entries older than 365 days |
 
+## Web server: compression and caching (recommended)
+
+The app can't compress its own responses or set cache lifetimes for static files; the web server does that. Without it, mobile Lighthouse performance drops by about 6–10 points (measured locally: `/ar` 83 → 94, `/ar/stones` 87 → 97, `/ar/projects` 86 → 94 once gzip and long caching are on).
+
+- Turn on **gzip or Brotli** for HTML, CSS, JS, JSON, XML, SVG and the web manifest.
+- Send `Cache-Control: public, max-age=31536000, immutable` for `/build/*` (the file names contain a content hash) and `/images/site/*` (URLs carry `?v=` file versions).
+
+nginx example:
+
+```nginx
+gzip on;
+gzip_types text/css application/javascript application/json application/xml image/svg+xml application/manifest+json;
+location ^~ /build/       { add_header Cache-Control "public, max-age=31536000, immutable"; try_files $uri =404; }
+location ^~ /images/site/ { add_header Cache-Control "public, max-age=31536000, immutable"; try_files $uri =404; }
+```
+
+On Apache/cPanel, the equivalent is `mod_deflate` plus `mod_expires`/`mod_headers` for the same two folders (ask the host, or add the rules to the server config).
+
+Rendered home sections and the sitemap are cached through the normal cache store (`CACHE_STORE`) and cleared automatically whenever content, settings or media change. After replacing a static site image by hand, run `php artisan site-images:variants` to rebuild its 640/1024 px renditions.
+
 ## Backups
 
 Back up **both** every day and keep at least 14 days:

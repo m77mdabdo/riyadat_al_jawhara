@@ -46,6 +46,7 @@ class SiteImagesPick extends Command
 
             File::ensureDirectoryExists(public_path(SiteImages::DIRECTORY));
             File::copy(storage_path('app/stock-candidates/'.$choice['file']), SiteImages::path($slot));
+            $this->callSilently('site-images:variants', ['slot' => $slot]);
 
             $state[$slot] = collect($choice)->only([
                 'id', 'source', 'photographer', 'photographer_url', 'page_url', 'license_url',

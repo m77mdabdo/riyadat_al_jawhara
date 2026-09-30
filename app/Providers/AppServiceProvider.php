@@ -2,17 +2,28 @@
 
 namespace App\Providers;
 
+use App\Models\BlogCategory;
+use App\Models\Faq;
+use App\Models\Post;
+use App\Models\Project;
+use App\Models\Service;
 use App\Models\Setting;
+use App\Models\Slider;
 use App\Models\StoneAttribute;
 use App\Models\StoneCategory;
 use App\Models\StoneType;
+use App\Models\Tag;
+use App\Models\TeamMember;
+use App\Models\Testimonial;
 use App\Services\CataloguePdf;
+use App\Support\FragmentCache;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,6 +51,17 @@ class AppServiceProvider extends ServiceProvider
         foreach ([StoneType::class, StoneCategory::class, StoneAttribute::class] as $model) {
             $model::saved(fn () => app(CataloguePdf::class)->flush());
             $model::deleted(fn () => app(CataloguePdf::class)->flush());
+        }
+
+        // Rendered fragments (home sections, sitemap): any public content
+        // change, settings save or media upload/removal invalidates them.
+        foreach ([
+            Service::class, StoneType::class, StoneCategory::class, StoneAttribute::class, Project::class,
+            Post::class, BlogCategory::class, Tag::class, Faq::class, Slider::class, Testimonial::class,
+            TeamMember::class, Setting::class, Media::class,
+        ] as $model) {
+            $model::saved(fn () => FragmentCache::flush());
+            $model::deleted(fn () => FragmentCache::flush());
         }
 
         // One password policy for every place a password is set: profile page,

@@ -13,7 +13,7 @@
         <div @class(['max-w-5xl mx-auto px-4 sm:px-6 lg:px-8', 'mt-12' => filled($settings->about)])>
             <x-motif.mashrabiya-frame>
                 <div class="aspect-[16/9] sm:aspect-[21/9] rounded-xl overflow-hidden">
-                    <img src="{{ $aboutBanner ?? asset('images/about-hero.webp') }}" alt="{{ $aboutBanner ? __('site.about.banner_alt') : __('site.about.hero_alt') }}" width="1880" height="1253" loading="eager" decoding="async" class="h-full w-full object-cover">
+                    <img src="{{ $aboutBanner ?? asset('images/about-hero.webp') }}" @if ($aboutBanner) srcset="{{ \App\Support\SiteImages::srcset('about') }}" sizes="(min-width: 1024px) 1024px, 100vw" @endif alt="{{ $aboutBanner ? __('site.about.banner_alt') : __('site.about.hero_alt') }}" width="1880" height="1253" loading="eager" decoding="async" class="h-full w-full object-cover">
                 </div>
             </x-motif.mashrabiya-frame>
         </div>

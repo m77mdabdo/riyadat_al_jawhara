@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Service;
 use App\Models\Setting;
 use App\Models\StoneType;
+use App\Support\FragmentCache;
 use App\Support\LocalizedUrl;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
@@ -16,6 +17,15 @@ use Illuminate\Support\Carbon;
 class SitemapController extends Controller
 {
     public function index(): Response
+    {
+        // Flushed on content changes; the one-hour TTL also picks up posts
+        // whose publish date has passed.
+        $xml = FragmentCache::remember('sitemap', fn () => $this->build(), 3600);
+
+        return response($xml, 200)->header('Content-Type', 'application/xml; charset=UTF-8');
+    }
+
+    private function build(): string
     {
         $latest = fn (Builder $query): ?Carbon => ($max = $query->max('updated_at')) ? Carbon::parse($max) : null;
         $settingsUpdated = Setting::current()->updated_at;
@@ -67,9 +77,7 @@ class SitemapController extends Controller
             ]);
         });
 
-        $xml = view('sitemap', ['urls' => $urls])->render();
-
-        return response($xml, 200)->header('Content-Type', 'application/xml; charset=UTF-8');
+        return view('sitemap', ['urls' => $urls])->render();
     }
 
     /**
