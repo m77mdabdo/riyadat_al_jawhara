@@ -7,12 +7,13 @@ use App\Models\Concerns\LogsAdminActivity;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasLocalePreference
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, LogsAdminActivity, Notifiable;
@@ -59,5 +60,11 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasAnyRole(UserRole::values());
+    }
+
+    /** Emails and bell notifications use the user's admin language. */
+    public function preferredLocale(): string
+    {
+        return in_array($this->locale, config('locales.supported'), true) ? $this->locale : config('app.locale');
     }
 }

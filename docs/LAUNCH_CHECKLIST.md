@@ -10,7 +10,7 @@ Technical details for each step are in [`DEPLOY.md`](../DEPLOY.md).
 
 | # | What | `.env` keys | Why it matters |
 |---|---|---|---|
-| ☐ 1.1 | **Email sending** (SMTP, Amazon SES, Postmark…) and an address on the company domain with SPF + DKIM set up | `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME` | Without it, **no lead emails** reach the company and admins can't reset passwords |
+| ☐ 1.1 | **Email sending** (SMTP, Amazon SES, Postmark…) and an address on the company domain with SPF, DKIM and DMARC set up (DEPLOY.md → Email) | `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME` | Without it, **no lead emails** reach the company and admins can't reset passwords |
 | ☐ 1.2 | **Analytics** (optional): a GA4 measurement ID **or** a Plausible domain | `ANALYTICS_GA4_ID` **or** `ANALYTICS_PLAUSIBLE_DOMAIN` (+ `ANALYTICS_PLAUSIBLE_SRC` if self-hosted) | Leave empty for no analytics. When set, a cookie banner appears and nothing loads until the visitor accepts |
 | ☐ 1.3 | **Error monitoring** (optional, recommended): Sentry, Flare or similar | Not wired in yet: needs the provider's DSN and a small package install (developer task) | Otherwise errors are only in `storage/logs` |
 | ☐ 1.4 | Production basics | `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://your-domain`, `APP_KEY` (`php artisan key:generate` once), `DB_*` | Wrong `APP_URL` breaks images and the security policy |
@@ -58,7 +58,7 @@ php artisan media-library:regenerate --only-missing    # once, outside peak hour
 | 17 | `2026_09_30_150200_add_batch_uuid_column_to_activity_log_table` | (activity log) |
 | 18 | `2026_09_30_160000_add_locale_to_users_table` | Admin panel language per user |
 
-☐ 2.4 **Cron** (one line, every minute). It runs the privacy clean-up and the activity-log clean-up:
+☐ 2.4 **Cron** (one line, every minute). It runs the privacy clean-up, the activity-log clean-up and the daily follow-up digest (08:00 Riyadh time):
 
 ```cron
 * * * * * cd /path/to/site && php artisan schedule:run >> /dev/null 2>&1
@@ -106,7 +106,8 @@ Sign in with the account from step 2.2. You can switch the panel to Arabic from 
 ## 4. After go-live
 
 - ☐ 4.1 **Google Search Console**: add the domain, verify it, and submit `https://your-domain/sitemap.xml`. Check that `https://your-domain/robots.txt` shows the correct `Sitemap:` line.
-- ☐ 4.2 Send a test quote from `/ar/contact` and `/en/contact`: the thank-you page appears and the email arrives.
+- ☐ 4.2 Set `MAIL_TEST_RECIPIENT` and run `php artisan app:mail-test <that address>`: check every template in Gmail, Outlook and iPhone Mail (AR + EN). Then send a real test quote from `/ar/contact` and `/en/contact`: the thank-you page appears, the team email and the visitor's auto-reply arrive.
+- ☐ 4.2b In Settings → Notifications, decide on the visitor auto-reply (on by default; needs a phone or WhatsApp number) and comment emails (off by default).
 - ☐ 4.3 Click a WhatsApp button on a stone page, then check the dashboard's "WhatsApp Clicks" count goes up.
 - ☐ 4.4 Download `/ar/stones/catalogue.pdf` and `/en/stones/catalogue.pdf` and check the stone data.
 - ☐ 4.5 `php artisan schedule:list` shows `privacy:prune` and `activitylog:clean`.

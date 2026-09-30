@@ -60,4 +60,15 @@ return [
     // Admin dashboard window for the WhatsApp clicks stat.
     'dashboard_whatsapp_days' => 30,
 
+    'notifications' => [
+        // Queued notifications: attempts and seconds between retries.
+        'tries' => 3,
+        'backoff' => [60, 300, 900],
+        // Daily follow-up digest (leads:follow-up-digest).
+        'digest_time' => '08:00',
+        'timezone' => 'Asia/Riyadh',
+        // Language for mail to the company inbox (Settings → email).
+        'company_locale' => 'ar',
+    ],
+
 ];

@@ -157,6 +157,7 @@ Scheduled tasks:
 |---|---|---|
 | `privacy:prune` | daily 03:15 | Sets `ip_address` and `user_agent` to NULL on comments and leads older than `PRIVACY_RETENTION_DAYS` (default 180). The comments and leads themselves are kept. Preview with `php artisan privacy:prune --dry-run` |
 | `activitylog:clean` | weekly, Monday 03:30 | Deletes admin activity-log entries older than 365 days |
+| `leads:follow-up-digest` | daily 08:00 Asia/Riyadh | Emails (and shows in the admin bell) each staff member their leads whose follow-up date has come; unassigned ones go to admins. Sends nothing when nothing is due. Time and timezone: `config/site.php` → `notifications` |
 
 ## Web server: compression and caching (recommended)
 
@@ -177,6 +178,28 @@ location ^~ /images/site/ { add_header Cache-Control "public, max-age=31536000, 
 On Apache/cPanel, the equivalent is `mod_deflate` plus `mod_expires`/`mod_headers` for the same two folders (ask the host, or add the rules to the server config).
 
 Rendered home sections and the sitemap are cached through the normal cache store (`CACHE_STORE`) and cleared automatically whenever content, settings or media change. After replacing a static site image by hand, run `php artisan site-images:variants` to rebuild its 640/1024 px renditions.
+
+## Email: notifications and deliverability
+
+What the site sends (all queued, 3 attempts with 1/5/15-minute backoff; final failures are logged and kept in `failed_jobs`):
+
+| Email | To | Notes |
+|---|---|---|
+| New lead | Company email (Settings) + every admin (no duplicates) | Admins also get it in the admin bell, in their own admin language. Reply-To is the visitor |
+| Auto-reply | The visitor, if they gave an email | Their language. Toggle in Settings → Notifications (default on). Only sent once a phone or WhatsApp number is set in Settings. Never repeats the visitor's message |
+| Follow-up digest | Assignee (or admins for unassigned leads) | Daily at 08:00 Riyadh time via the scheduler |
+| Comment awaiting review | Admins + editors | Admin bell; email too if enabled in Settings |
+| Admin password reset | The user | Branded, in the user's admin language |
+
+Preview every template (AR/EN) in the admin under **Administration → Email previews**, or write them to files with `php artisan app:mail-test --save=storage/app/email-previews --no-send`. To send test copies, set `MAIL_TEST_RECIPIENT` in `.env` and run `php artisan app:mail-test you@company.sa` (no other address is accepted).
+
+**Sending domain (DNS, done by whoever manages the domain):**
+
+- **SPF:** one TXT record on the domain listing your mail provider, e.g. `v=spf1 include:<provider-spf-host> ~all` (the provider documents the exact value). Only one SPF record per domain.
+- **DKIM:** add the CNAME/TXT records your provider generates for the domain, then enable DKIM signing in the provider's panel.
+- **DMARC:** TXT record at `_dmarc.<domain>`, start with monitoring: `v=DMARC1; p=none; rua=mailto:dmarc@<domain>`; move to `p=quarantine` once reports show SPF/DKIM passing.
+- `MAIL_FROM_ADDRESS` must be an address on that domain (not a Gmail/Outlook address), otherwise DMARC fails and emails land in spam.
+- Check the result with a tool such as mail-tester.com or your provider's domain checker after DNS has propagated.
 
 ## Backups
 

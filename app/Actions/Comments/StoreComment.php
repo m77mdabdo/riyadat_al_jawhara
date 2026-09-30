@@ -5,6 +5,7 @@ namespace App\Actions\Comments;
 use App\Enums\CommentStatus;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Notifications\CommentPendingNotification;
 use App\Support\VisitorContext;
 use Illuminate\Support\Str;
 
@@ -22,7 +23,7 @@ class StoreComment
         // not rejected, so they don't learn the submission was caught.
         $isSpam = filled($data['website'] ?? null);
 
-        return Comment::create([
+        $comment = Comment::create([
             'post_id' => $post->id,
             'parent_id' => $data['parent_id'] ?? null,
             'name' => $data['name'],
@@ -33,5 +34,9 @@ class StoreComment
             // comments.user_agent is VARCHAR(255): MySQL in strict mode rejects longer values.
             'user_agent' => $visitor->userAgent !== null ? Str::limit($visitor->userAgent, 255, '') : null,
         ]);
+
+        CommentPendingNotification::dispatchFor($comment);
+
+        return $comment;
     }
 }

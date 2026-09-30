@@ -96,11 +96,13 @@ Read-only pages (home, listings) query in the controller and pass collections to
 
 ### Add a notification
 
-1. `php artisan make:notification SomethingHappened`, implement `ShouldQueue`, set `$tries`, `backoff()` and a `failed()` method that logs.
-2. Channels in `via()`: `mail` and/or `database` (the Filament bell).
-3. Mail: use the branded markdown layout (`resources/views/vendor/mail`) and a subject/body in both `lang/*/site.php`; send in the recipient's language (`$notifiable->locale`).
-4. Dispatch from an Action, wrapped so a mail failure never breaks the request.
-5. Tests: `Notification::fake()` and assert recipients, locale and channels; add the template to the admin "Email previews" page.
+1. `php artisan make:notification SomethingHappened`; implement `ShouldQueue`, `use Queueable, ReliableDelivery;` and call `$this->configureDelivery()` in the constructor (retries, backoff and a logged `failed()` from `config/site.php`).
+2. `via()`: `mail` and/or `database` (the Filament bell; build it with `Filament\Notifications\Notification::make()->…->getDatabaseMessage()`).
+3. Mail: return a `MailMessage` with `->markdown('mail.<area>.<name>', [...])` and a `preheader`. Templates use the branded components in `resources/views/vendor/mail` (`x-mail::message`, `details`, `chip`, `quote`, `buttons`/`buttons.item`, `button`). Every string goes in both `lang/*/site.php` under `mail.*`.
+4. Language: users get their admin language automatically (`User::preferredLocale()`); for on-demand recipients call `->locale(...)`.
+5. Add a static `dispatchFor(...)` that wraps sending in `try/catch` + `report()`, and call it from the Action — a mail problem must never break the request.
+6. Register a sample in `App\Support\EmailPreviews` so it shows in the admin "Email previews" page and `app:mail-test`.
+7. Tests: `Notification::fake()`; assert recipients, channels and locale (see `NotificationsTest`).
 
 ### Add a language (example: French)
 

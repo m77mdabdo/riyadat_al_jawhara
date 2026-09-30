@@ -79,7 +79,7 @@ class ArabicAdminTest extends TestCase
 
         $this->actingAs($this->admin('ar'));
 
-        $urls = ['/admin', '/admin/settings', '/admin/profile', '/admin/activities'];
+        $urls = ['/admin', '/admin/settings', '/admin/profile', '/admin/activities', '/admin/email-previews'];
         foreach (self::RESOURCES as $slug => [$model, $pages]) {
             $record = $model::factory()->create();
             $urls[] = "/admin/{$slug}";

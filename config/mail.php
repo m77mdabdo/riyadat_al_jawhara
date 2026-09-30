@@ -113,4 +113,20 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    | Branded email layout: resources/views/vendor/mail (theme: jra.css).
+    */
+    'markdown' => [
+        'theme' => env('MAIL_MARKDOWN_THEME', 'jra'),
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+    ],
+
+    /*
+    | The only address test emails (app:mail-test, admin "Email previews")
+    | may be sent to. Empty = test sending is disabled.
+    */
+    'test_recipient' => env('MAIL_TEST_RECIPIENT'),
+
 ];

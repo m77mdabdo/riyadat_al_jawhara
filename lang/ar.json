@@ -229,5 +229,22 @@
     "A page of this site like /contact opens in the visitor's language automatically. Full https:// links are used as they are.": "صفحات الموقع مثل /contact تُفتح تلقائيًا بلغة الزائر. الروابط الكاملة التي تبدأ بـ https:// تُستخدم كما هي.",
     "WhatsApp Clicks (:days days)": "نقرات واتساب (:days يومًا)",
     "JPG, PNG or WebP, up to :size MB.": "JPG أو PNG أو WebP، حتى :size ميغابايت.",
-    "Shown on the home tiles and the category landing section. JPG, PNG or WebP, up to :size MB. Without it, a stone texture is used.": "تظهر في مربعات الصفحة الرئيسية وفي قسم التصنيف. JPG أو PNG أو WebP، حتى :size ميغابايت. بدونها تُستخدم خامة حجر."
+    "Shown on the home tiles and the category landing section. JPG, PNG or WebP, up to :size MB. Without it, a stone texture is used.": "تظهر في مربعات الصفحة الرئيسية وفي قسم التصنيف. JPG أو PNG أو WebP، حتى :size ميغابايت. بدونها تُستخدم خامة حجر.",
+    "Email previews": "معاينة الرسائل",
+    "Send test to…": "إرسال تجربة إلى…",
+    "Set MAIL_TEST_RECIPIENT in .env to enable test emails.": "اضبط MAIL_TEST_RECIPIENT في ملف ‎.env لتفعيل رسائل التجربة.",
+    "Test emails can only go to the configured test address.": "لا تُرسل رسائل التجربة إلا إلى عنوان التجربة المضبوط.",
+    "Test email sent": "أُرسلت رسالة التجربة",
+    "Sending failed": "تعذّر الإرسال",
+    "Template": "القالب",
+    "Subject": "الموضوع",
+    "New lead (team)": "عميل محتمل جديد (للفريق)",
+    "Auto-reply (visitor)": "رد تلقائي (للزائر)",
+    "Follow-up digest (team)": "ملخص المتابعات (للفريق)",
+    "Comment awaiting review (team)": "تعليق بانتظار المراجعة (للفريق)",
+    "Admin password reset": "إعادة تعيين كلمة مرور المدير",
+    "Notifications": "الإشعارات",
+    "Send an automatic confirmation to visitors who leave an email": "إرسال تأكيد تلقائي للزوار الذين يتركون بريدًا إلكترونيًا",
+    "Email staff about new comments (the admin bell always shows them)": "إرسال بريد للفريق عند التعليقات الجديدة (تظهر دائمًا في جرس لوحة التحكم)",
+    "Only sent once a phone or WhatsApp number is set above.": "لا يُرسل إلا بعد ضبط رقم الهاتف أو واتساب أعلاه."
 }

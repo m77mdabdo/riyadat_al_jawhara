@@ -152,6 +152,15 @@ class Settings extends Page implements HasForms
                         Forms\Components\TextInput::make('stat_clients_served')->label(__('Clients served'))->numeric()->minValue(1)->maxValue(1000000),
                     ])->columns(4),
 
+                Forms\Components\Section::make(__('Notifications'))
+                    ->schema([
+                        Forms\Components\Toggle::make('lead_auto_reply')
+                            ->label(__('Send an automatic confirmation to visitors who leave an email'))
+                            ->helperText(__('Only sent once a phone or WhatsApp number is set above.')),
+                        Forms\Components\Toggle::make('comment_mail_notifications')
+                            ->label(__('Email staff about new comments (the admin bell always shows them)')),
+                    ]),
+
                 Forms\Components\Section::make(__('Social Links'))
                     ->schema([
                         Forms\Components\TextInput::make('facebook_url')->url(),

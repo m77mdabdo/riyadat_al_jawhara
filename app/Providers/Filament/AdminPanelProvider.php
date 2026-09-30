@@ -51,6 +51,9 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile(EditProfile::class, isSimple: false)
             ->brandName('JRA Admin')
+            // Bell icon: new leads, follow-ups due, comments awaiting review.
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('60s')
             // Self-hosted fonts (resources/css/admin.css): Inter / Cairo in RTL.
             ->font('Inter Variable', provider: LocalFontProvider::class)
             ->renderHook(PanelsRenderHook::HEAD_END, fn (): string => Blade::render("@vite('resources/css/admin.css')"))

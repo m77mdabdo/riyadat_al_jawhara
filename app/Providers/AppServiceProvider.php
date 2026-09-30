@@ -18,6 +18,7 @@ use App\Models\Tag;
 use App\Models\TeamMember;
 use App\Models\Testimonial;
 use App\Models\User;
+use App\Notifications\Mail\PasswordResetMail;
 use App\Observers\PublicContentObserver;
 use App\Policies\ActivityPolicy;
 use App\Services\Catalogue\MpdfCatalogueGenerator;
@@ -28,6 +29,7 @@ use App\Services\StockMedia\UnsplashProvider;
 use App\Services\StockMediaFetcher;
 use App\View\Composers\NavigationComposer;
 use App\View\Composers\SiteSettingsComposer;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -87,12 +89,19 @@ class AppServiceProvider extends ServiceProvider
         View::composer([
             'components.layout', 'partials.header', 'partials.footer',
             'components.whatsapp-float', 'components.error-page', 'pdf.catalogue',
+            'mail::message', 'mail::header', 'mail.*',
         ], SiteSettingsComposer::class);
         View::composer(['partials.header', 'partials.footer'], NavigationComposer::class);
 
         // Authorization lives in app/Policies; admins may do everything.
         Gate::before(fn (User $user): ?bool => $user->hasRole(UserRole::Admin->value) ? true : null);
         Gate::policy(Activity::class, ActivityPolicy::class);
+
+        // Branded, localized admin password-reset email (Filament's own
+        // ResetPassword notification stays in place; only the content changes).
+        ResetPassword::toMailUsing(fn (object $user, string $token) => PasswordResetMail::build(
+            filament()->getPanel('admin')->getResetPasswordUrl($token, $user)
+        ));
 
         // One password policy for every place a password is set: profile page,
         // password reset, and app:create-admin.

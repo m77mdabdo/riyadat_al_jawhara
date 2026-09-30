@@ -5,6 +5,7 @@ namespace App\Actions\Leads;
 use App\Enums\LeadSource;
 use App\Enums\LeadStatus;
 use App\Models\Lead;
+use App\Notifications\LeadAutoReplyNotification;
 use App\Notifications\NewLeadNotification;
 use App\Support\VisitorContext;
 use Illuminate\Support\Arr;
@@ -37,6 +38,7 @@ class CreateLead
         ]);
 
         NewLeadNotification::dispatchFor($lead);
+        LeadAutoReplyNotification::dispatchFor($lead);
 
         return $lead;
     }

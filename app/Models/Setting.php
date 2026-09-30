@@ -74,6 +74,19 @@ class Setting extends Model implements HasMedia
         'stat_years_experience',
         'stat_cities_served',
         'stat_clients_served',
+        'lead_auto_reply',
+        'comment_mail_notifications',
+    ];
+
+    protected $casts = [
+        'lead_auto_reply' => 'boolean',
+        'comment_mail_notifications' => 'boolean',
+    ];
+
+    /** Column defaults, so a new/empty settings row behaves like the migration. */
+    protected $attributes = [
+        'lead_auto_reply' => true,
+        'comment_mail_notifications' => false,
     ];
 
     /**
