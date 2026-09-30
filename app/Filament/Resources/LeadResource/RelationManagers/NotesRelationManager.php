@@ -8,6 +8,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Internal notes on a lead. Any staff member can add a note; a note can be
@@ -17,7 +18,10 @@ class NotesRelationManager extends RelationManager
 {
     protected static string $relationship = 'notes';
 
-    protected static ?string $title = 'Internal notes';
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('Internal notes');
+    }
 
     public function isReadOnly(): bool
     {
@@ -30,7 +34,7 @@ class NotesRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\Textarea::make('body')
-                    ->label('Note')
+                    ->label(__('Note'))
                     ->required()
                     ->maxLength(5000)
                     ->rows(4)
@@ -44,14 +48,14 @@ class NotesRelationManager extends RelationManager
             ->recordTitleAttribute('body')
             ->modifyQueryUsing(fn ($query) => $query->with('user'))
             ->columns([
-                Tables\Columns\TextColumn::make('body')->label('Note')->wrap(),
-                Tables\Columns\TextColumn::make('user.name')->label('By')->placeholder('—'),
-                Tables\Columns\TextColumn::make('created_at')->label('When')->dateTime()->sortable(),
+                Tables\Columns\TextColumn::make('body')->label(__('Note'))->wrap(),
+                Tables\Columns\TextColumn::make('user.name')->label(__('By'))->placeholder('—'),
+                Tables\Columns\TextColumn::make('created_at')->label(__('When'))->dateTime()->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('Add note')
+                    ->label(__('Add note'))
                     ->mutateFormDataUsing(fn (array $data): array => $data + ['user_id' => auth()->id()]),
             ])
             ->actions([

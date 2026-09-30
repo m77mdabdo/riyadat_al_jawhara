@@ -3,7 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\FaqResource\Pages;
+use App\Filament\Support\Localized;
 use App\Models\Faq;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,7 +15,7 @@ use Filament\Tables\Table;
 
 class FaqResource extends Resource
 {
-    use RestrictsDeletionToAdmins;
+    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
 
     protected static ?string $model = Faq::class;
 
@@ -28,25 +30,25 @@ class FaqResource extends Resource
                 Forms\Components\Tabs::make('Translations')
                     ->columnSpanFull()
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('English')
+                        Forms\Components\Tabs\Tab::make(__('English'))
                             ->schema([
                                 Forms\Components\TextInput::make('question_en')
-                                    ->label('Question (EN)')
+                                    ->label(__('Question (EN)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\Textarea::make('answer_en')
-                                    ->label('Answer (EN)')
+                                    ->label(__('Answer (EN)'))
                                     ->required()
                                     ->rows(4),
                             ]),
-                        Forms\Components\Tabs\Tab::make('Arabic')
+                        Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('question_ar')
-                                    ->label('السؤال (AR)')
+                                    ->label(__('السؤال (AR)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\Textarea::make('answer_ar')
-                                    ->label('الإجابة (AR)')
+                                    ->label(__('الإجابة (AR)'))
                                     ->required()
                                     ->rows(4),
                             ]),
@@ -63,7 +65,7 @@ class FaqResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('question_en')->label('Question')->searchable(['question_en', 'question_ar']),
+                Tables\Columns\TextColumn::make(Localized::column('question'))->label(__('Question'))->searchable(['question_en', 'question_ar']),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),
                 Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
             ])

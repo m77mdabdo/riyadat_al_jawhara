@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\ActivityResource\Pages;
 use App\Models\User;
 use Filament\Infolists;
@@ -19,6 +20,8 @@ use Spatie\Activitylog\Models\Activity;
  */
 class ActivityResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Activity::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';

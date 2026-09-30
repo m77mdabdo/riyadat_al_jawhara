@@ -3,7 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\StoneAttributeResource\Pages;
+use App\Filament\Support\Localized;
 use App\Models\StoneAttribute;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -16,7 +18,7 @@ use Illuminate\Validation\Rules\Unique;
 
 class StoneAttributeResource extends Resource
 {
-    use RestrictsDeletionToAdmins;
+    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
 
     protected static ?string $model = StoneAttribute::class;
 
@@ -31,18 +33,18 @@ class StoneAttributeResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('type')
-                    ->options(StoneAttribute::TYPES)
+                    ->options(Localized::options(StoneAttribute::TYPES))
                     ->in(array_keys(StoneAttribute::TYPES))
                     ->required()
                     ->live(),
                 Forms\Components\TextInput::make('name_en')
-                    ->label('Name (EN)')
+                    ->label(__('Name (EN)'))
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
                 Forms\Components\TextInput::make('name_ar')
-                    ->label('الاسم (AR)')
+                    ->label(__('الاسم (AR)'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('slug')
@@ -50,9 +52,9 @@ class StoneAttributeResource extends Resource
                     ->maxLength(255)
                     ->alphaDash()
                     ->unique(ignoreRecord: true, modifyRuleUsing: fn (Unique $rule, Get $get) => $rule->where('type', $get('type')))
-                    ->helperText('Used in public filter URLs. Unique within its type.'),
+                    ->helperText(__('Used in public filter URLs. Unique within its type.')),
                 Forms\Components\ColorPicker::make('hex_color')
-                    ->label('Swatch colour')
+                    ->label(__('Swatch colour'))
                     ->regex('/^#[0-9A-Fa-f]{6}$/')
                     ->visible(fn (Get $get): bool => $get('type') === StoneAttribute::COLOUR),
                 Forms\Components\TextInput::make('order')
@@ -69,18 +71,18 @@ class StoneAttributeResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
-                    ->formatStateUsing(fn (string $state): string => StoneAttribute::TYPES[$state] ?? $state),
-                Tables\Columns\ColorColumn::make('hex_color')->label('Swatch')->toggleable(),
-                Tables\Columns\TextColumn::make('name_en')->label('Name')->searchable(['name_en', 'name_ar']),
+                    ->formatStateUsing(fn (string $state): string => __(StoneAttribute::TYPES[$state] ?? $state)),
+                Tables\Columns\ColorColumn::make('hex_color')->label(__('Swatch'))->toggleable(),
+                Tables\Columns\TextColumn::make(Localized::column('name'))->label(__('Name'))->searchable(['name_en', 'name_ar']),
                 Tables\Columns\TextColumn::make('name_ar')->label('الاسم'),
-                Tables\Columns\TextColumn::make('stone_types_count')->counts('stoneTypes')->label('Stones'),
+                Tables\Columns\TextColumn::make('stone_types_count')->counts('stoneTypes')->label(__('Stones')),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),
                 Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
             ])
             ->defaultSort('order')
             ->defaultGroup('type')
             ->filters([
-                Tables\Filters\SelectFilter::make('type')->options(StoneAttribute::TYPES),
+                Tables\Filters\SelectFilter::make('type')->options(Localized::options(StoneAttribute::TYPES)),
                 Tables\Filters\TernaryFilter::make('is_active'),
             ])
             ->actions([

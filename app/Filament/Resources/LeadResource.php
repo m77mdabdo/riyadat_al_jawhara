@@ -3,8 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\LeadResource\Pages;
 use App\Filament\Resources\LeadResource\RelationManagers\NotesRelationManager;
+use App\Filament\Support\Localized;
 use App\Models\Lead;
 use App\Models\Project;
 use App\Models\Service;
@@ -21,7 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class LeadResource extends Resource
 {
-    use RestrictsDeletionToAdmins;
+    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
 
     protected static ?string $model = Lead::class;
 
@@ -54,7 +56,7 @@ class LeadResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Contact')
+                Forms\Components\Section::make(__('Contact'))
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
@@ -70,40 +72,40 @@ class LeadResource extends Resource
                             ->maxLength(255),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Request')
+                Forms\Components\Section::make(__('Request'))
                     ->schema([
                         Forms\Components\Select::make('service_id')
-                            ->label('Service')
-                            ->options(fn () => Service::ordered()->pluck('name_en', 'id'))
+                            ->label(__('Service'))
+                            ->options(fn () => Service::ordered()->pluck(Localized::column('name'), 'id'))
                             ->searchable(),
                         Forms\Components\Select::make('stone_type_id')
-                            ->label('Stone Type')
-                            ->options(fn () => StoneType::ordered()->pluck('name_en', 'id'))
+                            ->label(__('Stone Type'))
+                            ->options(fn () => StoneType::ordered()->pluck(Localized::column('name'), 'id'))
                             ->searchable(),
                         Forms\Components\Select::make('project_id')
-                            ->label('Related Project')
-                            ->options(fn () => Project::ordered()->pluck('title_en', 'id'))
+                            ->label(__('Related Project'))
+                            ->options(fn () => Project::ordered()->pluck(Localized::column('title'), 'id'))
                             ->searchable(),
                         Forms\Components\Select::make('source')
-                            ->options(Lead::SOURCES)
+                            ->options(Localized::options(Lead::SOURCES))
                             ->required(),
                         Forms\Components\Textarea::make('message')
                             ->rows(4)
                             ->columnSpanFull(),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Follow-up')
+                Forms\Components\Section::make(__('Follow-up'))
                     ->schema([
                         Forms\Components\Select::make('status')
-                            ->options(Lead::STATUSES)
+                            ->options(Localized::options(Lead::STATUSES))
                             ->default('new')
                             ->required(),
                         Forms\Components\Select::make('assigned_to')
-                            ->label('Assigned to')
+                            ->label(__('Assigned to'))
                             ->options(fn () => static::assigneeOptions())
                             ->searchable(),
                         Forms\Components\DatePicker::make('follow_up_at')
-                            ->label('Follow-up date'),
+                            ->label(__('Follow-up date')),
                     ])->columns(3),
             ]);
     }
@@ -112,7 +114,7 @@ class LeadResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make('Contact')
+                Infolists\Components\Section::make(__('Contact'))
                     ->schema([
                         Infolists\Components\TextEntry::make('name'),
                         Infolists\Components\TextEntry::make('phone')
@@ -125,35 +127,35 @@ class LeadResource extends Resource
                         Infolists\Components\TextEntry::make('city')->placeholder('—'),
                     ])->columns(4),
 
-                Infolists\Components\Section::make('Request')
+                Infolists\Components\Section::make(__('Request'))
                     ->schema([
-                        Infolists\Components\TextEntry::make('service.name_en')->label('Service')->placeholder('—'),
-                        Infolists\Components\TextEntry::make('stoneType.name_en')->label('Stone type')->placeholder('—'),
-                        Infolists\Components\TextEntry::make('project.title_en')->label('Related project')->placeholder('—'),
-                        Infolists\Components\TextEntry::make('source')->badge()->formatStateUsing(fn (string $state): string => Lead::SOURCES[$state] ?? $state),
+                        Infolists\Components\TextEntry::make('service.'.Localized::column('name'))->label(__('Service'))->placeholder('—'),
+                        Infolists\Components\TextEntry::make('stoneType.'.Localized::column('name'))->label(__('Stone type'))->placeholder('—'),
+                        Infolists\Components\TextEntry::make('project.'.Localized::column('title'))->label(__('Related project'))->placeholder('—'),
+                        Infolists\Components\TextEntry::make('source')->badge()->formatStateUsing(fn (string $state): string => __(Lead::SOURCES[$state] ?? $state)),
                         Infolists\Components\TextEntry::make('message')->columnSpanFull()->prose(),
                     ])->columns(4),
 
-                Infolists\Components\Section::make('Follow-up')
+                Infolists\Components\Section::make(__('Follow-up'))
                     ->schema([
                         Infolists\Components\TextEntry::make('status')
                             ->badge()
                             ->color(fn (string $state): string => static::statusColor($state))
-                            ->formatStateUsing(fn (string $state): string => Lead::STATUSES[$state] ?? $state),
-                        Infolists\Components\TextEntry::make('assignee.name')->label('Assigned to')->placeholder('Unassigned'),
-                        Infolists\Components\TextEntry::make('follow_up_at')->label('Follow-up date')->date()->placeholder('—')
+                            ->formatStateUsing(fn (string $state): string => __(Lead::STATUSES[$state] ?? $state)),
+                        Infolists\Components\TextEntry::make('assignee.name')->label(__('Assigned to'))->placeholder(__('Unassigned')),
+                        Infolists\Components\TextEntry::make('follow_up_at')->label(__('Follow-up date'))->date()->placeholder('—')
                             ->color(fn (Lead $record): ?string => $record->follow_up_at?->isPast() && $record->status !== 'closed' ? 'danger' : null),
-                        Infolists\Components\TextEntry::make('created_at')->label('Received')->dateTime(),
+                        Infolists\Components\TextEntry::make('created_at')->label(__('Received'))->dateTime(),
                     ])->columns(4),
 
-                Infolists\Components\Section::make('Submission details')
+                Infolists\Components\Section::make(__('Submission details'))
                     ->collapsed()
                     ->schema([
-                        Infolists\Components\TextEntry::make('locale')->label('Language')->formatStateUsing(fn (?string $state): string => strtoupper((string) $state))->placeholder('—'),
-                        Infolists\Components\TextEntry::make('consented_at')->label('Privacy consent')->dateTime()->placeholder('—'),
-                        Infolists\Components\TextEntry::make('ip_address')->label('IP address')->placeholder('—'),
-                        Infolists\Components\TextEntry::make('source_url')->label('Submitted from')->placeholder('—')->columnSpanFull(),
-                        Infolists\Components\TextEntry::make('user_agent')->label('Browser')->placeholder('—')->columnSpanFull(),
+                        Infolists\Components\TextEntry::make('locale')->label(__('Language'))->formatStateUsing(fn (?string $state): string => strtoupper((string) $state))->placeholder('—'),
+                        Infolists\Components\TextEntry::make('consented_at')->label(__('Privacy consent'))->dateTime()->placeholder('—'),
+                        Infolists\Components\TextEntry::make('ip_address')->label(__('IP address'))->placeholder('—'),
+                        Infolists\Components\TextEntry::make('source_url')->label(__('Submitted from'))->placeholder('—')->columnSpanFull(),
+                        Infolists\Components\TextEntry::make('user_agent')->label(__('Browser'))->placeholder('—')->columnSpanFull(),
                     ])->columns(3),
             ]);
     }
@@ -178,15 +180,15 @@ class LeadResource extends Resource
                 Tables\Columns\TextColumn::make('phone')->searchable(),
                 Tables\Columns\TextColumn::make('email')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('city')->toggleable(),
-                Tables\Columns\TextColumn::make('service.name_en')->label('Service')->toggleable(),
-                Tables\Columns\TextColumn::make('stoneType.name_en')->label('Stone')->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('project.title_en')->label('Project')->limit(30)->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('service.'.Localized::column('name'))->label(__('Service'))->toggleable(),
+                Tables\Columns\TextColumn::make('stoneType.'.Localized::column('name'))->label(__('Stone'))->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('project.'.Localized::column('title'))->label(__('Project'))->limit(30)->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('message')->limit(40)->tooltip(fn (Lead $record): ?string => $record->message)->toggleable(),
-                Tables\Columns\TextColumn::make('source')->badge()->toggleable(),
-                Tables\Columns\SelectColumn::make('status')->options(Lead::STATUSES)->selectablePlaceholder(false),
-                Tables\Columns\TextColumn::make('assignee.name')->label('Assigned to')->placeholder('—')->toggleable(),
+                Tables\Columns\TextColumn::make('source')->badge()->formatStateUsing(fn (string $state): string => __(Lead::SOURCES[$state] ?? $state))->toggleable(),
+                Tables\Columns\SelectColumn::make('status')->options(Localized::options(Lead::STATUSES))->selectablePlaceholder(false),
+                Tables\Columns\TextColumn::make('assignee.name')->label(__('Assigned to'))->placeholder('—')->toggleable(),
                 Tables\Columns\TextColumn::make('follow_up_at')
-                    ->label('Follow-up')
+                    ->label(__('Follow-up'))
                     ->date()
                     ->sortable()
                     ->placeholder('—')
@@ -198,15 +200,15 @@ class LeadResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->options(Lead::STATUSES),
+                    ->options(Localized::options(Lead::STATUSES)),
                 Tables\Filters\SelectFilter::make('assigned_to')
-                    ->label('Assigned to')
+                    ->label(__('Assigned to'))
                     ->options(fn () => static::assigneeOptions()),
                 Tables\Filters\Filter::make('mine')
-                    ->label('Assigned to me')
+                    ->label(__('Assigned to me'))
                     ->query(fn (Builder $query): Builder => $query->where('assigned_to', auth()->id())),
                 Tables\Filters\Filter::make('follow_up_due')
-                    ->label('Follow-up due')
+                    ->label(__('Follow-up due'))
                     ->query(fn (Builder $query): Builder => $query->followUpDue()),
                 Tables\Filters\Filter::make('created_at')
                     ->form([

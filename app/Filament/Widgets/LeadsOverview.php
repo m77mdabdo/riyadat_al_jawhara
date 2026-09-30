@@ -15,21 +15,21 @@ class LeadsOverview extends BaseWidget
         $due = Lead::followUpDue()->count();
 
         return [
-            Stat::make('New Leads', Lead::where('status', 'new')->count())
-                ->description('Awaiting first contact')
+            Stat::make(__('New Leads'), Lead::where('status', 'new')->count())
+                ->description(__('Awaiting first contact'))
                 ->color('warning'),
-            Stat::make('Follow-ups Due', $due)
-                ->description($due > 0 ? 'Due today or overdue' : 'Nothing overdue')
+            Stat::make(__('Follow-ups Due'), $due)
+                ->description($due > 0 ? __('Due today or overdue') : __('Nothing overdue'))
                 ->color($due > 0 ? 'danger' : 'success')
                 ->url(route('filament.admin.resources.leads.index', ['tableFilters[follow_up_due][isActive]' => true])),
-            Stat::make('WhatsApp Clicks (30 days)', WhatsappClick::where('created_at', '>=', now()->subDays(30))->count())
-                ->description(Lead::where('source', 'whatsapp')->where('created_at', '>=', now()->subDays(30))->count().' with a known page context → leads')
+            Stat::make(__('WhatsApp Clicks (30 days)'), WhatsappClick::where('created_at', '>=', now()->subDays(30))->count())
+                ->description(Lead::where('source', 'whatsapp')->where('created_at', '>=', now()->subDays(30))->count().' '.__('with a known page context → leads'))
                 ->color('success'),
-            Stat::make('Total Leads', Lead::count())
-                ->description('All time')
+            Stat::make(__('Total Leads'), Lead::count())
+                ->description(__('All time'))
                 ->color('success'),
-            Stat::make('Published Projects', Project::active()->count())
-                ->description('Visible in the portfolio')
+            Stat::make(__('Published Projects'), Project::active()->count())
+                ->description(__('Visible in the portfolio'))
                 ->color('primary'),
         ];
     }

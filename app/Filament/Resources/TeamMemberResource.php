@@ -3,8 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\TeamMemberResource\Pages;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\Localized;
 use App\Models\TeamMember;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -15,7 +17,7 @@ use Filament\Tables\Table;
 
 class TeamMemberResource extends Resource
 {
-    use RestrictsDeletionToAdmins;
+    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
 
     protected static ?string $model = TeamMember::class;
 
@@ -30,24 +32,24 @@ class TeamMemberResource extends Resource
                 Forms\Components\Tabs::make('Translations')
                     ->columnSpanFull()
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('English')
+                        Forms\Components\Tabs\Tab::make(__('English'))
                             ->schema([
                                 Forms\Components\TextInput::make('name_en')
-                                    ->label('Name (EN)')
+                                    ->label(__('Name (EN)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('position_en')
-                                    ->label('Position (EN)')
+                                    ->label(__('Position (EN)'))
                                     ->maxLength(255),
                             ]),
-                        Forms\Components\Tabs\Tab::make('Arabic')
+                        Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('name_ar')
-                                    ->label('الاسم (AR)')
+                                    ->label(__('الاسم (AR)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('position_ar')
-                                    ->label('المنصب (AR)')
+                                    ->label(__('المنصب (AR)'))
                                     ->maxLength(255),
                             ]),
                     ]),
@@ -70,9 +72,9 @@ class TeamMemberResource extends Resource
     {
         return $table
             ->columns([
-                SpatieMediaLibraryImageColumn::make('photo')->collection('photo')->circular()->label('Photo'),
-                Tables\Columns\TextColumn::make('name_en')->label('Name')->searchable(['name_en', 'name_ar']),
-                Tables\Columns\TextColumn::make('position_en')->label('Position'),
+                SpatieMediaLibraryImageColumn::make('photo')->collection('photo')->circular()->label(__('Photo')),
+                Tables\Columns\TextColumn::make(Localized::column('name'))->label(__('Name'))->searchable(['name_en', 'name_ar']),
+                Tables\Columns\TextColumn::make('position_en')->label(__('Position')),
                 Tables\Columns\TextColumn::make('phone'),
                 Tables\Columns\TextColumn::make('email'),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),

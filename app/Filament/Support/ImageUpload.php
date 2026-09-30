@@ -23,6 +23,6 @@ class ImageUpload
             ->image()
             ->acceptedFileTypes(self::MIME_TYPES)
             ->maxSize(self::MAX_SIZE)
-            ->helperText('JPG, PNG or WebP, up to 5 MB.');
+            ->helperText(__('JPG, PNG or WebP, up to 5 MB.'));
     }
 }

@@ -17,7 +17,7 @@ class ListLeads extends ListRecords
             // Exports exactly what the table currently shows (search + filters).
             // Leads are personal data, so export is limited to admins.
             Actions\Action::make('exportCsv')
-                ->label('Export CSV')
+                ->label(__('Export CSV'))
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('gray')
                 ->visible(fn (): bool => auth()->user()?->hasRole('admin') ?? false)

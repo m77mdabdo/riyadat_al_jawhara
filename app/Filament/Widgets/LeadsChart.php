@@ -7,7 +7,10 @@ use Filament\Widgets\ChartWidget;
 
 class LeadsChart extends ChartWidget
 {
-    protected static ?string $heading = 'Leads per Month';
+    public function getHeading(): string
+    {
+        return __('Leads per Month');
+    }
 
     protected function getData(): array
     {
@@ -22,13 +25,13 @@ class LeadsChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Leads',
+                    'label' => __('Leads'),
                     'data' => $counts->values(),
                     'backgroundColor' => '#2B2B2B',
                     'borderColor' => '#2B2B2B',
                 ],
             ],
-            'labels' => $months->map(fn ($month) => $month->format('M Y'))->values(),
+            'labels' => $months->map(fn ($month) => $month->translatedFormat('M Y'))->values(),
         ];
     }
 

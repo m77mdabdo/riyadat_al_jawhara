@@ -3,8 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\SliderResource\Pages;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\Localized;
 use App\Models\Slider;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -15,7 +17,7 @@ use Filament\Tables\Table;
 
 class SliderResource extends Resource
 {
-    use RestrictsDeletionToAdmins;
+    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
 
     protected static ?string $model = Slider::class;
 
@@ -30,30 +32,30 @@ class SliderResource extends Resource
                 Forms\Components\Tabs::make('Translations')
                     ->columnSpanFull()
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('English')
+                        Forms\Components\Tabs\Tab::make(__('English'))
                             ->schema([
                                 Forms\Components\TextInput::make('title_en')
-                                    ->label('Title (EN)')
+                                    ->label(__('Title (EN)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('subtitle_en')
-                                    ->label('Subtitle (EN)')
+                                    ->label(__('Subtitle (EN)'))
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('button_text_en')
-                                    ->label('Button Text (EN)')
+                                    ->label(__('Button Text (EN)'))
                                     ->maxLength(255),
                             ]),
-                        Forms\Components\Tabs\Tab::make('Arabic')
+                        Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('title_ar')
-                                    ->label('العنوان (AR)')
+                                    ->label(__('العنوان (AR)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('subtitle_ar')
-                                    ->label('العنوان الفرعي (AR)')
+                                    ->label(__('العنوان الفرعي (AR)'))
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('button_text_ar')
-                                    ->label('نص الزر (AR)')
+                                    ->label(__('نص الزر (AR)'))
                                     ->maxLength(255),
                             ]),
                     ]),
@@ -73,8 +75,8 @@ class SliderResource extends Resource
     {
         return $table
             ->columns([
-                SpatieMediaLibraryImageColumn::make('image')->collection('image')->label('Image'),
-                Tables\Columns\TextColumn::make('title_en')->label('Title')->searchable(['title_en', 'title_ar']),
+                SpatieMediaLibraryImageColumn::make('image')->collection('image')->label(__('Image')),
+                Tables\Columns\TextColumn::make(Localized::column('title'))->label(__('Title'))->searchable(['title_en', 'title_ar']),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),
                 Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
             ])

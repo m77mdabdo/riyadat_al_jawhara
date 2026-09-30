@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\AdminLocaleController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\ContactController;
@@ -75,6 +76,9 @@ Route::prefix('{locale}')
 */
 // Legacy session-based switcher: now just redirects to the new-style URL.
 Route::get('/lang/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
+
+// Admin panel language (saved on the user; POST + CSRF from the user menu).
+Route::post('/admin-locale/{language}', AdminLocaleController::class)->name('admin.locale');
 
 // Anonymous WhatsApp-button click beacon (see WhatsappClickController).
 Route::post('/whatsapp-click', WhatsappClickController::class)
