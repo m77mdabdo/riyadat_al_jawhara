@@ -50,6 +50,7 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 11.9 — Per-entity SEO overrides | `5d7f3e0` | +2 test methods (full suite green) | Nullable `meta_title_ar/en`, `meta_description_ar/en` on services, stone_types, projects, posts; `HasSeoOverrides` trait + shared Filament `SeoFields` section; fallback to the existing title/excerpt |
 | 11.6 — Stone catalogue PDF + per-stone spec sheet | `9b5d75a` | 314 / 1729 | **New dependency `mpdf/mpdf` v8.3.1 (GPL-2.0-only; pulls setasign/fpdi, paragonie/random_compat, mpdf/psr-* shims).** Chosen per MASTER_TASK because it shapes Arabic and does RTL correctly out of the box (DejaVu Sans), is pure PHP (no Chromium/wkhtmltopdf on shared hosting), server-side only (public JS bundle unchanged). Licence note: GPL-2.0-only library used server-side to generate documents; the owner should confirm this is acceptable. `/{locale}/stones/catalogue.pdf` and `/{locale}/stones/{slug}/spec-sheet.pdf` (throttle 20/min), cached in `storage/app/catalogue` by content fingerprint, flushed on stone/category/attribute save/delete. No CSP header on PDF responses (inline viewer). AR output visually verified (shaping, RTL, page footer `صفحة N من M`) |
 | 11.12 — Data retention | `5eab683` | 319 / 1752 | `privacy:prune` (daily 03:15, `withoutOverlapping`) nulls `ip_address`/`user_agent` on comments + leads older than `PRIVACY_RETENTION_DAYS` (default 180); rows kept; `--dry-run`, `--days`. No migration. Not run against local MySQL. DEPLOY.md scheduler table + `.env.example` |
+| 11.11 — Admin activity log | `d9c2807` | 327 / 1778 | **New dependency `spatie/laravel-activitylog` ^4.12 (v4.12.3, MIT)** — required by MASTER_TASK; same vendor as the existing Media Library/Permission/Sluggable packages; server-side only. `LogsAdminActivity` trait on 16 models (all content models, Setting, User name/email only; Lead = status/assignee/follow-up, Comment = status, both update/delete only so public submissions are not logged). IP, user agent, password, `views_count` never logged; changed fields only. Read-only, admin-only viewer at `/admin/activities` (AR/EN labels in `lang/*/admin.php`). `activitylog:clean` weekly (365 days). `Project` gets an attribute default for `show_client_name` (no schema change) |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
@@ -67,6 +68,9 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 12. `2026_09_30_120000_add_description_to_stone_categories_table` — nullable `description_ar`, `description_en` on `stone_categories`.
 13. `2026_09_30_130000_add_show_client_name_to_projects_table` — boolean `show_client_name` default `false` on `projects` (client names stay hidden until enabled per project).
 14. `2026_09_30_140000_add_seo_overrides_to_content_tables` — nullable `meta_title_ar/en`, `meta_description_ar/en` on `services`, `stone_types`, `projects`, `posts`.
+15. `2026_09_30_150000_create_activity_log_table` — new `activity_log` table (spatie/laravel-activitylog).
+16. `2026_09_30_150100_add_event_column_to_activity_log_table` — nullable `event` on `activity_log`.
+17. `2026_09_30_150200_add_batch_uuid_column_to_activity_log_table` — nullable `batch_uuid` on `activity_log`.
 
 ## Open questions (earlier phases — status)
 
