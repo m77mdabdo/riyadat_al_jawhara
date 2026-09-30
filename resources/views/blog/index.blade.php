@@ -11,18 +11,8 @@
                 placeholder="{{ __('site.blog.search_placeholder') }}"
                 class="w-full sm:w-auto sm:flex-1 sm:min-w-[200px] min-h-11 rounded-md border-stone-300 px-3 py-2.5 text-base sm:text-sm text-charcoal focus:border-charcoal focus:ring-charcoal"
             >
-            <select name="category" onchange="this.form.submit()" aria-label="{{ __('site.blog.category') }}" class="w-full sm:w-auto min-h-11 rounded-md border-stone-300 px-3 py-2.5 text-base sm:text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
-                <option value="">{{ __('site.blog.category') }}: {{ __('site.common.all') }}</option>
-                @foreach ($categories as $category)
-                    <option value="{{ $category->slug }}" @selected($activeCategory === $category->slug)>{{ $category->name }}</option>
-                @endforeach
-            </select>
-            <select name="tag" onchange="this.form.submit()" aria-label="{{ __('site.blog.tag') }}" class="w-full sm:w-auto min-h-11 rounded-md border-stone-300 px-3 py-2.5 text-base sm:text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
-                <option value="">{{ __('site.blog.tag') }}: {{ __('site.common.all') }}</option>
-                @foreach ($tags as $tag)
-                    <option value="{{ $tag->slug }}" @selected($activeTag === $tag->slug)>{{ $tag->name }}</option>
-                @endforeach
-            </select>
+            <x-filter-select name="category" :label="__('site.blog.category')" :options="$categories->pluck('name', 'slug')" :selected="$activeCategory" />
+            <x-filter-select name="tag" :label="__('site.blog.tag')" :options="$tags->pluck('name', 'slug')" :selected="$activeTag" />
             <button type="submit" class="w-full sm:w-auto min-h-11 rounded-md bg-charcoal text-cream px-5 py-2.5 text-sm font-semibold hover:bg-charcoal-700 transition-colors">
                 {{ __('site.common.filter') }}
             </button>

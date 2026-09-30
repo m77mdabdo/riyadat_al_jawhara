@@ -3,25 +3,10 @@
 
     <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <form method="GET" class="flex flex-wrap gap-3 sm:gap-4 mb-10">
-            <select name="service" onchange="this.form.submit()" aria-label="{{ __('site.projects.service') }}" class="w-full sm:w-auto min-h-11 rounded-md border-stone-300 px-3 py-2.5 text-base sm:text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
-                <option value="">{{ __('site.projects.service') }}: {{ __('site.common.all') }}</option>
-                @foreach ($services as $service)
-                    <option value="{{ $service->slug }}" @selected($activeService === $service->slug)>{{ $service->name }}</option>
-                @endforeach
-            </select>
-            <select name="stone_type" onchange="this.form.submit()" aria-label="{{ __('site.projects.stone_type') }}" class="w-full sm:w-auto min-h-11 rounded-md border-stone-300 px-3 py-2.5 text-base sm:text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
-                <option value="">{{ __('site.projects.stone_type') }}: {{ __('site.common.all') }}</option>
-                @foreach ($stoneTypes as $stoneType)
-                    <option value="{{ $stoneType->slug }}" @selected($activeStoneType === $stoneType->slug)>{{ $stoneType->name }}</option>
-                @endforeach
-            </select>
+            <x-filter-select name="service" :label="__('site.projects.service')" :options="$services->pluck('name', 'slug')" :selected="$activeService" />
+            <x-filter-select name="stone_type" :label="__('site.projects.stone_type')" :options="$stoneTypes->pluck('name', 'slug')" :selected="$activeStoneType" />
             @if ($sectors->isNotEmpty())
-                <select name="sector" onchange="this.form.submit()" aria-label="{{ __('site.projects.sector') }}" class="w-full sm:w-auto min-h-11 rounded-md border-stone-300 px-3 py-2.5 text-base sm:text-sm text-charcoal focus:border-charcoal focus:ring-charcoal">
-                    <option value="">{{ __('site.projects.sector') }}: {{ __('site.common.all') }}</option>
-                    @foreach ($sectors as $sectorOption)
-                        <option value="{{ $sectorOption }}" @selected($activeSector === $sectorOption)>{{ __('site.projects.sectors.'.$sectorOption) }}</option>
-                    @endforeach
-                </select>
+                <x-filter-select name="sector" :label="__('site.projects.sector')" :options="$sectors->mapWithKeys(fn ($s) => [$s => \App\Enums\ProjectSector::labelFor($s)])" :selected="$activeSector" />
             @endif
             @if ($activeService || $activeStoneType || $activeSector)
                 <a href="{{ route('projects.index') }}" class="inline-flex min-h-11 items-center text-sm font-medium text-stone-600 hover:text-charcoal">{{ __('site.common.all') }} &times;</a>

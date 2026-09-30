@@ -69,7 +69,7 @@
         <div x-reveal class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-wrap items-end justify-between gap-4 mb-12">
                 <x-section-heading :title="__('site.home.featured_projects')" align="start" />
-                <a href="{{ route('projects.index') }}" class="link-sweep inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-charcoal">{{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" aria-hidden="true" /></a>
+                <x-view-all-link :href="route('projects.index')" />
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($featuredProjects as $project)
@@ -88,7 +88,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-wrap items-end justify-between gap-4 mb-12">
                 <x-section-heading :title="__('site.home.stone_collection')" align="start" />
-                <a href="{{ route('stones.index') }}" class="link-sweep inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-charcoal">{{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" aria-hidden="true" /></a>
+                <x-view-all-link :href="route('stones.index')" />
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                 @foreach ($stoneTypes as $stoneType)
@@ -219,9 +219,7 @@
             @endforeach
         </div>
         <div class="mt-8 text-center">
-            <a href="{{ route('faq') }}" class="link-sweep inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-charcoal">
-                {{ __('site.common.view_all') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" aria-hidden="true" />
-            </a>
+            <x-view-all-link :href="route('faq')" />
         </div>
     </section>
 @endif

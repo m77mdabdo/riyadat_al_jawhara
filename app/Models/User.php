@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Enums\UserRole;
 use App\Models\Concerns\LogsAdminActivity;
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
