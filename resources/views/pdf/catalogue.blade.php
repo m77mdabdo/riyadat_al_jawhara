@@ -83,9 +83,11 @@
 
 <div class="contact">
     <b>{{ __('site.meta.site_name') }}</b><br>
-    @if ($settings->phone) {{ $settings->phone }} @endif
-    @if ($settings->email) · {{ $settings->email }} @endif
-    · {{ route('home', ['locale' => $locale]) }}<br>
+    {{-- Phone numbers, emails and URLs are left-to-right runs; without the
+         isolation the RTL paragraph reorders "+966 55 ..." into "... 55 966+". --}}
+    @if ($settings->phone) <span dir="ltr">{{ $settings->phone }}</span> @endif
+    @if ($settings->email) · <span dir="ltr">{{ $settings->email }}</span> @endif
+    · <span dir="ltr">{{ route('home', ['locale' => $locale]) }}</span><br>
     <span class="muted">{{ __('site.catalogue.disclaimer') }}</span>
 </div>
 </body>

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Setting;
 use App\Models\StoneAttribute;
 use App\Models\StoneCategory;
 use App\Models\StoneType;
@@ -64,12 +65,26 @@ class CataloguePdf
         return $path;
     }
 
+    /**
+     * Changes whenever anything printed in the PDF changes: stone data, the
+     * contact details from Settings, the templates or the translations (so a
+     * deploy that edits the layout never serves an old cached file).
+     */
     private function fingerprint(): string
     {
+        $sources = [
+            resource_path('views/pdf/catalogue.blade.php'),
+            resource_path('views/pdf/footer.blade.php'),
+            lang_path('ar/site.php'),
+            lang_path('en/site.php'),
+        ];
+
         return substr(sha1(implode('|', [
             StoneType::max('updated_at'), StoneType::count(),
             StoneCategory::max('updated_at'), StoneCategory::count(),
             StoneAttribute::max('updated_at'), StoneAttribute::count(),
+            Setting::current()->updated_at,
+            ...array_map(fn (string $file) => is_file($file) ? sha1_file($file) : '', $sources),
         ])), 0, 12);
     }
 
@@ -109,8 +124,10 @@ class CataloguePdf
             $mpdf->SetDirectionality($locale === 'ar' ? 'rtl' : 'ltr');
             $mpdf->SetTitle(__('site.catalogue.title'));
             $mpdf->SetAuthor(__('site.meta.site_name'));
-            // A phrase instead of "2 / 3": the slash would be reordered in RTL.
-            $mpdf->SetFooter(__('site.meta.site_name').'||'.__('site.catalogue.page'));
+            // HTML footer instead of SetFooter(): mPDF's default footer is italic,
+            // which fakes a slant on Arabic (the font has no italic). A phrase
+            // instead of "2 / 3" because the slash would be reordered in RTL.
+            $mpdf->SetHTMLFooter(view('pdf.footer', ['rtl' => $locale === 'ar'])->render());
 
             $mpdf->WriteHTML(view('pdf.catalogue', [
                 'categories' => $categories,

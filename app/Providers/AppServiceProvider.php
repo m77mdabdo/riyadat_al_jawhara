@@ -54,7 +54,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Catalogue PDFs are fingerprinted by the stone data; also clear the
         // cached files whenever that data changes.
-        foreach ([StoneType::class, StoneCategory::class, StoneAttribute::class] as $model) {
+        // Settings (contact line, logo) and media are printed in the PDFs too.
+        foreach ([StoneType::class, StoneCategory::class, StoneAttribute::class, Setting::class, Media::class] as $model) {
             $model::saved(fn () => app(CataloguePdf::class)->flush());
             $model::deleted(fn () => app(CataloguePdf::class)->flush());
         }

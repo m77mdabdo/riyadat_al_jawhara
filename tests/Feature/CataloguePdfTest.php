@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Setting;
 use App\Models\StoneCategory;
 use App\Models\StoneType;
 use App\Services\CataloguePdf;
@@ -100,5 +101,41 @@ class CataloguePdfTest extends TestCase
 
         $this->get(route('stones.index'))->assertSee(route('stones.catalogue'), false)->assertSee(__('site.catalogue.download'));
         $this->get(route('stones.show', $stone))->assertSee(route('stones.spec-sheet', $stone), false);
+    }
+
+    public function test_contact_details_are_isolated_left_to_right_in_arabic(): void
+    {
+        StoneType::factory()->create();
+        Setting::editable()->update(['phone' => '+966 55 123 4567', 'email' => 'info@example.test']);
+        Setting::flushCache();
+
+        $html = $this->catalogueHtml('ar');
+
+        // Regression: without isolation the RTL paragraph printed "4567 123 55 966+".
+        $this->assertStringContainsString('<span dir="ltr">+966 55 123 4567</span>', $html);
+        $this->assertStringContainsString('<span dir="ltr">info@example.test</span>', $html);
+    }
+
+    public function test_footer_is_upright_and_page_phrase_is_translated(): void
+    {
+        app()->setLocale('ar');
+        $footer = view('pdf.footer', ['rtl' => true])->render();
+
+        $this->assertStringContainsString('font-style: normal', $footer);
+        $this->assertStringContainsString('صفحة {PAGENO} من {nbpg}', $footer);
+        $this->assertStringNotContainsString('<i>', $footer);
+    }
+
+    public function test_cached_pdf_is_rebuilt_when_settings_change(): void
+    {
+        StoneType::factory()->create();
+        $pdf = app(CataloguePdf::class);
+        $first = $pdf->catalogue('en');
+
+        $this->travel(1)->minutes();
+        Setting::editable()->update(['phone' => '+966 11 000 0000']);
+
+        $this->assertFileDoesNotExist($first, 'settings change flushes the cached file');
+        $this->assertNotSame($first, $pdf->catalogue('en'));
     }
 }
