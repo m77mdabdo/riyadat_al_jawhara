@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
-use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\LogsAdminActivity;
 use Database\Factories\SliderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,10 +14,26 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+/**
+ * @property-read string $title
+ * @property-read string|null $subtitle
+ * @property-read string|null $button_text
+ */
 class Slider extends Model implements HasMedia
 {
     /** @use HasFactory<SliderFactory> */
-    use HasActiveScope, HasFactory, HasTranslations, InteractsWithMedia, LogsAdminActivity;
+    use HasActiveScope, HasFactory, HasLocalizedAttributes, InteractsWithMedia, LogsAdminActivity;
+
+    /**
+     * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
+     *
+     * @var array<string, string|null>
+     */
+    protected array $localized = [
+        'title' => '',
+        'subtitle' => null,
+        'button_text' => null,
+    ];
 
     protected $fillable = [
         'title_ar',
@@ -61,20 +77,5 @@ class Slider extends Model implements HasMedia
         }
 
         return $media->hasGeneratedConversion('hero') ? $media->getUrl('hero') : $media->getUrl();
-    }
-
-    public function getTitleAttribute(): string
-    {
-        return $this->translated('title') ?? '';
-    }
-
-    public function getSubtitleAttribute(): ?string
-    {
-        return $this->translated('subtitle');
-    }
-
-    public function getButtonTextAttribute(): ?string
-    {
-        return $this->translated('button_text');
     }
 }

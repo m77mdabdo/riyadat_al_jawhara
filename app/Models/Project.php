@@ -5,8 +5,8 @@ namespace App\Models;
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasCoverImage;
+use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\HasSeoOverrides;
-use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
 use Database\Factories\ProjectFactory;
@@ -23,10 +23,28 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
+/**
+ * @property-read string $title
+ * @property-read string|null $description
+ * @property-read string|null $city
+ * @property-read string|null $location
+ */
 class Project extends Model implements HasMedia
 {
     /** @use HasFactory<ProjectFactory> */
-    use HasActiveScope, HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+    use HasActiveScope, HasCoverImage, HasFactory, HasLocalizedAttributes, HasSeoOverrides, HasSlug, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+
+    /**
+     * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
+     *
+     * @var array<string, string|null>
+     */
+    protected array $localized = [
+        'title' => '',
+        'description' => null,
+        'city' => null,
+        'location' => null,
+    ];
 
     protected $fillable = [
         'title_ar',
@@ -190,25 +208,5 @@ class Project extends Model implements HasMedia
     public function testimonials(): HasMany
     {
         return $this->hasMany(Testimonial::class);
-    }
-
-    public function getTitleAttribute(): string
-    {
-        return $this->translated('title') ?? '';
-    }
-
-    public function getDescriptionAttribute(): ?string
-    {
-        return $this->translated('description');
-    }
-
-    public function getCityAttribute(): ?string
-    {
-        return $this->translated('city');
-    }
-
-    public function getLocationAttribute(): ?string
-    {
-        return $this->translated('location');
     }
 }

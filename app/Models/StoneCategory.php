@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasCoverImage;
-use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
 use Database\Factories\StoneCategoryFactory;
@@ -18,10 +18,24 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
+/**
+ * @property-read string|null $description
+ * @property-read string $name
+ */
 class StoneCategory extends Model implements HasMedia
 {
     /** @use HasFactory<StoneCategoryFactory> */
-    use HasCoverImage, HasFactory, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+    use HasCoverImage, HasFactory, HasLocalizedAttributes, HasSlug, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+
+    /**
+     * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
+     *
+     * @var array<string, string|null>
+     */
+    protected array $localized = [
+        'description' => null,
+        'name' => '',
+    ];
 
     protected $fillable = [
         'name_ar',
@@ -41,11 +55,6 @@ class StoneCategory extends Model implements HasMedia
     {
         $this->registerWebpConversions();
         $this->addMediaConversion('medium')->nonQueued()->width(1200)->height(700);
-    }
-
-    public function getDescriptionAttribute(): ?string
-    {
-        return $this->translated('description');
     }
 
     /**
@@ -68,10 +77,5 @@ class StoneCategory extends Model implements HasMedia
     public function stoneTypes(): HasMany
     {
         return $this->hasMany(StoneType::class);
-    }
-
-    public function getNameAttribute(): string
-    {
-        return $this->translated('name') ?? '';
     }
 }

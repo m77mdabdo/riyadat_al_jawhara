@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\LogsAdminActivity;
 use Database\Factories\TagFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,10 +11,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
+/**
+ * @property-read string $name
+ */
 class Tag extends Model
 {
     /** @use HasFactory<TagFactory> */
-    use HasFactory, HasSlug, HasTranslations, LogsAdminActivity;
+    use HasFactory, HasLocalizedAttributes, HasSlug, LogsAdminActivity;
+
+    /**
+     * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
+     *
+     * @var array<string, string|null>
+     */
+    protected array $localized = [
+        'name' => '',
+    ];
 
     protected $fillable = [
         'name_ar',
@@ -33,10 +45,5 @@ class Tag extends Model
     public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class);
-    }
-
-    public function getNameAttribute(): string
-    {
-        return $this->translated('name') ?? '';
     }
 }

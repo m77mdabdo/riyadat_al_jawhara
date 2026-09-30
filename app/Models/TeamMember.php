@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
-use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
 use Database\Factories\TeamMemberFactory;
@@ -14,10 +14,24 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+/**
+ * @property-read string $name
+ * @property-read string|null $position
+ */
 class TeamMember extends Model implements HasMedia
 {
     /** @use HasFactory<TeamMemberFactory> */
-    use HasActiveScope, HasFactory, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+    use HasActiveScope, HasFactory, HasLocalizedAttributes, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+
+    /**
+     * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
+     *
+     * @var array<string, string|null>
+     */
+    protected array $localized = [
+        'name' => '',
+        'position' => null,
+    ];
 
     protected $fillable = [
         'name_ar',
@@ -43,15 +57,5 @@ class TeamMember extends Model implements HasMedia
     {
         $this->registerWebpConversions();
         $this->addMediaConversion('thumb')->nonQueued()->width(300)->height(300);
-    }
-
-    public function getNameAttribute(): string
-    {
-        return $this->translated('name') ?? '';
-    }
-
-    public function getPositionAttribute(): ?string
-    {
-        return $this->translated('position');
     }
 }

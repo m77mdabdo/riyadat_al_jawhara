@@ -6,8 +6,8 @@ use App\Enums\StoneAttributeType;
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasCoverImage;
+use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\HasSeoOverrides;
-use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
 use Database\Factories\StoneTypeFactory;
@@ -23,10 +23,26 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
+/**
+ * @property-read string $name
+ * @property-read string|null $origin
+ * @property-read string|null $description
+ */
 class StoneType extends Model implements HasMedia
 {
     /** @use HasFactory<StoneTypeFactory> */
-    use HasActiveScope, HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+    use HasActiveScope, HasCoverImage, HasFactory, HasLocalizedAttributes, HasSeoOverrides, HasSlug, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+
+    /**
+     * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
+     *
+     * @var array<string, string|null>
+     */
+    protected array $localized = [
+        'name' => '',
+        'origin' => null,
+        'description' => null,
+    ];
 
     protected $fillable = [
         'stone_category_id',
@@ -139,20 +155,5 @@ class StoneType extends Model implements HasMedia
             ->toBase()
             ->groupBy('type')
             ->sortBy(fn ($group, string $type) => array_search($type, StoneAttributeType::values(), true));
-    }
-
-    public function getNameAttribute(): string
-    {
-        return $this->translated('name') ?? '';
-    }
-
-    public function getOriginAttribute(): ?string
-    {
-        return $this->translated('origin');
-    }
-
-    public function getDescriptionAttribute(): ?string
-    {
-        return $this->translated('description');
     }
 }

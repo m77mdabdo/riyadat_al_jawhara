@@ -4,7 +4,7 @@ namespace App\Models\Concerns;
 
 /**
  * Optional per-page SEO overrides (meta_title_*, meta_description_*), with
- * the page's own title/description as fallback. Requires HasTranslations.
+ * the page's own title/description as fallback. Requires HasLocalizedAttributes.
  */
 trait HasSeoOverrides
 {

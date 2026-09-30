@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
-use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\LogsAdminActivity;
 use Database\Factories\StoneAttributeFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,13 +17,24 @@ use Spatie\Sluggable\SlugOptions;
  * A specification value a stone can have: a finish (polished, honed...),
  * a colour, a size/thickness, or an application (interior, flooring...).
  * Managed in the admin panel; used for stone detail specs and public filters.
+ *
+ * @property-read string $name
  */
 class StoneAttribute extends Model
 {
     /** @use HasFactory<StoneAttributeFactory> */
-    use HasActiveScope, HasFactory, HasSlug, HasTranslations, LogsAdminActivity;
+    use HasActiveScope, HasFactory, HasLocalizedAttributes, HasSlug, LogsAdminActivity;
 
     // Types: App\Enums\StoneAttributeType.
+
+    /**
+     * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
+     *
+     * @var array<string, string|null>
+     */
+    protected array $localized = [
+        'name' => '',
+    ];
 
     protected $fillable = [
         'type',
@@ -71,10 +82,5 @@ class StoneAttribute extends Model
     public function getSwatchAttribute(): ?string
     {
         return preg_match('/^#[0-9A-Fa-f]{6}$/', (string) $this->hex_color) ? $this->hex_color : null;
-    }
-
-    public function getNameAttribute(): string
-    {
-        return $this->translated('name') ?? '';
     }
 }

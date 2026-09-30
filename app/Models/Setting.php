@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Filament\Support\ImageUpload;
-use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\LogsAdminActivity;
 use App\Support\FragmentCache;
 use Database\Factories\SettingFactory;
@@ -15,10 +15,34 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+/**
+ * @property-read string|null $address
+ * @property-read string|null $working_hours
+ * @property-read string|null $about
+ * @property-read string|null $vision
+ * @property-read string|null $mission
+ * @property-read string|null $privacy_policy
+ * @property-read string|null $terms
+ */
 class Setting extends Model implements HasMedia
 {
     /** @use HasFactory<SettingFactory> */
-    use HasFactory, HasTranslations, InteractsWithMedia, LogsAdminActivity;
+    use HasFactory, HasLocalizedAttributes, InteractsWithMedia, LogsAdminActivity;
+
+    /**
+     * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
+     *
+     * @var array<string, string|null>
+     */
+    protected array $localized = [
+        'address' => null,
+        'working_hours' => null,
+        'about' => null,
+        'vision' => null,
+        'mission' => null,
+        'privacy_policy' => null,
+        'terms' => null,
+    ];
 
     protected $fillable = [
         'phone',
@@ -214,40 +238,5 @@ class Setting extends Model implements HasMedia
         }
 
         return 'tel:'.(str_starts_with($phone, '+') ? '+' : '').$digits;
-    }
-
-    public function getAddressAttribute(): ?string
-    {
-        return $this->translated('address');
-    }
-
-    public function getWorkingHoursAttribute(): ?string
-    {
-        return $this->translated('working_hours');
-    }
-
-    public function getAboutAttribute(): ?string
-    {
-        return $this->translated('about');
-    }
-
-    public function getVisionAttribute(): ?string
-    {
-        return $this->translated('vision');
-    }
-
-    public function getMissionAttribute(): ?string
-    {
-        return $this->translated('mission');
-    }
-
-    public function getPrivacyPolicyAttribute(): ?string
-    {
-        return $this->translated('privacy_policy');
-    }
-
-    public function getTermsAttribute(): ?string
-    {
-        return $this->translated('terms');
     }
 }

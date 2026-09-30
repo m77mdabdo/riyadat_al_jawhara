@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
-use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
 use Database\Factories\TestimonialFactory;
@@ -15,10 +15,22 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+/**
+ * @property-read string $comment
+ */
 class Testimonial extends Model implements HasMedia
 {
     /** @use HasFactory<TestimonialFactory> */
-    use HasActiveScope, HasFactory, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+    use HasActiveScope, HasFactory, HasLocalizedAttributes, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+
+    /**
+     * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
+     *
+     * @var array<string, string|null>
+     */
+    protected array $localized = [
+        'comment' => '',
+    ];
 
     protected $fillable = [
         'client_name',
@@ -50,10 +62,5 @@ class Testimonial extends Model implements HasMedia
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
-    }
-
-    public function getCommentAttribute(): string
-    {
-        return $this->translated('comment') ?? '';
     }
 }
