@@ -45,6 +45,10 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 | 11.2 — Consent-gated analytics | `84ae4a3` | 285 / 1584 | `config/analytics.php` (`ANALYTICS_GA4_ID`, `ANALYTICS_PLAUSIBLE_*`), off when unset. Browser-verified with interception: 0 provider requests before consent / after decline. CSP extended only for the configured provider |
 | 11.4 — Gallery page | `7268b2a` | 290 / 1609 | Masonry via shared lightbox (`layout="masonry"`), filters type + stone category, nav/footer/sitemap. Header with 9 links still fits at 1280 in AR/EN |
 | 11.5 — Site search | `f89310a` | 296 / 1636 | 5 content types, bound + escaped LIKE, noindex, header icon; FAQ `#faq-{id}` anchors |
+| 11.7 — Stone category image + description + landing section | `aab9b9b` | +4 test methods (full suite green; exact count not recorded) | Migration adds nullable `description_ar/en` on `stone_categories`; category cover image via Media Library; `/stones?category=` shows a landing block; home tile uses the category image, falls back to the texture slot. Home media query guard 6 → 7 (new eager-loaded media type) |
+| 11.8 — Similar projects, opt-in client name | `45e4bb2` | +4 test methods (full suite green) | `Project::similar()` = one ranked query (same stone > same sector > same city > recent); client name shown only when `show_client_name` is on (default off) |
+| 11.9 — Per-entity SEO overrides | `5d7f3e0` | +2 test methods (full suite green) | Nullable `meta_title_ar/en`, `meta_description_ar/en` on services, stone_types, projects, posts; `HasSeoOverrides` trait + shared Filament `SeoFields` section; fallback to the existing title/excerpt |
+| 11.6 — Stone catalogue PDF + per-stone spec sheet | `9b5d75a` | 314 / 1729 | **New dependency `mpdf/mpdf` v8.3.1 (GPL-2.0-only; pulls setasign/fpdi, paragonie/random_compat, mpdf/psr-* shims).** Chosen per MASTER_TASK because it shapes Arabic and does RTL correctly out of the box (DejaVu Sans), is pure PHP (no Chromium/wkhtmltopdf on shared hosting), server-side only (public JS bundle unchanged). Licence note: GPL-2.0-only library used server-side to generate documents; the owner should confirm this is acceptable. `/{locale}/stones/catalogue.pdf` and `/{locale}/stones/{slug}/spec-sheet.pdf` (throttle 20/min), cached in `storage/app/catalogue` by content fingerprint, flushed on stone/category/attribute save/delete. No CSP header on PDF responses (inline viewer). AR output visually verified (shaping, RTL, page footer `صفحة N من M`) |
 
 ## Pending migrations (owner runs on MySQL, in this order)
 
@@ -59,6 +63,9 @@ Baseline: `PROJECT_AUDIT_REPORT.md` §25. Nothing is pushed or merged from this 
 9. `2026_09_29_140000_add_extra_socials_to_settings_table` — nullable `linkedin_url`, `x_url`, `youtube_url` on `settings`.
 10. `2026_09_30_100000_add_stats_to_settings_table` — nullable `stat_projects_completed`, `stat_years_experience`, `stat_cities_served`, `stat_clients_served` on `settings` (home counters; hidden when empty).
 11. `2026_09_30_110000_create_whatsapp_clicks_table` — new table of anonymous WhatsApp click events (page, locale, context, optional lead FK).
+12. `2026_09_30_120000_add_description_to_stone_categories_table` — nullable `description_ar`, `description_en` on `stone_categories`.
+13. `2026_09_30_130000_add_show_client_name_to_projects_table` — boolean `show_client_name` default `false` on `projects` (client names stay hidden until enabled per project).
+14. `2026_09_30_140000_add_seo_overrides_to_content_tables` — nullable `meta_title_ar/en`, `meta_description_ar/en` on `services`, `stone_types`, `projects`, `posts`.
 
 ## Open questions (earlier phases — status)
 
