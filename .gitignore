@@ -24,3 +24,7 @@ yarn-error.log
 /docs/screenshots
 /storage/app/stock-candidates
 /docs/visual-review/shots
+
+# Local-only working notes (not part of the project)
+/.internal/
+/.kilo/
