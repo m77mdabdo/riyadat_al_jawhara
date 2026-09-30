@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LeadSource;
+use App\Enums\LeadStatus;
+use App\Enums\WhatsappContext;
 use App\Models\Lead;
 use App\Models\Project;
 use App\Models\WhatsappClick;
@@ -26,7 +29,7 @@ class WhatsappClickController extends Controller
         $data = $request->validate([
             'page' => ['nullable', 'string', 'max:2048'],
             'locale' => ['nullable', Rule::in(LocalizedUrl::supported())],
-            'context_type' => ['nullable', Rule::in(array_keys(WhatsappClick::CONTEXTS))],
+            'context_type' => ['nullable', Rule::in(WhatsappContext::values())],
             'context_id' => ['nullable', 'integer', 'min:1'],
         ]);
 
@@ -35,7 +38,7 @@ class WhatsappClickController extends Controller
 
         $context = null;
         if (! empty($data['context_type']) && ! empty($data['context_id'])) {
-            $class = WhatsappClick::CONTEXTS[$data['context_type']];
+            $class = WhatsappContext::from($data['context_type'])->modelClass();
             $context = $class::query()->where('is_active', true)->find($data['context_id']);
         }
 
@@ -66,12 +69,12 @@ class WhatsappClickController extends Controller
             'name' => 'WhatsApp visitor',
             'phone' => '',
             'message' => "Opened WhatsApp from the {$type} page: {$label}. Match this lead with the incoming WhatsApp chat.",
-            'status' => 'new',
-            'source' => 'whatsapp',
+            'status' => LeadStatus::New->value,
+            'source' => LeadSource::Whatsapp->value,
             'locale' => $locale,
             'source_url' => $page ? url($page) : null,
             'service_id' => $type === 'service' ? $context->getKey() : ($context instanceof Project ? $context->service_id : null),
-            'stone_type_id' => $type === 'stone_type' ? $context->getKey() : ($context instanceof Project ? $context->stone_type_id : null),
+            'stone_type_id' => $type === WhatsappContext::StoneType->value ? $context->getKey() : ($context instanceof Project ? $context->stone_type_id : null),
             'project_id' => $type === 'project' ? $context->getKey() : null,
         ]);
 

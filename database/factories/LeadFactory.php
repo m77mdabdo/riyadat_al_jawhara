@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\LeadSource;
+use App\Enums\LeadStatus;
 use App\Models\Lead;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -23,8 +25,8 @@ class LeadFactory extends Factory
             'email' => $this->faker->safeEmail(),
             'city' => $this->faker->city(),
             'message' => $this->faker->sentence(15),
-            'status' => 'new',
-            'source' => 'website',
+            'status' => LeadStatus::New->value,
+            'source' => LeadSource::Website->value,
             'locale' => 'en',
         ];
     }

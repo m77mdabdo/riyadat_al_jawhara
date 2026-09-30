@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ProjectSector;
 use App\Models\Lead;
 use App\Models\Post;
 use App\Models\Project;
@@ -107,7 +108,7 @@ class LocalizationTest extends TestCase
 
     public function test_canonical_and_hreflang_drop_filters_but_keep_pagination(): void
     {
-        Project::factory()->count(12)->create(['sector' => 'residential']);
+        Project::factory()->count(12)->create(['sector' => ProjectSector::Residential->value]);
 
         $this->get('/en/projects?page=2&sector=residential')
             ->assertSee('<link rel="canonical" href="'.url('/en/projects?page=2').'">', false)

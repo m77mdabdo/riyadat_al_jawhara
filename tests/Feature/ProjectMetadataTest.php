@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ProjectSector;
 use App\Filament\Resources\ProjectResource\Pages\CreateProject;
 use App\Filament\Resources\ProjectResource\Pages\EditProject;
 use App\Models\Project;
@@ -45,7 +46,7 @@ class ProjectMetadataTest extends TestCase
     {
         $project = $this->project('Villa', [
             'stone_type_id' => $this->carrara->id,
-            'sector' => 'residential',
+            'sector' => ProjectSector::Residential->value,
             'area_m2' => 1250.5,
             'city_en' => 'Riyadh',
             'city_ar' => 'الرياض',
@@ -65,7 +66,7 @@ class ProjectMetadataTest extends TestCase
 
     public function test_arabic_page_uses_arabic_city_and_sector(): void
     {
-        $project = $this->project('Villa', ['sector' => 'commercial', 'city_en' => 'Riyadh', 'city_ar' => 'الرياض']);
+        $project = $this->project('Villa', ['sector' => ProjectSector::Commercial->value, 'city_en' => 'Riyadh', 'city_ar' => 'الرياض']);
 
         $this->useLocale('ar');
         $this->get(route('projects.show', $project))->assertSee('الرياض')->assertSee('تجاري');
@@ -97,8 +98,8 @@ class ProjectMetadataTest extends TestCase
 
     public function test_sector_filter(): void
     {
-        $this->project('Home', ['sector' => 'residential']);
-        $this->project('Mall', ['sector' => 'commercial']);
+        $this->project('Home', ['sector' => ProjectSector::Residential->value]);
+        $this->project('Mall', ['sector' => ProjectSector::Commercial->value]);
 
         $response = $this->get(route('projects.index', ['sector' => 'commercial']))->assertOk();
         $this->assertSame(['Mall'], $response->viewData('projects')->pluck('title_en')->all());
@@ -115,7 +116,7 @@ class ProjectMetadataTest extends TestCase
         Livewire::test(CreateProject::class)
             ->fillForm([
                 'title_en' => 'Tower Lobby', 'title_ar' => 'ردهة البرج', 'slug' => 'tower-lobby',
-                'sector' => 'commercial', 'area_m2' => '850', 'city_en' => 'Jeddah', 'city_ar' => 'جدة',
+                'sector' => ProjectSector::Commercial->value, 'area_m2' => '850', 'city_en' => 'Jeddah', 'city_ar' => 'جدة',
                 'stone_type_id' => $this->carrara->id,
                 'stoneTypes' => [$this->granite->id],
             ])

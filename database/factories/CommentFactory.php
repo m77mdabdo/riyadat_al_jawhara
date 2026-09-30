@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\CommentStatus;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -23,18 +24,18 @@ class CommentFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->safeEmail(),
             'body' => $this->faker->sentence(12),
-            'status' => 'approved',
+            'status' => CommentStatus::Approved->value,
         ];
     }
 
     public function pending(): static
     {
-        return $this->state(['status' => 'pending']);
+        return $this->state(['status' => CommentStatus::Pending->value]);
     }
 
     public function spam(): static
     {
-        return $this->state(['status' => 'spam']);
+        return $this->state(['status' => CommentStatus::Spam->value]);
     }
 
     public function replyTo(Comment $parent): static

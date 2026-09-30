@@ -63,11 +63,6 @@ class Project extends Model implements HasMedia
         'area_m2' => 'decimal:2',
     ];
 
-    /**
-     * @var array<int, string> Allowed sector values (labels live in lang files: site.projects.sectors.*)
-     */
-    public const SECTORS = ['residential', 'commercial', 'hospitality', 'government', 'industrial'];
-
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()

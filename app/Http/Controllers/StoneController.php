@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StoneAttributeType;
+use App\Enums\StoneOriginType;
 use App\Models\Project;
 use App\Models\StoneAttribute;
 use App\Models\StoneCategory;
@@ -15,9 +17,9 @@ class StoneController extends Controller
      * Query-string filter => attribute type. Values are attribute slugs.
      */
     private const ATTRIBUTE_FILTERS = [
-        'finish' => StoneAttribute::FINISH,
-        'colour' => StoneAttribute::COLOUR,
-        'application' => StoneAttribute::APPLICATION,
+        'finish' => StoneAttributeType::Finish->value,
+        'colour' => StoneAttributeType::Colour->value,
+        'application' => StoneAttributeType::Application->value,
     ];
 
     public function index(Request $request): View
@@ -40,7 +42,7 @@ class StoneController extends Controller
         }
 
         $origin = $request->string('origin')->toString();
-        $active['origin'] = in_array($origin, StoneType::ORIGIN_TYPES, true) ? $origin : '';
+        $active['origin'] = in_array($origin, StoneOriginType::values(), true) ? $origin : '';
 
         if ($active['origin'] !== '') {
             $query->where('origin_type', $active['origin']);
@@ -58,7 +60,7 @@ class StoneController extends Controller
             ->whereNotNull('origin_type')
             ->distinct()
             ->pluck('origin_type')
-            ->intersect(StoneType::ORIGIN_TYPES)
+            ->intersect(StoneOriginType::values())
             ->values();
 
         return view('stones.index', [

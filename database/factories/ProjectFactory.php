@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ProjectSector;
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -26,7 +27,7 @@ class ProjectFactory extends Factory
             'location_ar' => 'الرياض',
             'city_en' => 'Riyadh',
             'city_ar' => 'الرياض',
-            'sector' => $this->faker->randomElement(Project::SECTORS),
+            'sector' => $this->faker->randomElement(ProjectSector::values()),
             'area_m2' => $this->faker->numberBetween(50, 5000),
             'completed_at' => $this->faker->dateTimeBetween('-3 years'),
             'is_featured' => false,

@@ -23,23 +23,7 @@ class StoneAttribute extends Model
     /** @use HasFactory<StoneAttributeFactory> */
     use HasActiveScope, HasFactory, HasSlug, HasTranslations, LogsAdminActivity;
 
-    public const FINISH = 'finish';
-
-    public const COLOUR = 'colour';
-
-    public const SIZE = 'size';
-
-    public const APPLICATION = 'application';
-
-    /**
-     * @var array<string, string> type => admin label
-     */
-    public const TYPES = [
-        self::FINISH => 'Finish',
-        self::COLOUR => 'Colour',
-        self::SIZE => 'Size / Thickness',
-        self::APPLICATION => 'Application',
-    ];
+    // Types: App\Enums\StoneAttributeType.
 
     protected $fillable = [
         'type',

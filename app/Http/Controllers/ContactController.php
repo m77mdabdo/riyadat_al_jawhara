@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LeadSource;
+use App\Enums\LeadStatus;
 use App\Http\Requests\StoreLeadRequest;
 use App\Models\Lead;
 use App\Models\Project;
@@ -58,8 +60,8 @@ class ContactController extends Controller
         }
 
         $lead = Lead::create(Arr::except($data, ['website', 'consent']) + [
-            'status' => 'new',
-            'source' => 'website',
+            'status' => LeadStatus::New->value,
+            'source' => LeadSource::Website->value,
             'locale' => app()->getLocale(),
             'source_url' => Str::limit((string) $request->headers->get('referer'), 2040, ''),
             'ip_address' => $request->ip(),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CommentStatus;
 use App\Http\Requests\StoreCommentRequest;
 use App\Models\BlogCategory;
 use App\Models\Comment;
@@ -109,7 +110,7 @@ class BlogController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'body' => $data['body'],
-            'status' => $isSpam ? 'spam' : 'pending',
+            'status' => ($isSpam ? CommentStatus::Spam : CommentStatus::Pending)->value,
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);

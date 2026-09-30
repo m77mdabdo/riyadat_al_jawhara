@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Enums\LeadSource;
+use App\Enums\LeadStatus;
 use App\Models\Lead;
 use App\Models\Setting;
 use App\Models\User;
@@ -88,7 +90,7 @@ class LeadNotificationTest extends TestCase
 
     public function test_notification_is_queued_mail(): void
     {
-        $lead = Lead::create(['name' => 'X', 'phone' => '1', 'message' => 'm', 'status' => 'new', 'source' => 'website']);
+        $lead = Lead::create(['name' => 'X', 'phone' => '1', 'message' => 'm', 'status' => LeadStatus::New->value, 'source' => LeadSource::Website->value]);
         $notification = new NewLeadNotification($lead);
 
         $this->assertInstanceOf(ShouldQueue::class, $notification);
@@ -99,7 +101,7 @@ class LeadNotificationTest extends TestCase
     {
         $lead = Lead::create([
             'name' => 'Nasser', 'phone' => '+966 55 111', 'email' => 'n@example.test',
-            'city' => 'Riyadh', 'message' => 'Need 80 m2 Carrara', 'status' => 'new', 'source' => 'website', 'locale' => 'ar',
+            'city' => 'Riyadh', 'message' => 'Need 80 m2 Carrara', 'status' => LeadStatus::New->value, 'source' => LeadSource::Website->value, 'locale' => 'ar',
         ]);
 
         $mail = (new NewLeadNotification($lead))->toMail(new AnonymousNotifiable);

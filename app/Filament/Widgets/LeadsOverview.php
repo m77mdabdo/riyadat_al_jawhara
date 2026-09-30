@@ -2,6 +2,8 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\LeadSource;
+use App\Enums\LeadStatus;
 use App\Models\Lead;
 use App\Models\Project;
 use App\Models\WhatsappClick;
@@ -15,7 +17,7 @@ class LeadsOverview extends BaseWidget
         $due = Lead::followUpDue()->count();
 
         return [
-            Stat::make(__('New Leads'), Lead::where('status', 'new')->count())
+            Stat::make(__('New Leads'), Lead::where('status', LeadStatus::New->value)->count())
                 ->description(__('Awaiting first contact'))
                 ->color('warning'),
             Stat::make(__('Follow-ups Due'), $due)
@@ -23,7 +25,7 @@ class LeadsOverview extends BaseWidget
                 ->color($due > 0 ? 'danger' : 'success')
                 ->url(route('filament.admin.resources.leads.index', ['tableFilters[follow_up_due][isActive]' => true])),
             Stat::make(__('WhatsApp Clicks (30 days)'), WhatsappClick::where('created_at', '>=', now()->subDays(30))->count())
-                ->description(Lead::where('source', 'whatsapp')->where('created_at', '>=', now()->subDays(30))->count().' '.__('with a known page context → leads'))
+                ->description(Lead::where('source', LeadSource::Whatsapp->value)->where('created_at', '>=', now()->subDays(30))->count().' '.__('with a known page context → leads'))
                 ->color('success'),
             Stat::make(__('Total Leads'), Lead::count())
                 ->description(__('All time'))

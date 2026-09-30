@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ProjectSector;
 use App\Models\Faq;
 use App\Models\Post;
 use App\Models\Project;
@@ -30,7 +31,7 @@ class SeoTest extends TestCase
     public function test_canonical_and_og_url_drop_filters_but_keep_pagination(): void
     {
         for ($i = 1; $i <= 12; $i++) {
-            Project::create(['title_en' => "P{$i}", 'title_ar' => "م{$i}", 'is_active' => true, 'sector' => 'residential']);
+            Project::create(['title_en' => "P{$i}", 'title_ar' => "م{$i}", 'is_active' => true, 'sector' => ProjectSector::Residential->value]);
         }
 
         $base = route('projects.index');

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ProjectSector;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\StoneType;
@@ -17,13 +18,13 @@ class ProjectEnhancementsTest extends TestCase
     {
         $stone = StoneType::factory()->create();
         $service = Service::factory()->create();
-        $project = Project::factory()->create(['stone_type_id' => $stone->id, 'service_id' => $service->id, 'sector' => 'residential']);
+        $project = Project::factory()->create(['stone_type_id' => $stone->id, 'service_id' => $service->id, 'sector' => ProjectSector::Residential->value]);
 
-        $sameStone = Project::factory()->create(['title_en' => 'Same Stone', 'sector' => 'industrial']);
+        $sameStone = Project::factory()->create(['title_en' => 'Same Stone', 'sector' => ProjectSector::Industrial->value]);
         $sameStone->stoneTypes()->attach($stone);
-        $sameService = Project::factory()->create(['title_en' => 'Same Service', 'service_id' => $service->id, 'sector' => 'industrial']);
-        $sameSector = Project::factory()->create(['title_en' => 'Same Sector', 'sector' => 'residential']);
-        Project::factory()->create(['title_en' => 'Unrelated', 'sector' => 'government']);
+        $sameService = Project::factory()->create(['title_en' => 'Same Service', 'service_id' => $service->id, 'sector' => ProjectSector::Industrial->value]);
+        $sameSector = Project::factory()->create(['title_en' => 'Same Sector', 'sector' => ProjectSector::Residential->value]);
+        Project::factory()->create(['title_en' => 'Unrelated', 'sector' => ProjectSector::Government->value]);
         Project::factory()->inactive()->create(['title_en' => 'Hidden', 'stone_type_id' => $stone->id]);
 
         $this->assertSame(['Same Stone', 'Same Service', 'Same Sector'], $project->similar()->pluck('title_en')->all());

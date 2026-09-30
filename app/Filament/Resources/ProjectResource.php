@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\ProjectSector;
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\ProjectResource\Pages;
@@ -84,8 +85,8 @@ class ProjectResource extends Resource
                     ->helperText(__('Off by default. Turn on only with the client’s permission.'))
                     ->default(false),
                 Forms\Components\Select::make('sector')
-                    ->options(Localized::options(array_combine(Project::SECTORS, array_map('ucfirst', Project::SECTORS))))
-                    ->in(Project::SECTORS),
+                    ->options(ProjectSector::options())
+                    ->in(ProjectSector::values()),
                 Forms\Components\TextInput::make('area_m2')
                     ->label(__('Area (m²)'))
                     ->numeric()
@@ -133,7 +134,7 @@ class ProjectResource extends Resource
                 Tables\Columns\TextColumn::make(Localized::column('title'))->label(__('Title'))->searchable(['title_en', 'title_ar']),
                 Tables\Columns\TextColumn::make('service.'.Localized::column('name'))->label(__('Service')),
                 Tables\Columns\TextColumn::make('location_en')->label(__('Location')),
-                Tables\Columns\TextColumn::make('sector')->badge()->formatStateUsing(fn (?string $state): string => __(ucfirst((string) $state)))->toggleable(),
+                Tables\Columns\TextColumn::make('sector')->badge()->formatStateUsing(fn (?string $state): string => ProjectSector::labelFor($state))->toggleable(),
                 Tables\Columns\IconColumn::make('is_featured')->boolean(),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),
                 Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
@@ -144,7 +145,7 @@ class ProjectResource extends Resource
                     ->label(__('Service'))
                     ->options(fn () => Service::ordered()->pluck(Localized::column('name'), 'id')),
                 Tables\Filters\SelectFilter::make('sector')
-                    ->options(Localized::options(array_combine(Project::SECTORS, array_map('ucfirst', Project::SECTORS)))),
+                    ->options(ProjectSector::options()),
                 Tables\Filters\TernaryFilter::make('is_featured'),
             ])
             ->actions([

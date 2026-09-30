@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\LeadSource;
+use App\Enums\LeadStatus;
 use App\Models\Lead;
 use App\Models\Service;
 use App\Models\StoneType;
@@ -25,8 +27,8 @@ class LeadSeeder extends Seeder
                 'stone_type_id' => $carrara?->id,
                 'city' => 'Riyadh',
                 'message' => 'أرغب بعرض سعر لتركيب رخام كرارا في صالة المنزل، المساحة تقريبًا 80 متر مربع.',
-                'status' => 'new',
-                'source' => 'website',
+                'status' => LeadStatus::New->value,
+                'source' => LeadSource::Website->value,
             ],
             [
                 'name' => 'Lama Al-Sabhan',
@@ -36,8 +38,8 @@ class LeadSeeder extends Seeder
                 'stone_type_id' => $hashemi?->id,
                 'city' => 'Riyadh',
                 'message' => 'Interested in a Hashemi stone facade for a 3-story building. Please advise on cost.',
-                'status' => 'contacted',
-                'source' => 'whatsapp',
+                'status' => LeadStatus::Contacted->value,
+                'source' => LeadSource::Whatsapp->value,
             ],
             [
                 'name' => 'Yousef Al-Mutairi',
@@ -47,8 +49,8 @@ class LeadSeeder extends Seeder
                 'stone_type_id' => null,
                 'city' => 'Dammam',
                 'message' => 'أحتاج تركيب أرضيات جرانيت لمعرض تجاري صغير.',
-                'status' => 'in_progress',
-                'source' => 'website',
+                'status' => LeadStatus::InProgress->value,
+                'source' => LeadSource::Website->value,
             ],
         ];
 

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Enums\CommentStatus;
+use App\Enums\LeadStatus;
 use App\Filament\Resources\ActivityResource;
 use App\Models\Comment;
 use App\Models\Lead;
@@ -69,7 +71,7 @@ class ActivityLogTest extends TestCase
         $this->assertSame(0, Activity::where('subject_type', Lead::class)->count(), 'public submissions are not audited');
 
         $this->actingAs($this->user('admin'));
-        $lead->update(['status' => 'contacted', 'message' => 'edited', 'ip_address' => '198.51.100.1']);
+        $lead->update(['status' => LeadStatus::Contacted->value, 'message' => 'edited', 'ip_address' => '198.51.100.1']);
 
         $activity = Activity::where('subject_type', Lead::class)->sole();
         $this->assertSame(['status' => 'contacted'], $activity->properties['attributes']);
@@ -81,7 +83,7 @@ class ActivityLogTest extends TestCase
         $comment = Comment::factory()->pending()->create(['ip_address' => '203.0.113.9']);
         $this->assertSame(0, Activity::where('subject_type', Comment::class)->count());
 
-        $comment->update(['status' => 'approved']);
+        $comment->update(['status' => CommentStatus::Approved->value]);
 
         $activity = Activity::where('subject_type', Comment::class)->sole();
         $this->assertSame(['status' => 'approved'], $activity->properties['attributes']);

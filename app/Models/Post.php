@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CommentStatus;
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasCoverImage;
 use App\Models\Concerns\HasSeoOverrides;
@@ -102,7 +103,7 @@ class Post extends Model implements HasMedia
     /** @return HasMany<Comment, $this> */
     public function approvedComments(): HasMany
     {
-        return $this->hasMany(Comment::class)->where('status', 'approved')->whereNull('parent_id');
+        return $this->hasMany(Comment::class)->where('status', CommentStatus::Approved->value)->whereNull('parent_id');
     }
 
     public function getTitleAttribute(): string

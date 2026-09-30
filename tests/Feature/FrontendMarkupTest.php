@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\CommentStatus;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Project;
@@ -153,7 +154,7 @@ class FrontendMarkupTest extends TestCase
     public function test_comment_form_only_refills_the_form_that_was_submitted(): void
     {
         $post = Post::create(['title_en' => 'P', 'title_ar' => 'م', 'is_published' => true, 'published_at' => now()->subDay()]);
-        $parent = Comment::create(['post_id' => $post->id, 'name' => 'A', 'email' => 'a@example.test', 'body' => 'Root', 'status' => 'approved']);
+        $parent = Comment::create(['post_id' => $post->id, 'name' => 'A', 'email' => 'a@example.test', 'body' => 'Root', 'status' => CommentStatus::Approved->value]);
 
         $this->from(route('blog.show', $post))
             ->post(route('blog.comments.store', $post), ['parent_id' => $parent->id, 'name' => 'Replier Name', 'email' => 'bad', 'body' => 'x'])

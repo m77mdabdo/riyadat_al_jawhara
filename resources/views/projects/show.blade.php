@@ -27,7 +27,7 @@
                 @if ($project->city)
                     <span><span class="font-semibold text-charcoal">{{ __('site.projects.city') }}:</span> {{ $project->city }}</span>
                 @endif
-                @if ($project->sector && in_array($project->sector, \App\Models\Project::SECTORS, true))
+                @if ($project->sector && in_array($project->sector, \App\Enums\ProjectSector::values(), true))
                     <span><span class="font-semibold text-charcoal">{{ __('site.projects.sector') }}:</span> {{ __('site.projects.sectors.'.$project->sector) }}</span>
                 @endif
                 @if ($project->area_m2)

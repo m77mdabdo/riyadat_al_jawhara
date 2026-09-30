@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Enums\StoneAttributeType;
+use App\Enums\StoneOriginType;
 use App\Filament\Resources\StoneAttributeResource\Pages\CreateStoneAttribute;
 use App\Filament\Resources\StoneTypeResource\Pages\CreateStoneType;
 use App\Filament\Resources\StoneTypeResource\Pages\EditStoneType;
@@ -53,10 +55,10 @@ class StoneAttributesTest extends TestCase
 
     public function test_detail_page_shows_grouped_active_specifications(): void
     {
-        $polished = $this->attr(StoneAttribute::FINISH, 'Polished');
-        $white = $this->attr(StoneAttribute::COLOUR, 'White', ['hex_color' => '#F2F0EB']);
-        $hidden = $this->attr(StoneAttribute::APPLICATION, 'Secret Use', ['is_active' => false]);
-        $stone = $this->stone('Carrara', $this->marble, [$polished, $white, $hidden], StoneType::ORIGIN_IMPORTED);
+        $polished = $this->attr(StoneAttributeType::Finish->value, 'Polished');
+        $white = $this->attr(StoneAttributeType::Colour->value, 'White', ['hex_color' => '#F2F0EB']);
+        $hidden = $this->attr(StoneAttributeType::Application->value, 'Secret Use', ['is_active' => false]);
+        $stone = $this->stone('Carrara', $this->marble, [$polished, $white, $hidden], StoneOriginType::Imported->value);
 
         $this->get(route('stones.show', $stone))
             ->assertOk()
@@ -70,7 +72,7 @@ class StoneAttributesTest extends TestCase
 
     public function test_detail_page_in_arabic_uses_arabic_names(): void
     {
-        $stone = $this->stone('Carrara', $this->marble, [$this->attr(StoneAttribute::FINISH, 'Honed')]);
+        $stone = $this->stone('Carrara', $this->marble, [$this->attr(StoneAttributeType::Finish->value, 'Honed')]);
 
         $this->useLocale('ar');
         $this->get(route('stones.show', $stone))->assertSee('Honed ع')->assertSee('التشطيب');
@@ -78,7 +80,7 @@ class StoneAttributesTest extends TestCase
 
     public function test_invalid_swatch_is_never_written_to_style(): void
     {
-        $bad = $this->attr(StoneAttribute::COLOUR, 'Weird', ['hex_color' => 'red;background:url(x)']);
+        $bad = $this->attr(StoneAttributeType::Colour->value, 'Weird', ['hex_color' => 'red;background:url(x)']);
         $stone = $this->stone('Carrara', $this->marble, [$bad]);
 
         $this->get(route('stones.show', $stone))->assertOk()->assertSee('Weird')->assertDontSee('url(x)', false);
@@ -93,13 +95,13 @@ class StoneAttributesTest extends TestCase
 
     public function test_index_filters_by_attributes_origin_and_category(): void
     {
-        $polished = $this->attr(StoneAttribute::FINISH, 'Polished');
-        $flamed = $this->attr(StoneAttribute::FINISH, 'Flamed');
-        $white = $this->attr(StoneAttribute::COLOUR, 'White');
-        $exterior = $this->attr(StoneAttribute::APPLICATION, 'Exterior');
+        $polished = $this->attr(StoneAttributeType::Finish->value, 'Polished');
+        $flamed = $this->attr(StoneAttributeType::Finish->value, 'Flamed');
+        $white = $this->attr(StoneAttributeType::Colour->value, 'White');
+        $exterior = $this->attr(StoneAttributeType::Application->value, 'Exterior');
 
-        $this->stone('Carrara', $this->marble, [$polished, $white], StoneType::ORIGIN_IMPORTED);
-        $this->stone('Black Granite', $this->granite, [$polished, $flamed, $exterior], StoneType::ORIGIN_LOCAL);
+        $this->stone('Carrara', $this->marble, [$polished, $white], StoneOriginType::Imported->value);
+        $this->stone('Black Granite', $this->granite, [$polished, $flamed, $exterior], StoneOriginType::Local->value);
         $this->stone('Hidden', $this->marble, [$polished], active: false);
 
         $names = fn (array $query) => $this->get(route('stones.index', $query))->assertOk()->viewData('stoneTypes')->pluck('name_en')->all();
@@ -116,7 +118,7 @@ class StoneAttributesTest extends TestCase
 
     public function test_inactive_attribute_cannot_be_used_as_filter(): void
     {
-        $retired = $this->attr(StoneAttribute::FINISH, 'Retired', ['is_active' => false]);
+        $retired = $this->attr(StoneAttributeType::Finish->value, 'Retired', ['is_active' => false]);
         $this->stone('Carrara', $this->marble, [$retired]);
 
         $this->get(route('stones.index', ['finish' => 'retired']))->assertOk()->assertViewHas('stoneTypes', fn ($stones) => $stones->isEmpty());
@@ -124,9 +126,9 @@ class StoneAttributesTest extends TestCase
 
     public function test_filter_options_only_list_values_used_by_visible_stones(): void
     {
-        $used = $this->attr(StoneAttribute::FINISH, 'Polished');
-        $unused = $this->attr(StoneAttribute::FINISH, 'Leathered');
-        $onlyHidden = $this->attr(StoneAttribute::FINISH, 'Bush Hammered');
+        $used = $this->attr(StoneAttributeType::Finish->value, 'Polished');
+        $unused = $this->attr(StoneAttributeType::Finish->value, 'Leathered');
+        $onlyHidden = $this->attr(StoneAttributeType::Finish->value, 'Bush Hammered');
         $this->stone('Carrara', $this->marble, [$used]);
         $this->stone('Hidden', $this->marble, [$onlyHidden], active: false);
 
@@ -149,10 +151,10 @@ class StoneAttributesTest extends TestCase
         Role::create(['name' => 'admin', 'guard_name' => 'web']);
         $this->actingAs(tap(User::factory()->create())->assignRole('admin'));
 
-        $polished = $this->attr(StoneAttribute::FINISH, 'Polished');
-        $honed = $this->attr(StoneAttribute::FINISH, 'Honed');
-        $white = $this->attr(StoneAttribute::COLOUR, 'White');
-        $interior = $this->attr(StoneAttribute::APPLICATION, 'Interior');
+        $polished = $this->attr(StoneAttributeType::Finish->value, 'Polished');
+        $honed = $this->attr(StoneAttributeType::Finish->value, 'Honed');
+        $white = $this->attr(StoneAttributeType::Colour->value, 'White');
+        $interior = $this->attr(StoneAttributeType::Application->value, 'Interior');
 
         Livewire::test(CreateStoneType::class)
             ->fillForm([
@@ -160,7 +162,7 @@ class StoneAttributesTest extends TestCase
                 'name_en' => 'Carrara',
                 'name_ar' => 'كرارا',
                 'slug' => 'carrara',
-                'origin_type' => StoneType::ORIGIN_IMPORTED,
+                'origin_type' => StoneOriginType::Imported->value,
                 'finishes' => [$polished->id],
                 'colours' => [$white->id],
                 'applications' => [$interior->id],
@@ -170,7 +172,7 @@ class StoneAttributesTest extends TestCase
 
         $stone = StoneType::where('slug', 'carrara')->firstOrFail();
         $this->assertEqualsCanonicalizing([$polished->id, $white->id, $interior->id], $stone->stoneAttributes()->pluck('stone_attributes.id')->all());
-        $this->assertSame(StoneType::ORIGIN_IMPORTED, $stone->origin_type);
+        $this->assertSame(StoneOriginType::Imported->value, $stone->origin_type);
 
         Livewire::test(EditStoneType::class, ['record' => $stone->getRouteKey()])
             ->assertFormSet(['finishes' => [(string) $polished->id], 'colours' => [(string) $white->id]])
@@ -196,15 +198,15 @@ class StoneAttributesTest extends TestCase
     {
         Role::create(['name' => 'admin', 'guard_name' => 'web']);
         $this->actingAs(tap(User::factory()->create())->assignRole('admin'));
-        $this->attr(StoneAttribute::COLOUR, 'Natural');
+        $this->attr(StoneAttributeType::Colour->value, 'Natural');
 
         Livewire::test(CreateStoneAttribute::class)
-            ->fillForm(['type' => StoneAttribute::FINISH, 'name_en' => 'Natural', 'name_ar' => 'طبيعي', 'slug' => 'natural'])
+            ->fillForm(['type' => StoneAttributeType::Finish->value, 'name_en' => 'Natural', 'name_ar' => 'طبيعي', 'slug' => 'natural'])
             ->call('create')
             ->assertHasNoFormErrors();
 
         Livewire::test(CreateStoneAttribute::class)
-            ->fillForm(['type' => StoneAttribute::COLOUR, 'name_en' => 'Natural 2', 'name_ar' => 'طبيعي', 'slug' => 'natural'])
+            ->fillForm(['type' => StoneAttributeType::Colour->value, 'name_en' => 'Natural 2', 'name_ar' => 'طبيعي', 'slug' => 'natural'])
             ->call('create')
             ->assertHasFormErrors(['slug']);
 

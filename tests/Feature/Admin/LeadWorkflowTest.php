@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Enums\LeadSource;
+use App\Enums\LeadStatus;
 use App\Filament\Resources\LeadResource;
 use App\Filament\Resources\LeadResource\Pages\EditLead;
 use App\Filament\Resources\LeadResource\Pages\ListLeads;
@@ -38,7 +40,7 @@ class LeadWorkflowTest extends TestCase
     {
         return Lead::create($attributes + [
             'name' => 'Nasser', 'phone' => '+966 55 111 2222', 'email' => 'n@example.test',
-            'message' => 'Need Carrara for 80 m2', 'status' => 'new', 'source' => 'website',
+            'message' => 'Need Carrara for 80 m2', 'status' => LeadStatus::New->value, 'source' => LeadSource::Website->value,
         ]);
     }
 
@@ -63,7 +65,7 @@ class LeadWorkflowTest extends TestCase
 
         Livewire::test(EditLead::class, ['record' => $lead->getRouteKey()])
             ->fillForm([
-                'status' => 'contacted',
+                'status' => LeadStatus::Contacted->value,
                 'assigned_to' => $this->editor->id,
                 'follow_up_at' => '2026-10-05',
             ])
@@ -117,7 +119,7 @@ class LeadWorkflowTest extends TestCase
         $overdue = $this->lead(['name' => 'Overdue', 'follow_up_at' => today()->subDay()]);
         $today = $this->lead(['name' => 'Today', 'follow_up_at' => today()]);
         $future = $this->lead(['name' => 'Future', 'follow_up_at' => today()->addWeek()]);
-        $closed = $this->lead(['name' => 'Closed', 'follow_up_at' => today()->subDay(), 'status' => 'closed']);
+        $closed = $this->lead(['name' => 'Closed', 'follow_up_at' => today()->subDay(), 'status' => LeadStatus::Closed->value]);
 
         $this->assertEqualsCanonicalizing([$overdue->id, $today->id], Lead::followUpDue()->pluck('id')->all());
 
@@ -156,7 +158,7 @@ class LeadWorkflowTest extends TestCase
     public function test_csv_content_has_bom_headers_rows_and_formula_guard(): void
     {
         $this->lead(['name' => '=HYPERLINK("http://evil")', 'city' => 'الرياض']);
-        $this->lead(['name' => 'Second', 'status' => 'closed']);
+        $this->lead(['name' => 'Second', 'status' => LeadStatus::Closed->value]);
 
         ob_start();
         LeadCsvExporter::download(Lead::query())->sendContent();

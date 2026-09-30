@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\LeadStatus;
 use App\Models\Concerns\LogsAdminActivity;
 use Database\Factories\LeadFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -48,30 +49,12 @@ class Lead extends Model
     ];
 
     /**
-     * @var array<string, string> status value => admin label
-     */
-    public const STATUSES = [
-        'new' => 'New',
-        'contacted' => 'Contacted',
-        'in_progress' => 'In Progress',
-        'closed' => 'Closed',
-    ];
-
-    /**
-     * @var array<string, string> source value => admin label
-     */
-    public const SOURCES = [
-        'website' => 'Website',
-        'whatsapp' => 'WhatsApp',
-    ];
-
-    /**
      * @param  Builder<self>  $query
      * @return Builder<self>
      */
     public function scopeOpen(Builder $query): Builder
     {
-        return $query->where('status', '!=', 'closed');
+        return $query->where('status', '!=', LeadStatus::Closed->value);
     }
 
     /**

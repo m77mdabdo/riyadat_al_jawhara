@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ProjectSector;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\StoneType;
@@ -26,7 +27,7 @@ class ProjectController extends Controller
 
         $sector = $request->string('sector')->toString();
 
-        if (in_array($sector, Project::SECTORS, true)) {
+        if (in_array($sector, ProjectSector::values(), true)) {
             $query->where('sector', $sector);
         } else {
             $sector = '';
@@ -38,7 +39,7 @@ class ProjectController extends Controller
             'stoneTypes' => StoneType::active()->ordered()->get(),
             'activeService' => $request->string('service')->toString(),
             'activeStoneType' => $request->string('stone_type')->toString(),
-            'sectors' => Project::active()->whereNotNull('sector')->distinct()->pluck('sector')->intersect(Project::SECTORS)->values(),
+            'sectors' => Project::active()->whereNotNull('sector')->distinct()->pluck('sector')->intersect(ProjectSector::values())->values(),
             'activeSector' => $sector,
         ]);
     }

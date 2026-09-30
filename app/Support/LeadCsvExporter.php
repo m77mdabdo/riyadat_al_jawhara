@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use App\Enums\LeadSource;
+use App\Enums\LeadStatus;
 use App\Models\Lead;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -59,10 +61,10 @@ class LeadCsvExporter
             $lead->stoneType?->name_en,
             $lead->project?->title_en,
             $lead->message,
-            Lead::STATUSES[$lead->status],
+            LeadStatus::labelFor($lead->status, 'en'),
             $lead->assignee?->name,
             $lead->follow_up_at?->format('Y-m-d'),
-            Lead::SOURCES[$lead->source],
+            LeadSource::labelFor($lead->source, 'en'),
             $lead->locale,
             $lead->consented_at?->format('Y-m-d H:i'),
         ];

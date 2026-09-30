@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\CommentStatus;
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\CommentResource\Pages;
@@ -26,7 +27,7 @@ class CommentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = static::getModel()::where('status', 'pending')->count();
+        $count = static::getModel()::where('status', CommentStatus::Pending->value)->count();
 
         return $count > 0 ? (string) $count : null;
     }
@@ -39,11 +40,7 @@ class CommentResource extends Resource
                 Forms\Components\TextInput::make('email')->email()->required()->maxLength(255),
                 Forms\Components\Textarea::make('body')->required()->rows(4)->columnSpanFull(),
                 Forms\Components\Select::make('status')
-                    ->options([
-                        'pending' => __('Pending'),
-                        'approved' => __('Approved'),
-                        'spam' => __('Spam'),
-                    ])
+                    ->options(CommentStatus::options())
                     ->required(),
             ]);
     }
@@ -73,12 +70,8 @@ class CommentResource extends Resource
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'approved' => 'success',
-                        'pending' => 'warning',
-                        'spam' => 'danger',
-                        default => 'gray',
-                    }),
+                    ->formatStateUsing(fn (string $state): string => CommentStatus::labelFor($state))
+                    ->color(fn (string $state): string => CommentStatus::colorFor($state)),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Submitted'))
                     ->dateTime()
@@ -87,11 +80,7 @@ class CommentResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        'pending' => __('Pending'),
-                        'approved' => __('Approved'),
-                        'spam' => __('Spam'),
-                    ]),
+                    ->options(CommentStatus::options()),
                 Tables\Filters\Filter::make('created_at')
                     ->form([
                         Forms\Components\DatePicker::make('from'),
@@ -108,14 +97,14 @@ class CommentResource extends Resource
                     ->label(__('Approve'))
                     ->icon('heroicon-o-check')
                     ->color('success')
-                    ->visible(fn (Comment $record) => $record->status !== 'approved')
-                    ->action(fn (Comment $record) => $record->update(['status' => 'approved'])),
+                    ->visible(fn (Comment $record) => $record->status !== CommentStatus::Approved->value)
+                    ->action(fn (Comment $record) => $record->update(['status' => CommentStatus::Approved->value])),
                 Tables\Actions\Action::make('spam')
                     ->label(__('Mark as Spam'))
                     ->icon('heroicon-o-no-symbol')
                     ->color('danger')
-                    ->visible(fn (Comment $record) => $record->status !== 'spam')
-                    ->action(fn (Comment $record) => $record->update(['status' => 'spam'])),
+                    ->visible(fn (Comment $record) => $record->status !== CommentStatus::Spam->value)
+                    ->action(fn (Comment $record) => $record->update(['status' => CommentStatus::Spam->value])),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

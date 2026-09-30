@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\StoneOriginType;
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\StoneTypeResource\Pages;
@@ -81,11 +82,8 @@ class StoneTypeResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('origin_type')
                             ->label(__('Local / Imported'))
-                            ->options([
-                                StoneType::ORIGIN_LOCAL => __('Local'),
-                                StoneType::ORIGIN_IMPORTED => __('Imported'),
-                            ])
-                            ->in(StoneType::ORIGIN_TYPES)
+                            ->options(StoneOriginType::options())
+                            ->in(StoneOriginType::values())
                             ->placeholder(__('Not specified')),
                         static::attributeSelect('finishes', 'Finishes'),
                         static::attributeSelect('colours', 'Colours'),

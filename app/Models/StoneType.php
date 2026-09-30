@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StoneAttributeType;
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasCoverImage;
@@ -45,14 +46,7 @@ class StoneType extends Model implements HasMedia
         'is_active' => 'boolean',
     ];
 
-    public const ORIGIN_LOCAL = 'local';
-
-    public const ORIGIN_IMPORTED = 'imported';
-
-    /**
-     * @var array<int, string>
-     */
-    public const ORIGIN_TYPES = [self::ORIGIN_LOCAL, self::ORIGIN_IMPORTED];
+    // origin_type values: App\Enums\StoneOriginType.
 
     public function getSlugOptions(): SlugOptions
     {
@@ -112,25 +106,25 @@ class StoneType extends Model implements HasMedia
     /** @return BelongsToMany<StoneAttribute, $this> */
     public function finishes(): BelongsToMany
     {
-        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::FINISH);
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttributeType::Finish->value);
     }
 
     /** @return BelongsToMany<StoneAttribute, $this> */
     public function colours(): BelongsToMany
     {
-        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::COLOUR);
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttributeType::Colour->value);
     }
 
     /** @return BelongsToMany<StoneAttribute, $this> */
     public function sizes(): BelongsToMany
     {
-        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::SIZE);
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttributeType::Size->value);
     }
 
     /** @return BelongsToMany<StoneAttribute, $this> */
     public function applications(): BelongsToMany
     {
-        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::APPLICATION);
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttributeType::Application->value);
     }
 
     /**
@@ -144,7 +138,7 @@ class StoneType extends Model implements HasMedia
             ->where('is_active', true)
             ->toBase()
             ->groupBy('type')
-            ->sortBy(fn ($group, string $type) => array_search($type, array_keys(StoneAttribute::TYPES), true));
+            ->sortBy(fn ($group, string $type) => array_search($type, StoneAttributeType::values(), true));
     }
 
     public function getNameAttribute(): string

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CommentStatus;
 use App\Models\Concerns\LogsAdminActivity;
 use Database\Factories\CommentFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -39,7 +40,7 @@ class Comment extends Model
      */
     public function scopeApproved(Builder $query): Builder
     {
-        return $query->where('status', 'approved');
+        return $query->where('status', CommentStatus::Approved->value);
     }
 
     /** @return BelongsTo<Post, $this> */
@@ -69,6 +70,6 @@ class Comment extends Model
      */
     public function approvedReplies(): HasMany
     {
-        return $this->replies()->where('status', 'approved');
+        return $this->replies()->where('status', CommentStatus::Approved->value);
     }
 }

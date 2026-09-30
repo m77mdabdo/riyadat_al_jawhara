@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\StoneAttributeType;
 use App\Models\BlogCategory;
 use App\Models\Comment;
 use App\Models\Faq;
@@ -57,6 +58,6 @@ class FactoriesTest extends TestCase
         $this->assertTrue($reply->parent->is($parent));
         $this->assertSame('spam', $reply->status);
 
-        $this->assertSame(StoneAttribute::COLOUR, StoneAttribute::factory()->ofType(StoneAttribute::COLOUR)->create()->type);
+        $this->assertSame(StoneAttributeType::Colour->value, StoneAttribute::factory()->ofType(StoneAttributeType::Colour->value)->create()->type);
     }
 }

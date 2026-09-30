@@ -31,7 +31,7 @@
                                     <dd class="flex flex-wrap gap-2">
                                         @foreach ($values as $value)
                                             <span class="inline-flex items-center gap-1.5 rounded-full bg-stone-100 px-3 py-1 text-charcoal">
-                                                @if ($type === \App\Models\StoneAttribute::COLOUR && $value->swatch)
+                                                @if ($type === \App\Enums\StoneAttributeType::Colour->value && $value->swatch)
                                                     <span class="h-3 w-3 rounded-full border border-stone-300" style="background-color: {{ $value->swatch }}" aria-hidden="true"></span>
                                                 @endif
                                                 {{ $value->name }}

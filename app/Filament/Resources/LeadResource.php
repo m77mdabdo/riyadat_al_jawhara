@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\LeadSource;
+use App\Enums\LeadStatus;
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\LeadResource\Pages;
@@ -35,7 +37,7 @@ class LeadResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) static::getModel()::where('status', 'new')->count();
+        return (string) static::getModel()::where('status', LeadStatus::New->value)->count();
     }
 
     /**
@@ -87,7 +89,7 @@ class LeadResource extends Resource
                             ->options(fn () => Project::ordered()->pluck(Localized::column('title'), 'id'))
                             ->searchable(),
                         Forms\Components\Select::make('source')
-                            ->options(Localized::options(Lead::SOURCES))
+                            ->options(LeadSource::options())
                             ->required(),
                         Forms\Components\Textarea::make('message')
                             ->rows(4)
@@ -97,8 +99,8 @@ class LeadResource extends Resource
                 Forms\Components\Section::make(__('Follow-up'))
                     ->schema([
                         Forms\Components\Select::make('status')
-                            ->options(Localized::options(Lead::STATUSES))
-                            ->default('new')
+                            ->options(LeadStatus::options())
+                            ->default(LeadStatus::New->value)
                             ->required(),
                         Forms\Components\Select::make('assigned_to')
                             ->label(__('Assigned to'))
@@ -132,7 +134,7 @@ class LeadResource extends Resource
                         Infolists\Components\TextEntry::make('service.'.Localized::column('name'))->label(__('Service'))->placeholder('—'),
                         Infolists\Components\TextEntry::make('stoneType.'.Localized::column('name'))->label(__('Stone type'))->placeholder('—'),
                         Infolists\Components\TextEntry::make('project.'.Localized::column('title'))->label(__('Related project'))->placeholder('—'),
-                        Infolists\Components\TextEntry::make('source')->badge()->formatStateUsing(fn (string $state): string => __(Lead::SOURCES[$state] ?? $state)),
+                        Infolists\Components\TextEntry::make('source')->badge()->formatStateUsing(fn (string $state): string => LeadSource::labelFor($state))->color(fn (string $state): string => LeadSource::tryFrom($state)?->getColor() ?? 'gray'),
                         Infolists\Components\TextEntry::make('message')->columnSpanFull()->prose(),
                     ])->columns(4),
 
@@ -140,11 +142,11 @@ class LeadResource extends Resource
                     ->schema([
                         Infolists\Components\TextEntry::make('status')
                             ->badge()
-                            ->color(fn (string $state): string => static::statusColor($state))
-                            ->formatStateUsing(fn (string $state): string => __(Lead::STATUSES[$state] ?? $state)),
+                            ->color(fn (string $state): string => LeadStatus::colorFor($state))
+                            ->formatStateUsing(fn (string $state): string => LeadStatus::labelFor($state)),
                         Infolists\Components\TextEntry::make('assignee.name')->label(__('Assigned to'))->placeholder(__('Unassigned')),
                         Infolists\Components\TextEntry::make('follow_up_at')->label(__('Follow-up date'))->date()->placeholder('—')
-                            ->color(fn (Lead $record): ?string => $record->follow_up_at?->isPast() && $record->status !== 'closed' ? 'danger' : null),
+                            ->color(fn (Lead $record): ?string => $record->follow_up_at?->isPast() && $record->status !== LeadStatus::Closed->value ? 'danger' : null),
                         Infolists\Components\TextEntry::make('created_at')->label(__('Received'))->dateTime(),
                     ])->columns(4),
 
@@ -160,17 +162,6 @@ class LeadResource extends Resource
             ]);
     }
 
-    public static function statusColor(string $status): string
-    {
-        return match ($status) {
-            'new' => 'warning',
-            'contacted' => 'info',
-            'in_progress' => 'primary',
-            'closed' => 'success',
-            default => 'gray',
-        };
-    }
-
     public static function table(Table $table): Table
     {
         return $table
@@ -184,15 +175,15 @@ class LeadResource extends Resource
                 Tables\Columns\TextColumn::make('stoneType.'.Localized::column('name'))->label(__('Stone'))->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('project.'.Localized::column('title'))->label(__('Project'))->limit(30)->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('message')->limit(40)->tooltip(fn (Lead $record): ?string => $record->message)->toggleable(),
-                Tables\Columns\TextColumn::make('source')->badge()->formatStateUsing(fn (string $state): string => __(Lead::SOURCES[$state] ?? $state))->toggleable(),
-                Tables\Columns\SelectColumn::make('status')->options(Localized::options(Lead::STATUSES))->selectablePlaceholder(false),
+                Tables\Columns\TextColumn::make('source')->badge()->formatStateUsing(fn (string $state): string => LeadSource::labelFor($state))->color(fn (string $state): string => LeadSource::tryFrom($state)?->getColor() ?? 'gray')->toggleable(),
+                Tables\Columns\SelectColumn::make('status')->options(LeadStatus::options())->selectablePlaceholder(false),
                 Tables\Columns\TextColumn::make('assignee.name')->label(__('Assigned to'))->placeholder('—')->toggleable(),
                 Tables\Columns\TextColumn::make('follow_up_at')
                     ->label(__('Follow-up'))
                     ->date()
                     ->sortable()
                     ->placeholder('—')
-                    ->color(fn (Lead $record): ?string => $record->follow_up_at?->isPast() && $record->status !== 'closed' ? 'danger' : null),
+                    ->color(fn (Lead $record): ?string => $record->follow_up_at?->isPast() && $record->status !== LeadStatus::Closed->value ? 'danger' : null),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
@@ -200,7 +191,7 @@ class LeadResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->options(Localized::options(Lead::STATUSES)),
+                    ->options(LeadStatus::options()),
                 Tables\Filters\SelectFilter::make('assigned_to')
                     ->label(__('Assigned to'))
                     ->options(fn () => static::assigneeOptions()),

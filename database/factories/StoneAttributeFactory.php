@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\StoneAttributeType;
 use App\Models\StoneAttribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,7 +19,7 @@ class StoneAttributeFactory extends Factory
     public function definition(): array
     {
         return [
-            'type' => $this->faker->randomElement(array_keys(StoneAttribute::TYPES)),
+            'type' => $this->faker->randomElement(StoneAttributeType::values()),
             'name_en' => ucfirst($this->faker->unique()->word()),
             'name_ar' => 'قيمة '.$this->faker->unique()->numberBetween(1, 99999),
             'order' => $this->faker->numberBetween(0, 20),

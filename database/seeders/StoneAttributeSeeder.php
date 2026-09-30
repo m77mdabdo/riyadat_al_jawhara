@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\StoneAttributeType;
+use App\Enums\StoneOriginType;
 use App\Models\StoneAttribute;
 use App\Models\StoneType;
 use Illuminate\Database\Seeder;
@@ -18,7 +20,7 @@ class StoneAttributeSeeder extends Seeder
      * @var array<string, array<int, array{0: string, 1: string, 2?: string}>> type => [name_en, name_ar, hex?]
      */
     public const OPTIONS = [
-        StoneAttribute::FINISH => [
+        StoneAttributeType::Finish->value => [
             ['Polished', 'مصقول (لامع)'],
             ['Honed', 'مطفي'],
             ['Brushed', 'مفرّش'],
@@ -26,7 +28,7 @@ class StoneAttributeSeeder extends Seeder
             ['Sandblasted', 'مرمّل'],
             ['Leathered', 'جلدي'],
         ],
-        StoneAttribute::COLOUR => [
+        StoneAttributeType::Colour->value => [
             ['White', 'أبيض', '#F2F0EB'],
             ['Beige', 'بيج', '#D9C7A7'],
             ['Grey', 'رمادي', '#9C9A96'],
@@ -34,14 +36,14 @@ class StoneAttributeSeeder extends Seeder
             ['Brown', 'بني', '#7A5A3C'],
             ['Green', 'أخضر', '#4E6B4A'],
         ],
-        StoneAttribute::SIZE => [
+        StoneAttributeType::Size->value => [
             ['2 cm slab', 'لوح 2 سم'],
             ['3 cm slab', 'لوح 3 سم'],
             ['60 × 60 cm tile', 'بلاط 60 × 60 سم'],
             ['60 × 120 cm tile', 'بلاط 60 × 120 سم'],
             ['Cut to size', 'تفصيل حسب الطلب'],
         ],
-        StoneAttribute::APPLICATION => [
+        StoneAttributeType::Application->value => [
             ['Interior', 'داخلي'],
             ['Exterior', 'خارجي'],
             ['Flooring', 'أرضيات'],
@@ -56,36 +58,36 @@ class StoneAttributeSeeder extends Seeder
      */
     private const DEMO_LINKS = [
         'Carrara Marble' => [
-            'origin' => StoneType::ORIGIN_IMPORTED,
-            StoneAttribute::FINISH => ['Polished', 'Honed'],
-            StoneAttribute::COLOUR => ['White', 'Grey'],
-            StoneAttribute::SIZE => ['2 cm slab', '3 cm slab', '60 × 60 cm tile'],
-            StoneAttribute::APPLICATION => ['Interior', 'Flooring', 'Countertops'],
+            'origin' => StoneOriginType::Imported->value,
+            StoneAttributeType::Finish->value => ['Polished', 'Honed'],
+            StoneAttributeType::Colour->value => ['White', 'Grey'],
+            StoneAttributeType::Size->value => ['2 cm slab', '3 cm slab', '60 × 60 cm tile'],
+            StoneAttributeType::Application->value => ['Interior', 'Flooring', 'Countertops'],
         ],
         'Tuscany Marble' => [
-            'origin' => StoneType::ORIGIN_IMPORTED,
-            StoneAttribute::FINISH => ['Polished', 'Honed'],
-            StoneAttribute::COLOUR => ['Beige'],
-            StoneAttribute::SIZE => ['2 cm slab', '60 × 120 cm tile'],
-            StoneAttribute::APPLICATION => ['Interior', 'Flooring', 'Wall cladding'],
+            'origin' => StoneOriginType::Imported->value,
+            StoneAttributeType::Finish->value => ['Polished', 'Honed'],
+            StoneAttributeType::Colour->value => ['Beige'],
+            StoneAttributeType::Size->value => ['2 cm slab', '60 × 120 cm tile'],
+            StoneAttributeType::Application->value => ['Interior', 'Flooring', 'Wall cladding'],
         ],
         'Black Granite' => [
-            StoneAttribute::FINISH => ['Polished', 'Flamed', 'Leathered'],
-            StoneAttribute::COLOUR => ['Black'],
-            StoneAttribute::SIZE => ['2 cm slab', '3 cm slab', 'Cut to size'],
-            StoneAttribute::APPLICATION => ['Interior', 'Exterior', 'Countertops', 'Stairs'],
+            StoneAttributeType::Finish->value => ['Polished', 'Flamed', 'Leathered'],
+            StoneAttributeType::Colour->value => ['Black'],
+            StoneAttributeType::Size->value => ['2 cm slab', '3 cm slab', 'Cut to size'],
+            StoneAttributeType::Application->value => ['Interior', 'Exterior', 'Countertops', 'Stairs'],
         ],
         'Engineered White Quartz' => [
-            StoneAttribute::FINISH => ['Polished'],
-            StoneAttribute::COLOUR => ['White'],
-            StoneAttribute::SIZE => ['2 cm slab', '3 cm slab'],
-            StoneAttribute::APPLICATION => ['Interior', 'Countertops'],
+            StoneAttributeType::Finish->value => ['Polished'],
+            StoneAttributeType::Colour->value => ['White'],
+            StoneAttributeType::Size->value => ['2 cm slab', '3 cm slab'],
+            StoneAttributeType::Application->value => ['Interior', 'Countertops'],
         ],
         'Hashemi Stone' => [
-            StoneAttribute::FINISH => ['Brushed', 'Sandblasted'],
-            StoneAttribute::COLOUR => ['Beige', 'Brown'],
-            StoneAttribute::SIZE => ['Cut to size'],
-            StoneAttribute::APPLICATION => ['Exterior', 'Wall cladding'],
+            StoneAttributeType::Finish->value => ['Brushed', 'Sandblasted'],
+            StoneAttributeType::Colour->value => ['Beige', 'Brown'],
+            StoneAttributeType::Size->value => ['Cut to size'],
+            StoneAttributeType::Application->value => ['Exterior', 'Wall cladding'],
         ],
     ];
 
@@ -113,7 +115,7 @@ class StoneAttributeSeeder extends Seeder
                 $stone->update(['origin_type' => $links['origin']]);
             }
 
-            $ids = collect(array_keys(StoneAttribute::TYPES))
+            $ids = collect(StoneAttributeType::values())
                 ->flatMap(fn (string $type) => collect($links[$type] ?? [])->map(fn (string $name) => $byType[$type][$name]->id))
                 ->all();
 

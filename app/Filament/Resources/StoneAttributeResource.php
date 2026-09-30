@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\StoneAttributeType;
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\StoneAttributeResource\Pages;
@@ -33,8 +34,8 @@ class StoneAttributeResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('type')
-                    ->options(Localized::options(StoneAttribute::TYPES))
-                    ->in(array_keys(StoneAttribute::TYPES))
+                    ->options(StoneAttributeType::options())
+                    ->in(StoneAttributeType::values())
                     ->required()
                     ->live(),
                 Forms\Components\TextInput::make('name_en')
@@ -56,7 +57,7 @@ class StoneAttributeResource extends Resource
                 Forms\Components\ColorPicker::make('hex_color')
                     ->label(__('Swatch colour'))
                     ->regex('/^#[0-9A-Fa-f]{6}$/')
-                    ->visible(fn (Get $get): bool => $get('type') === StoneAttribute::COLOUR),
+                    ->visible(fn (Get $get): bool => $get('type') === StoneAttributeType::Colour->value),
                 Forms\Components\TextInput::make('order')
                     ->numeric()
                     ->default(0),
@@ -71,7 +72,7 @@ class StoneAttributeResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
-                    ->formatStateUsing(fn (string $state): string => __(StoneAttribute::TYPES[$state] ?? $state)),
+                    ->formatStateUsing(fn (string $state): string => StoneAttributeType::labelFor($state)),
                 Tables\Columns\ColorColumn::make('hex_color')->label(__('Swatch'))->toggleable(),
                 Tables\Columns\TextColumn::make(Localized::column('name'))->label(__('Name'))->searchable(['name_en', 'name_ar']),
                 Tables\Columns\TextColumn::make('name_ar')->label('الاسم'),
@@ -82,7 +83,7 @@ class StoneAttributeResource extends Resource
             ->defaultSort('order')
             ->defaultGroup('type')
             ->filters([
-                Tables\Filters\SelectFilter::make('type')->options(Localized::options(StoneAttribute::TYPES)),
+                Tables\Filters\SelectFilter::make('type')->options(StoneAttributeType::options()),
                 Tables\Filters\TernaryFilter::make('is_active'),
             ])
             ->actions([
