@@ -281,6 +281,14 @@ return [
         'go_to_page' => 'Go to page :page',
     ],
 
+    'consent' => [
+        'title' => 'Cookies and privacy',
+        'message' => 'With your consent we use analytics cookies to understand how the site is used and improve it. Nothing is loaded until you accept.',
+        'accept' => 'Accept analytics',
+        'decline' => 'Decline',
+        'settings' => 'Cookie settings',
+    ],
+
     'footer' => [
         'quick_links' => 'Quick Links',
         'follow_us' => 'Follow Us',

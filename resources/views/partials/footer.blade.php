@@ -64,6 +64,10 @@
             <a href="{{ route('legal.privacy') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.legal.privacy_policy_title') }}</a>
             <span class="hidden sm:inline">&middot;</span>
             <a href="{{ route('legal.terms') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.legal.terms_title') }}</a>
+            @if (\App\Support\Analytics::enabled())
+                <span class="hidden sm:inline">&middot;</span>
+                <button type="button" x-data @click="window.dispatchEvent(new CustomEvent('jra:consent-open'))" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.consent.settings') }}</button>
+            @endif
         </div>
     </div>
 </footer>

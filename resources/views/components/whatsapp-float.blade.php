@@ -16,7 +16,7 @@
             },
         }"
         class="fixed z-50"
-        style="right: calc(1rem + env(safe-area-inset-right)); left: auto; bottom: calc(1rem + env(safe-area-inset-bottom));"
+        style="right: calc(1rem + env(safe-area-inset-right)); left: auto; bottom: calc(1rem + env(safe-area-inset-bottom) + var(--consent-h, 0px));"
     >
         <div
             x-show="showTooltip"

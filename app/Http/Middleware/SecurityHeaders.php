@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\Analytics;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Vite;
@@ -51,9 +52,14 @@ class SecurityHeaders
 
     public static function contentSecurityPolicy(): string
     {
+        // Analytics origins are added only when a provider is configured.
+        $analytics = Analytics::cspSources();
+        $script = trim("'self' 'unsafe-inline' 'unsafe-eval' ".implode(' ', $analytics['script']));
+        $connect = trim("'self' ".implode(' ', $analytics['connect']));
+
         return implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            "script-src {$script}",
             // Public fonts are self-hosted; Bunny Fonts is only used by the Filament admin.
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net",
             "font-src 'self' data: https://fonts.bunny.net",
@@ -61,7 +67,7 @@ class SecurityHeaders
             "media-src 'self'",
             // Google Maps embed on the contact page.
             'frame-src https://maps.google.com https://www.google.com',
-            "connect-src 'self'",
+            "connect-src {$connect}",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",

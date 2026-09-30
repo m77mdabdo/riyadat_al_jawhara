@@ -135,7 +135,8 @@
 <body class="bg-cream text-charcoal {{ app()->getLocale() === 'ar' ? 'font-arabic' : 'font-sans' }} antialiased scroll-smooth"
       data-locale="{{ app()->getLocale() }}"
       data-wa-endpoint="{{ route('whatsapp.click') }}"
-      @if ($waContext) data-wa-context-type="{{ $waContext[0] }}" data-wa-context-id="{{ $waContext[1] }}" @endif>
+      @if ($waContext) data-wa-context-type="{{ $waContext[0] }}" data-wa-context-id="{{ $waContext[1] }}" @endif
+      @if ($analyticsConfig = \App\Support\Analytics::clientConfig()) data-analytics="{{ json_encode($analyticsConfig) }}" @endif>
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-[60] focus:rounded-md focus:bg-charcoal focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-cream">
         {{ __('site.common.skip_to_content') }}
     </a>
@@ -158,12 +159,16 @@
         @scroll.window="visible = window.scrollY > 480"
         @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
         aria-label="{{ __('site.common.back_to_top') }}"
-        style="bottom: calc(5.5rem + env(safe-area-inset-bottom));"
+        style="bottom: calc(5.5rem + env(safe-area-inset-bottom) + var(--consent-h, 0px));"
         class="fixed end-[1.375rem] z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-charcoal text-cream shadow-lg transition-colors hover:bg-charcoal-700 focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2"
     >
         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
     </button>
 
     <x-whatsapp-float />
+
+    @if (\App\Support\Analytics::enabled())
+        <x-consent-banner />
+    @endif
 </body>
 </html>
