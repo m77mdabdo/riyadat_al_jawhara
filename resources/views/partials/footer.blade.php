@@ -11,7 +11,7 @@
         </div>
 
         <div>
-            <h3 class="text-base font-semibold mb-4">{{ __('site.footer.quick_links') }}</h3>
+            <h2 class="text-base font-semibold mb-4">{{ __('site.footer.quick_links') }}</h2>
             <ul class="text-sm text-stone-300">
                 <li><a href="{{ route('services.index') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.services') }}</a></li>
                 <li><a href="{{ route('stones.index') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.nav.stones') }}</a></li>
@@ -25,7 +25,7 @@
         </div>
 
         <div>
-            <h3 class="text-base font-semibold mb-4">{{ __('site.footer.contact_info') }}</h3>
+            <h2 class="text-base font-semibold mb-4">{{ __('site.footer.contact_info') }}</h2>
             <ul class="text-sm text-stone-300">
                 @if ($settings->phone)
                     <li><a href="{{ $settings->phone_href }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal"><bdi dir="ltr">{{ $settings->phone }}</bdi></a></li>
@@ -43,7 +43,7 @@
         </div>
 
         <div>
-            <h3 class="text-base font-semibold mb-4">{{ __('site.footer.follow_us') }}</h3>
+            <h2 class="text-base font-semibold mb-4">{{ __('site.footer.follow_us') }}</h2>
             @php
                 $socialLabels = ['facebook' => 'Facebook', 'instagram' => 'Instagram', 'x' => 'X', 'linkedin' => 'LinkedIn', 'youtube' => 'YouTube', 'tiktok' => 'TikTok', 'snapchat' => 'Snapchat', 'whatsapp' => 'WhatsApp'];
                 $socialLinks = $settings->socialLinks() + array_filter(['whatsapp' => $settings->whatsapp_url]);

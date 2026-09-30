@@ -66,4 +66,41 @@ class LocalizedUrl
     {
         return self::current($locale, ['page']);
     }
+
+    /** Un-prefixed paths that are not pages (assets, admin, system routes). */
+    private const UNLOCALIZED = ['admin', 'livewire', 'storage', 'build', 'images', 'videos', 'lang', 'sitemap.xml', 'robots.txt', 'whatsapp-click', 'admin-locale'];
+
+    /**
+     * An admin-entered link (e.g. a slide button) in the visitor's language:
+     * internal page paths like "/contact" or "https://this-site/contact" get
+     * the locale prefix; external links, anchors, tel:/mailto: and paths that
+     * already carry a locale are returned unchanged.
+     */
+    public static function link(?string $href, ?string $locale = null): ?string
+    {
+        if ($href === null || $href === '') {
+            return $href;
+        }
+
+        $locale ??= app()->getLocale();
+        $parts = parse_url($href);
+        if ($parts === false || isset($parts['scheme']) && ! in_array($parts['scheme'], ['http', 'https'], true)) {
+            return $href;
+        }
+
+        $sameHost = ! isset($parts['host']) || $parts['host'] === parse_url(url('/'), PHP_URL_HOST);
+        $path = $parts['path'] ?? '';
+        if (! $sameHost || ! str_starts_with($path, '/') || str_starts_with($href, '//')) {
+            return $href;
+        }
+
+        $first = explode('/', trim($path, '/'))[0];
+        if (self::isSupported($first) || in_array($first, self::UNLOCALIZED, true) || str_contains($first, '.')) {
+            return $href;
+        }
+
+        return url('/'.$locale.rtrim($path, '/'))
+            .(isset($parts['query']) ? '?'.$parts['query'] : '')
+            .(isset($parts['fragment']) ? '#'.$parts['fragment'] : '');
+    }
 }

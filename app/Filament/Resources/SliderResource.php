@@ -60,6 +60,7 @@ class SliderResource extends Resource
                             ]),
                     ]),
                 Forms\Components\TextInput::make('button_link')
+                    ->helperText(__('A page of this site like /contact opens in the visitor\'s language automatically. Full https:// links are used as they are.'))
                     ->maxLength(255),
                 Forms\Components\TextInput::make('order')
                     ->numeric()

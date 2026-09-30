@@ -25,6 +25,7 @@ Copy `.env.example` to `.env` and set:
 | `MAIL_FROM_ADDRESS` | An address on the company domain (SPF/DKIM configured) |
 | `QUEUE_CONNECTION` | `database` (with a worker, below) or `sync` (simpler, but slower form submissions) |
 | `LOG_STACK` / `LOG_LEVEL` | `daily` / `warning` |
+| `ANALYTICS_GA4_ID` / `ANALYTICS_PLAUSIBLE_DOMAIN` | Optional. Empty = no analytics and no cookie banner. When set, scripts load only after consent and the CSP allows only that provider |
 | `PRIVACY_RETENTION_DAYS` | Days to keep IP/user agent on comments and leads (default `180`; set by your privacy policy) |
 | `PEXELS_API_KEY` etc. | Leave **empty**. Only the demo tooling uses them |
 
@@ -86,6 +87,15 @@ Run in order with `php artisan migrate --force`. All are additive (new tables, o
 7. `2026_09_29_130000_add_metadata_to_projects_table`: sector, area, city.
 8. `2026_09_29_130100_create_project_stone_type_table`
 9. `2026_09_29_140000_add_extra_socials_to_settings_table`
+10. `2026_09_30_100000_add_stats_to_settings_table`: home-page statistics (hidden while empty).
+11. `2026_09_30_110000_create_whatsapp_clicks_table`
+12. `2026_09_30_120000_add_description_to_stone_categories_table`
+13. `2026_09_30_130000_add_show_client_name_to_projects_table`: defaults to off, so no client name appears until enabled.
+14. `2026_09_30_140000_add_seo_overrides_to_content_tables`: services, stone types, projects, posts.
+15. `2026_09_30_150000_create_activity_log_table`
+16. `2026_09_30_150100_add_event_column_to_activity_log_table`
+17. `2026_09_30_150200_add_batch_uuid_column_to_activity_log_table`
+18. `2026_09_30_160000_add_locale_to_users_table`: admin panel language.
 
 Take a database backup first. Every migration has a working `down()` (verified on SQLite), so `php artisan migrate:rollback --step=N` undoes them.
 

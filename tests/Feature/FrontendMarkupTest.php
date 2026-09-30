@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Project;
 use App\Models\Service;
+use App\Models\Setting;
 use App\Models\Slider;
 use App\Models\StoneCategory;
 use App\Models\StoneType;
@@ -181,5 +182,21 @@ class FrontendMarkupTest extends TestCase
         foreach (glob(resource_path('views/{,*/,*/*/}*.blade.php'), GLOB_BRACE) as $file) {
             $this->assertDoesNotMatchRegularExpression("/x-text=\"[^\"]*'\{\{/", file_get_contents($file), basename($file));
         }
+    }
+
+    public function test_landmarks_and_heading_order_for_axe(): void
+    {
+        Setting::editable()->update(['whatsapp' => '966500000000']);
+
+        $html = $this->get(route('faq'))->assertOk()->getContent();
+        // Footer section titles follow the page h1 directly, so they are h2 (axe: heading-order).
+        $this->assertStringNotContainsString('<h3 class="text-base font-semibold mb-4">', $html);
+        $this->assertStringContainsString('<h2 class="text-base font-semibold mb-4">', $html);
+        // The WhatsApp float lives in a labelled landmark (axe: region).
+        $this->assertMatchesRegularExpression('/<aside\s+aria-label="[^"]+"/', $html);
+
+        $error = $this->get('/en/does-not-exist')->assertNotFound()->getContent();
+        $this->assertStringContainsString('<main', $error);
+        $this->assertStringNotContainsString('text-stone-500', $error, 'stone-500 on cream is below AA');
     }
 }

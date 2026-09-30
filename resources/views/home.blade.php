@@ -86,7 +86,7 @@
                         @endif
                         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
                             @if ($slider->button_text && $slider->button_link)
-                                <x-button :href="$slider->button_link" variant="inverted">{{ $slider->button_text }}</x-button>
+                                <x-button :href="\App\Support\LocalizedUrl::link($slider->button_link)" variant="inverted">{{ $slider->button_text }}</x-button>
                             @else
                                 <x-button :href="route('contact')" variant="inverted">{{ __('site.common.request_quote') }}</x-button>
                             @endif
