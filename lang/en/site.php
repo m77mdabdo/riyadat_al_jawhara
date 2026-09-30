@@ -147,6 +147,24 @@ return [
         'empty' => 'No images yet for this selection.',
     ],
 
+    'search' => [
+        'title' => 'Search',
+        'subtitle' => 'Services, stones, projects, articles and FAQs',
+        'label' => 'Search the site',
+        'placeholder' => 'e.g. marble flooring',
+        'button' => 'Search',
+        'results' => '{0} No results for “:term”|{1} 1 result for “:term”|[2,*] :count results for “:term”',
+        'too_short' => 'Type at least 2 characters.',
+        'hint' => 'Try a stone name, a service or a city.',
+        'types' => [
+            'service' => 'Service',
+            'stone' => 'Stone',
+            'project' => 'Project',
+            'post' => 'Article',
+            'faq' => 'FAQ',
+        ],
+    ],
+
     'faq' => [
         'title' => 'Frequently Asked Questions',
         'subtitle' => 'Answers to common questions about our services, process, and pricing',

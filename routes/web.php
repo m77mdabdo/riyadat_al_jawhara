@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoneController;
@@ -43,6 +44,10 @@ Route::prefix('{locale}')
             ->name('blog.comments.store');
 
         Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery');
+
+        Route::get('/search', [SearchController::class, 'index'])
+            ->middleware('throttle:60,1')
+            ->name('search');
 
         Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 

@@ -56,6 +56,9 @@
             </nav>
 
             <div class="hidden xl:flex items-center gap-4 shrink-0">
+                <a href="{{ route('search') }}" class="inline-flex h-11 w-11 items-center justify-center rounded-full text-charcoal hover:bg-stone-100" aria-label="{{ __('site.search.title') }}">
+                    <x-heroicon-o-magnifying-glass class="h-5 w-5" aria-hidden="true" />
+                </a>
                 <div class="flex items-center gap-1 text-sm font-semibold border border-stone-300 rounded-full overflow-hidden">
                     <a href="{{ \App\Support\LocalizedUrl::current('ar') }}" hreflang="ar" lang="ar" aria-label="{{ __('site.common.switch_to_arabic') }}" @if (app()->getLocale() === 'ar') aria-current="true" @endif class="px-3 py-1.5 {{ app()->getLocale() === 'ar' ? 'bg-charcoal text-cream' : 'text-stone-700 hover:bg-stone-100' }}">AR</a>
                     <a href="{{ \App\Support\LocalizedUrl::current('en') }}" hreflang="en" lang="en" aria-label="{{ __('site.common.switch_to_english') }}" @if (app()->getLocale() === 'en') aria-current="true" @endif class="px-3 py-1.5 {{ app()->getLocale() === 'en' ? 'bg-charcoal text-cream' : 'text-stone-700 hover:bg-stone-100' }}">EN</a>
@@ -65,6 +68,9 @@
                 </x-button>
             </div>
 
+            <a href="{{ route('search') }}" class="xl:hidden ms-auto inline-flex h-11 w-11 items-center justify-center rounded-md text-charcoal hover:bg-stone-100" aria-label="{{ __('site.search.title') }}">
+                <x-heroicon-o-magnifying-glass class="h-6 w-6" aria-hidden="true" />
+            </a>
             <button
                 type="button"
                 x-ref="toggle"

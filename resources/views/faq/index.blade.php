@@ -18,7 +18,7 @@
     <section class="py-16 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="space-y-3">
             @forelse ($faqs as $faq)
-                <div x-data="{ open: false }" class="rounded-lg border border-stone-200 bg-white">
+                <div id="faq-{{ $faq->id }}" x-data="{ open: window.location.hash === '#faq-{{ $faq->id }}' }" class="scroll-mt-24 rounded-lg border border-stone-200 bg-white">
                     <button
                         type="button"
                         @click="open = !open"
