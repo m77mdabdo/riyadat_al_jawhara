@@ -130,16 +130,8 @@ class ActivityResource extends Resource
         ];
     }
 
-    public static function canViewAny(): bool
-    {
-        return auth()->user()?->hasRole('admin') ?? false;
-    }
-
-    public static function canView(Model $record): bool
-    {
-        return static::canViewAny();
-    }
-
+    // Viewing is governed by ActivityPolicy (admins only). Nobody, admins
+    // included, may create, edit or delete audit entries from the panel.
     public static function canCreate(): bool
     {
         return false;

@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Enums\CommentStatus;
-use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\CommentResource\Pages;
 use App\Filament\Support\Localized;
@@ -17,7 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CommentResource extends Resource
 {
-    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Comment::class;
 

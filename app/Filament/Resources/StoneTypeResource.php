@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Enums\StoneOriginType;
-use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\StoneTypeResource\Pages;
 use App\Filament\Support\ImageUpload;
@@ -22,7 +21,7 @@ use Illuminate\Support\Str;
 
 class StoneTypeResource extends Resource
 {
-    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = StoneType::class;
 

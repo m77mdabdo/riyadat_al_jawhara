@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\StoneCategoryResource\Pages;
 use App\Filament\Support\ImageUpload;
@@ -17,7 +16,7 @@ use Illuminate\Support\Str;
 
 class StoneCategoryResource extends Resource
 {
-    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = StoneCategory::class;
 

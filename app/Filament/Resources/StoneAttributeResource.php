@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Enums\StoneAttributeType;
-use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\StoneAttributeResource\Pages;
 use App\Filament\Support\Localized;
@@ -19,7 +18,7 @@ use Illuminate\Validation\Rules\Unique;
 
 class StoneAttributeResource extends Resource
 {
-    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = StoneAttribute::class;
 

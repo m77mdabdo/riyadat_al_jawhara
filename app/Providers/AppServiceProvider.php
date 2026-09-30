@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Contracts\CatalogueGenerator;
+use App\Enums\UserRole;
 use App\Models\BlogCategory;
 use App\Models\Faq;
 use App\Models\Post;
@@ -16,6 +17,8 @@ use App\Models\StoneType;
 use App\Models\Tag;
 use App\Models\TeamMember;
 use App\Models\Testimonial;
+use App\Models\User;
+use App\Policies\ActivityPolicy;
 use App\Services\Catalogue\MpdfCatalogueGenerator;
 use App\Services\StockCandidateFinder;
 use App\Services\StockMedia\PexelsProvider;
@@ -26,10 +29,12 @@ use App\Support\FragmentCache;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class AppServiceProvider extends ServiceProvider
@@ -84,6 +89,10 @@ class AppServiceProvider extends ServiceProvider
             $model::saved(fn () => FragmentCache::flush());
             $model::deleted(fn () => FragmentCache::flush());
         }
+
+        // Authorization lives in app/Policies; admins may do everything.
+        Gate::before(fn (User $user): ?bool => $user->hasRole(UserRole::Admin->value) ? true : null);
+        Gate::policy(Activity::class, ActivityPolicy::class);
 
         // One password policy for every place a password is set: profile page,
         // password reset, and app:create-admin.

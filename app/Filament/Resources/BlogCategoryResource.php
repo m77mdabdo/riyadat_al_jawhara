@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\BlogCategoryResource\Pages;
 use App\Filament\Support\Localized;
@@ -16,7 +15,7 @@ use Illuminate\Support\Str;
 
 class BlogCategoryResource extends Resource
 {
-    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = BlogCategory::class;
 

@@ -59,15 +59,8 @@ class NotesRelationManager extends RelationManager
                     ->mutateFormDataUsing(fn (array $data): array => $data + ['user_id' => auth()->id()]),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->visible(fn (LeadNote $record): bool => $this->canManage($record)),
-                Tables\Actions\DeleteAction::make()->visible(fn (LeadNote $record): bool => $this->canManage($record)),
+                Tables\Actions\EditAction::make()->visible(fn (LeadNote $record): bool => auth()->user()?->can('update', $record) ?? false),
+                Tables\Actions\DeleteAction::make()->visible(fn (LeadNote $record): bool => auth()->user()?->can('delete', $record) ?? false),
             ]);
-    }
-
-    private function canManage(LeadNote $note): bool
-    {
-        $user = auth()->user();
-
-        return $user !== null && ($user->hasRole('admin') || $note->user_id === $user->id);
     }
 }

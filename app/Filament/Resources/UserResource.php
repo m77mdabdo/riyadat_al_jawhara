@@ -10,7 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Spatie\Permission\Models\Role;
@@ -93,30 +92,5 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
-    }
-
-    public static function canViewAny(): bool
-    {
-        return auth()->user()?->hasRole('admin') ?? false;
-    }
-
-    public static function canCreate(): bool
-    {
-        return auth()->user()?->hasRole('admin') ?? false;
-    }
-
-    public static function canEdit(Model $record): bool
-    {
-        return auth()->user()?->hasRole('admin') ?? false;
-    }
-
-    public static function canDelete(Model $record): bool
-    {
-        return auth()->user()?->hasRole('admin') ?? false;
-    }
-
-    public static function canDeleteAny(): bool
-    {
-        return auth()->user()?->hasRole('admin') ?? false;
     }
 }

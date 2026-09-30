@@ -41,7 +41,7 @@ class Settings extends Page implements HasForms
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->hasRole('admin') ?? false;
+        return auth()->user()?->can('update', Setting::class) ?? false;
     }
 
     public function mount(): void

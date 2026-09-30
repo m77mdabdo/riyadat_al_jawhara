@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\FaqResource\Pages;
 use App\Filament\Support\Localized;
@@ -15,7 +14,7 @@ use Filament\Tables\Table;
 
 class FaqResource extends Resource
 {
-    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Faq::class;
 

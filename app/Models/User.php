@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use App\Models\Concerns\LogsAdminActivity;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
@@ -58,6 +59,6 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasAnyRole(['admin', 'editor']);
+        return $this->hasAnyRole(UserRole::values());
     }
 }

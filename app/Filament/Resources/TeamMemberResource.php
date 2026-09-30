@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\TeamMemberResource\Pages;
 use App\Filament\Support\ImageUpload;
@@ -17,7 +16,7 @@ use Filament\Tables\Table;
 
 class TeamMemberResource extends Resource
 {
-    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = TeamMember::class;
 

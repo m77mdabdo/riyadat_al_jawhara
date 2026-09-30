@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Enums\LeadSource;
 use App\Enums\LeadStatus;
-use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\LeadResource\Pages;
 use App\Filament\Resources\LeadResource\RelationManagers\NotesRelationManager;
@@ -25,7 +24,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class LeadResource extends Resource
 {
-    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Lead::class;
 
