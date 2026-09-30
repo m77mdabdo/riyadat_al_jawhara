@@ -25,6 +25,7 @@ Copy `.env.example` to `.env` and set:
 | `MAIL_FROM_ADDRESS` | An address on the company domain (SPF/DKIM configured) |
 | `QUEUE_CONNECTION` | `database` (with a worker, below) or `sync` (simpler, but slower form submissions) |
 | `LOG_STACK` / `LOG_LEVEL` | `daily` / `warning` |
+| `PRIVACY_RETENTION_DAYS` | Days to keep IP/user agent on comments and leads (default `180`; set by your privacy policy) |
 | `PEXELS_API_KEY` etc. | Leave **empty**. Only the demo tooling uses them |
 
 ## First deployment
@@ -139,6 +140,12 @@ The app registers scheduled tasks, for example the privacy data-retention clean-
 ```
 
 On shared hosting, use the same line with your home path; it can sit next to the queue cron from option B. Check what is scheduled with `php artisan schedule:list`.
+
+Scheduled tasks:
+
+| Task | When | What it does |
+|---|---|---|
+| `privacy:prune` | daily 03:15 | Sets `ip_address` and `user_agent` to NULL on comments and leads older than `PRIVACY_RETENTION_DAYS` (default 180). The comments and leads themselves are kept. Preview with `php artisan privacy:prune --dry-run` |
 
 ## Backups
 
