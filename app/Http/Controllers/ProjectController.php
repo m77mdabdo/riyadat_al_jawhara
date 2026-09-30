@@ -51,6 +51,7 @@ class ProjectController extends Controller
 
         return view('projects.show', [
             'project' => $project,
+            'similar' => $project->similar(),
         ]);
     }
 }

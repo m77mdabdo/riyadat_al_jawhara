@@ -213,6 +213,7 @@ return [
         'city' => 'المدينة',
         'materials' => 'المواد المستخدمة',
         'details' => 'تفاصيل المشروع',
+        'similar' => 'مشاريع مشابهة',
         'sectors' => [
             'residential' => 'سكني',
             'commercial' => 'تجاري',

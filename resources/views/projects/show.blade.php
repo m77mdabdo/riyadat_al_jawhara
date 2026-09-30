@@ -21,6 +21,9 @@
                 @if ($project->service)
                     <span><span class="font-semibold text-charcoal">{{ __('site.projects.service') }}:</span> {{ $project->service->name }}</span>
                 @endif
+                @if ($project->show_client_name && filled($project->client_name))
+                    <span><span class="font-semibold text-charcoal">{{ __('site.projects.client') }}:</span> {{ $project->client_name }}</span>
+                @endif
                 @if ($project->city)
                     <span><span class="font-semibold text-charcoal">{{ __('site.projects.city') }}:</span> {{ $project->city }}</span>
                 @endif
@@ -112,6 +115,19 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-section-title font-bold text-charcoal mb-8">{{ __('site.projects.gallery') }}</h2>
                 <x-lightbox :media="$galleryMedia" :alt="$project->title" />
+            </div>
+        </section>
+    @endif
+
+    @if ($similar->isNotEmpty())
+        <section class="py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <x-section-heading :title="__('site.projects.similar')" align="start" class="mb-8" />
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach ($similar as $other)
+                        <x-cards.project :project="$other" />
+                    @endforeach
+                </div>
             </div>
         </section>
     @endif

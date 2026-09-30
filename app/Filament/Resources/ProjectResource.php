@@ -76,6 +76,10 @@ class ProjectResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('client_name')
                     ->maxLength(255),
+                Forms\Components\Toggle::make('show_client_name')
+                    ->label('Show client name on the website')
+                    ->helperText('Off by default. Turn on only with the client’s permission.')
+                    ->default(false),
                 Forms\Components\Select::make('sector')
                     ->options(array_combine(Project::SECTORS, array_map('ucfirst', Project::SECTORS)))
                     ->in(Project::SECTORS),

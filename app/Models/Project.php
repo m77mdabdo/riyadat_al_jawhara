@@ -33,6 +33,7 @@ class Project extends Model implements HasMedia
         'location_ar',
         'location_en',
         'client_name',
+        'show_client_name',
         'sector',
         'area_m2',
         'city_ar',
@@ -47,6 +48,7 @@ class Project extends Model implements HasMedia
 
     protected $casts = [
         'is_featured' => 'boolean',
+        'show_client_name' => 'boolean',
         'is_active' => 'boolean',
         'completed_at' => 'date',
         'area_m2' => 'decimal:2',
@@ -125,6 +127,48 @@ class Project extends Model implements HasMedia
             ->filter(fn (?StoneType $stone) => $stone?->is_active)
             ->unique('id')
             ->values();
+    }
+
+    /**
+     * Up to $limit other active projects, most similar first: same stone
+     * (primary or additional), then same service, then same sector.
+     *
+     * @return Collection<int, Project>
+     */
+    public function similar(int $limit = 3): Collection
+    {
+        $stone = $this->stone_type_id;
+        $service = $this->service_id;
+        $sector = $this->sector;
+
+        if (! $stone && ! $service && ! $sector) {
+            return collect();
+        }
+
+        // One query: match any criterion, rank by the strongest one.
+        $stoneMatch = 'projects.stone_type_id = ? OR EXISTS (SELECT 1 FROM project_stone_type pst WHERE pst.project_id = projects.id AND pst.stone_type_id = ?)';
+
+        return static::active()
+            ->whereKeyNot($this->getKey())
+            ->where(function (Builder $query) use ($stone, $service, $sector) {
+                if ($stone) {
+                    $query->orWhere(fn (Builder $q) => $q->usingStone($stone));
+                }
+                if ($service) {
+                    $query->orWhere('service_id', $service);
+                }
+                if ($sector) {
+                    $query->orWhere('sector', $sector);
+                }
+            })
+            ->orderByRaw(
+                "CASE WHEN {$stoneMatch} THEN 0 WHEN projects.service_id = ? THEN 1 ELSE 2 END",
+                [(int) $stone, (int) $stone, (int) $service],
+            )
+            ->ordered()
+            ->with('media')
+            ->take($limit)
+            ->get();
     }
 
     public function testimonials(): HasMany

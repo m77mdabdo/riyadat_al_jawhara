@@ -213,6 +213,7 @@ return [
         'city' => 'City',
         'materials' => 'Materials used',
         'details' => 'Project details',
+        'similar' => 'Similar projects',
         'sectors' => [
             'residential' => 'Residential',
             'commercial' => 'Commercial',
