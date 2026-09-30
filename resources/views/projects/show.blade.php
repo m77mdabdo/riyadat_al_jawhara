@@ -52,7 +52,7 @@
                     </ul>
                 </div>
             @endif
-            <p class="mt-6 text-stone-600 leading-relaxed rtl:leading-loose">{{ $project->description }}</p>
+            <p class="mt-6 text-stone-600 leading-prose">{{ $project->description }}</p>
         </div>
     </section>
 

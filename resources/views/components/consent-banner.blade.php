@@ -28,7 +28,7 @@
     style="padding-bottom: env(safe-area-inset-bottom);"
 >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col lg:flex-row lg:items-center gap-4">
-        <div class="flex-1 text-sm text-stone-700 leading-relaxed rtl:leading-loose">
+        <div class="flex-1 text-sm text-stone-700 leading-prose">
             <p class="font-semibold text-charcoal">{{ __('site.consent.title') }}</p>
             <p class="mt-1">
                 {{ __('site.consent.message') }}

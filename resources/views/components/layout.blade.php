@@ -128,6 +128,12 @@
     <meta name="theme-color" content="#2B2B2B">
 
 
+    {{-- Above-the-fold fonts only: body + heading face of the page language. --}}
+    @foreach (app()->getLocale() === 'ar'
+        ? ['node_modules/@fontsource-variable/cairo/files/cairo-arabic-wght-normal.woff2', 'node_modules/@fontsource/reem-kufi/files/reem-kufi-arabic-700-normal.woff2']
+        : ['node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2', 'node_modules/@fontsource/marcellus/files/marcellus-latin-400-normal.woff2'] as $font)
+        <link rel="preload" as="font" type="font/woff2" href="{{ \Illuminate\Support\Facades\Vite::asset($font) }}" crossorigin>
+    @endforeach
     @stack('head')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])

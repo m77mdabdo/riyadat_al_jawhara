@@ -43,7 +43,7 @@
                         <div x-show="active === index" x-cloak x-transition:enter="transition-opacity duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="col-start-1 row-start-1 min-w-0">
                             <p class="text-sm font-semibold text-stone-600" x-show="stone.origin" x-text="stone.origin"></p>
                             <h2 class="text-section-title font-bold text-charcoal mt-1 break-words" x-text="stone.name"></h2>
-                            <p class="mt-4 text-stone-600 leading-relaxed rtl:leading-loose break-words" x-text="stone.description"></p>
+                            <p class="mt-4 text-stone-600 leading-prose break-words" x-text="stone.description"></p>
                             <a :href="stone.url" class="inline-flex min-h-11 items-center gap-1 mt-4 text-sm font-semibold text-charcoal hover:underline">
                                 {{ __('site.common.view_details') }} <x-heroicon-o-arrow-right class="h-4 w-4 rtl:rotate-180" aria-hidden="true" />
                             </a>
@@ -69,7 +69,7 @@
                     <h2 class="text-section-title font-bold text-charcoal break-words">{{ $activeCategoryModel->name }}</h2>
                     <x-motif.najdi-band variant="underline" class="mt-3" />
                     @if ($activeCategoryModel->description)
-                        <p class="mt-4 text-stone-700 leading-relaxed rtl:leading-loose break-words">{{ $activeCategoryModel->description }}</p>
+                        <p class="mt-4 text-stone-700 leading-prose break-words">{{ $activeCategoryModel->description }}</p>
                     @endif
                 </div>
             </div>

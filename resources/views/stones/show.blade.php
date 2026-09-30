@@ -10,7 +10,7 @@
                 @if ($stoneType->origin)
                     <p class="mt-3 text-sm text-stone-600"><span class="font-semibold">{{ __('site.stones.origin') }}:</span> {{ $stoneType->origin }}</p>
                 @endif
-                <p class="mt-4 text-stone-600 leading-relaxed rtl:leading-loose break-words">{{ $stoneType->description }}</p>
+                <p class="mt-4 text-stone-600 leading-prose break-words">{{ $stoneType->description }}</p>
 
                 @php
                     $specGroups = $stoneType->specificationGroups();

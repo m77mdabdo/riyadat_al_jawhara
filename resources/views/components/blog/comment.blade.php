@@ -10,7 +10,7 @@
             <p class="font-semibold text-charcoal text-sm break-words min-w-0">{{ $comment->name }}</p>
             <p class="text-sm sm:text-xs text-stone-600 shrink-0"><bdi>{{ $comment->created_at->diffForHumans() }}</bdi></p>
         </div>
-        <p class="mt-2 text-sm text-stone-700 leading-relaxed rtl:leading-loose break-words whitespace-pre-line">{{ $comment->body }}</p>
+        <p class="mt-2 text-sm text-stone-700 leading-prose break-words whitespace-pre-line">{{ $comment->body }}</p>
 
         <button
             type="button"

@@ -7,7 +7,7 @@
 
     <section class="py-16 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         @if ($settings->privacy_policy)
-            <div class="prose prose-stone max-w-none rtl:leading-loose">
+            <div class="prose prose-stone max-w-none rtl:leading-prose">
                 {!! str($settings->privacy_policy)->sanitizeHtml() !!}
             </div>
         @else

@@ -48,7 +48,7 @@
                 </span>
             </div>
 
-            <div class="prose prose-stone max-w-none mt-8 rtl:leading-loose">
+            <div class="prose prose-stone max-w-none mt-8 rtl:leading-prose">
                 {!! str($post->body)->sanitizeHtml() !!}
             </div>
 

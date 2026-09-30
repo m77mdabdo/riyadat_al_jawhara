@@ -11,7 +11,7 @@
                         <x-dynamic-component :component="$item['icon']" class="h-6 w-6" aria-hidden="true" />
                     </span>
                     <h3 class="mt-4 font-semibold text-charcoal">{{ $item['title'] }}</h3>
-                    <p class="mt-2 text-sm text-stone-700 leading-relaxed rtl:leading-loose">{{ $item['description'] }}</p>
+                    <p class="mt-2 text-sm text-stone-700 leading-prose">{{ $item['description'] }}</p>
                 </div>
             @endforeach
         </div>
@@ -113,7 +113,7 @@
                     <span class="relative z-10 shrink-0 h-12 w-12 rounded-full bg-charcoal text-gold-400 ring-4 ring-sand-100 flex items-center justify-center font-bold" aria-hidden="true">{{ $index + 1 }}</span>
                     <div class="lg:mt-5">
                         <h3 class="font-semibold text-charcoal">{{ $step['title'] }}</h3>
-                        <p class="mt-1 text-sm text-stone-700 leading-relaxed rtl:leading-loose">{{ $step['description'] }}</p>
+                        <p class="mt-1 text-sm text-stone-700 leading-prose">{{ $step['description'] }}</p>
                     </div>
                 </li>
             @endforeach
@@ -136,7 +136,7 @@
                 <div class="flex flex-col-reverse" x-data="{ shown: {{ $value }}, target: {{ $value }} }"
                      x-init="if (! window.matchMedia('(prefers-reduced-motion: reduce)').matches) { shown = 0; const io = new IntersectionObserver((e) => { if (e[0].isIntersecting) { io.disconnect(); const t0 = performance.now(); const step = (t) => { const p = Math.min(1, (t - t0) / 1200); shown = Math.round(target * p); if (p < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); } }); io.observe($el); }">
                     <dt class="mt-2 text-sm text-stone-300">{{ __('site.home.stats.'.$key) }}</dt>
-                    <dd class="text-4xl font-bold text-gold-400 font-display"><bdi x-text="shown.toLocaleString()">{{ number_format($value) }}</bdi>+</dd>
+                    <dd class="text-4xl font-bold text-gold-400 font-display"><bdi x-text="shown.toLocaleString('en-US')">{{ number_format($value) }}</bdi>+</dd>
                 </div>
             @endforeach
         </dl>
@@ -187,7 +187,7 @@
                                 <svg aria-hidden="true" class="h-4 w-4 {{ $i < $testimonial->rating ? 'text-gold-400' : 'text-stone-600' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M10 15l-5.9 3.1 1.1-6.6L.4 6.9l6.6-1L10 0l3 5.9 6.6 1-4.8 4.6 1.1 6.6z"/></svg>
                             @endfor
                         </div>
-                        <p class="text-stone-200 text-sm leading-relaxed rtl:leading-loose">&ldquo;{{ $testimonial->comment }}&rdquo;</p>
+                        <p class="text-stone-200 text-sm leading-prose">&ldquo;{{ $testimonial->comment }}&rdquo;</p>
                         <div class="mt-4 flex items-center gap-3">
                             <div class="h-9 w-9 rounded-full overflow-hidden shrink-0">
                                 <x-media-image :model="$testimonial" collection="client_photo" conversion="thumb" alt="" :responsive="false" :width="200" :height="200" :placeholder-icon="false" class="h-full w-full" />
@@ -212,7 +212,7 @@
                         <span class="font-medium text-charcoal">{{ $faq->question }}</span>
                         <svg class="h-5 w-5 text-stone-500 shrink-0 transition-transform" :class="open && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </button>
-                    <div id="home-faq-{{ $faq->id }}" x-show="open" x-cloak x-transition class="px-5 pb-5 text-sm text-stone-600 leading-relaxed rtl:leading-loose">
+                    <div id="home-faq-{{ $faq->id }}" x-show="open" x-cloak x-transition class="px-5 pb-5 text-sm text-stone-600 leading-prose">
                         {{ $faq->answer }}
                     </div>
                 </div>

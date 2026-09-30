@@ -16,7 +16,7 @@
                 @foreach (__('site.contact.thanks_steps') as $index => $step)
                     <li class="flex items-start gap-4">
                         <span class="shrink-0 h-9 w-9 rounded-full bg-charcoal text-gold-400 flex items-center justify-center font-bold" aria-hidden="true">{{ $index + 1 }}</span>
-                        <span class="pt-1.5 text-stone-700 leading-relaxed rtl:leading-loose">{{ $step }}</span>
+                        <span class="pt-1.5 text-stone-700 leading-prose">{{ $step }}</span>
                     </li>
                 @endforeach
             </ol>

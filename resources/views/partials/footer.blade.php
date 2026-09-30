@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         <div>
             <img src="{{ $settings->logoLightUrl() }}" alt="{{ __('site.meta.site_name') }}" width="138" height="120" loading="lazy" decoding="async" class="h-12 w-auto mb-3">
-            <p class="text-sm text-stone-300 leading-relaxed rtl:leading-loose">{{ __('site.meta.tagline') }}</p>
+            <p class="text-sm text-stone-300 leading-prose">{{ __('site.meta.tagline') }}</p>
         </div>
 
         <div>

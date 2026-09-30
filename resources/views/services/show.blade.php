@@ -10,7 +10,7 @@
                 <x-dynamic-component :component="$service->safe_icon" class="h-7 w-7 text-cream" aria-hidden="true" />
             </div>
             <h1 class="text-page-title font-bold text-charcoal">{{ $service->name }}</h1>
-            <p class="mt-4 text-stone-600 leading-relaxed rtl:leading-loose max-w-3xl break-words">{{ $service->description }}</p>
+            <p class="mt-4 text-stone-600 leading-prose max-w-3xl break-words">{{ $service->description }}</p>
         </div>
     </section>
 

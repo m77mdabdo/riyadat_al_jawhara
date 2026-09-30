@@ -16,6 +16,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoneController;
+use App\Http\Controllers\TypographyController;
 use App\Http\Controllers\WhatsappClickController;
 use Illuminate\Support\Facades\Route;
 
@@ -76,6 +77,9 @@ Route::prefix('{locale}')
 */
 // Legacy session-based switcher: now just redirects to the new-style URL.
 Route::get('/lang/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
+
+// Type specimen for design review (404 outside the local environment).
+Route::get('/dev/typography', TypographyController::class)->name('dev.typography');
 
 // Admin panel language (saved on the user; POST + CSRF from the user menu).
 Route::post('/admin-locale/{language}', AdminLocaleController::class)->name('admin.locale');

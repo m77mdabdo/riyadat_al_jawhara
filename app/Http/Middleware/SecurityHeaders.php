@@ -65,8 +65,8 @@ class SecurityHeaders
             "default-src 'self'",
             "script-src {$script}",
             // Public fonts are self-hosted; Bunny Fonts is only used by the Filament admin.
-            "style-src 'self' 'unsafe-inline' https://fonts.bunny.net",
-            "font-src 'self' data: https://fonts.bunny.net",
+            "style-src 'self' 'unsafe-inline'",
+            "font-src 'self' data:",
             "img-src 'self' data: blob: https:",
             "media-src 'self'",
             // Google Maps embed on the contact page.

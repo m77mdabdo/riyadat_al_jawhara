@@ -71,10 +71,21 @@ export default {
             },
             // Fluid type scale: grows smoothly with the viewport and lands on the
             // previous fixed sizes (text-3xl/4xl/5xl) at desktop widths.
+            // Small sizes come from CSS variables (resources/css/app.css) so
+            // Arabic gets its own optical size and line height.
             fontSize: {
-                hero: ['clamp(1.875rem, 1.3rem + 2.6vw, 3rem)', { lineHeight: '1.15' }],
-                'page-title': ['clamp(1.75rem, 1.45rem + 1.3vw, 2.25rem)', { lineHeight: '1.2' }],
-                'section-title': ['clamp(1.5rem, 1.3rem + 0.9vw, 1.875rem)', { lineHeight: '1.25' }],
+                hero: ['clamp(1.875rem, 1.3rem + 2.6vw, 3rem)', { lineHeight: 'var(--leading-hero)' }],
+                'page-title': ['clamp(1.75rem, 1.45rem + 1.3vw, 2.25rem)', { lineHeight: 'var(--leading-page-title)' }],
+                'section-title': ['clamp(1.5rem, 1.3rem + 0.9vw, 1.875rem)', { lineHeight: 'var(--leading-section-title)' }],
+                xs: ['var(--text-xs)', { lineHeight: 'var(--leading-xs)' }],
+                sm: ['var(--text-sm)', { lineHeight: 'var(--leading-sm)' }],
+                base: ['var(--text-base)', { lineHeight: 'var(--leading-base)' }],
+                lg: ['var(--text-lg)', { lineHeight: 'var(--leading-lg)' }],
+                xl: ['var(--text-xl)', { lineHeight: 'var(--leading-xl)' }],
+            },
+            lineHeight: {
+                // Running text (paragraphs): 1.625 English, 1.85 Arabic.
+                prose: 'var(--leading-prose)',
             },
             // Self-hosted via @fontsource (resources/css/app.css); no font CDN.
             fontFamily: {

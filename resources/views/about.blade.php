@@ -4,7 +4,7 @@
     <section class="py-16 bg-white border-b border-stone-200">
         @if ($settings->about)
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <p class="text-lg text-stone-700 leading-relaxed rtl:leading-loose">{{ $settings->about }}</p>
+                <p class="text-lg text-stone-700 leading-prose">{{ $settings->about }}</p>
             </div>
         @endif
         @php
@@ -27,7 +27,7 @@
                         <x-heroicon-o-eye class="h-5 w-5" aria-hidden="true" />
                     </div>
                     <h2 class="text-xl font-bold text-charcoal mb-2">{{ __('site.about.our_vision') }}</h2>
-                    <p class="text-stone-600 leading-relaxed rtl:leading-loose">{{ $settings->vision }}</p>
+                    <p class="text-stone-600 leading-prose">{{ $settings->vision }}</p>
                 </div>
             @endif
             @if ($settings->mission)
@@ -36,7 +36,7 @@
                         <x-heroicon-o-flag class="h-5 w-5" aria-hidden="true" />
                     </div>
                     <h2 class="text-xl font-bold text-charcoal mb-2">{{ __('site.about.our_mission') }}</h2>
-                    <p class="text-stone-600 leading-relaxed rtl:leading-loose">{{ $settings->mission }}</p>
+                    <p class="text-stone-600 leading-prose">{{ $settings->mission }}</p>
                 </div>
             @endif
         </section>

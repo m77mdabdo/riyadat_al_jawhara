@@ -80,7 +80,7 @@
                 @forelse ($sliders->values() as $index => $slider)
                     <div x-show="active === {{ $index }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index > 0) x-cloak @endif role="group" aria-roledescription="slide" aria-label="{{ $index + 1 }} / {{ $sliders->count() }}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
                         {{-- One h1 per page: later slides use an h2 with the same styling. --}}
-                        <{{ $index === 0 ? 'h1' : 'h2' }} class="text-hero font-extrabold ltr:tracking-tight break-words">{{ $slider->title }}</{{ $index === 0 ? 'h1' : 'h2' }}>
+                        <{{ $index === 0 ? 'h1' : 'h2' }} class="text-hero font-bold ltr:tracking-tight break-words">{{ $slider->title }}</{{ $index === 0 ? 'h1' : 'h2' }}>
                         @if ($slider->subtitle)
                             <p class="mt-5 text-base sm:text-lg text-stone-300 max-w-2xl mx-auto">{{ $slider->subtitle }}</p>
                         @endif
@@ -99,7 +99,7 @@
                     </div>
                 @empty
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
-                        <h1 class="text-hero font-extrabold ltr:tracking-tight break-words">{{ __('site.meta.site_name') }}</h1>
+                        <h1 class="text-hero font-bold ltr:tracking-tight break-words">{{ __('site.meta.site_name') }}</h1>
                         <p class="mt-5 text-base sm:text-lg text-stone-300">{{ __('site.meta.tagline') }}</p>
                         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
                             <x-button :href="route('contact')" variant="inverted">{{ __('site.common.request_quote') }}</x-button>

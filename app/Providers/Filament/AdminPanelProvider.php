@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Auth\EditProfile;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetAdminLocale;
+use Filament\FontProviders\LocalFontProvider;
 use Filament\Forms\Components\Field;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -18,12 +19,14 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Filters\BaseFilter;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -48,6 +51,9 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile(EditProfile::class, isSimple: false)
             ->brandName('JRA Admin')
+            // Self-hosted fonts (resources/css/admin.css): Inter / Cairo in RTL.
+            ->font('Inter Variable', provider: LocalFontProvider::class)
+            ->renderHook(PanelsRenderHook::HEAD_END, fn (): string => Blade::render("@vite('resources/css/admin.css')"))
             ->userMenuItems([
                 'locale-ar' => MenuItem::make()
                     ->label('العربية')
