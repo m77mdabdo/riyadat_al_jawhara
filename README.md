@@ -4,7 +4,7 @@ Bilingual (Arabic / English, full RTL) company website for **Riyadat Al-Jawhara 
 
 | | |
 |---|---|
-| Framework | Laravel 11 · PHP **8.4+** |
+| Framework | Laravel 12 · PHP **8.4+** |
 | Admin | Filament 3 (`/admin`) · Livewire 3 |
 | Media | Spatie Media Library (JPG/PNG/WebP, WebP responsive renditions) |
 | Roles | Spatie Permission (`admin`, `editor`) |

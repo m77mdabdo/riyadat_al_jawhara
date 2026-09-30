@@ -101,8 +101,17 @@ class SecurityTest extends TestCase
     {
         $lead = ['name' => 'X', 'phone' => '0500000000', 'message' => 'm', 'consent' => '1'];
 
-        $this->post(route('contact.store'), $lead + ['email' => "victim@example.test\r\nBcc: spam@example.test"])
-            ->assertSessionHasErrors('email');
+        // The advisory's vectors (fixed in the `email` rule in Laravel 12.60+) plus
+        // a NUL byte, which the framework rule still accepts (our not_regex stops it).
+        // Embedded ones are rejected; trailing whitespace is removed by TrimStrings
+        // first, so either way no control character can ever be stored.
+        foreach (["victim@example.test\r\nBcc: spam@example.test", "vic\ttim@example.test", "vic\x00tim@example.test"] as $email) {
+            $this->post(route('contact.store'), $lead + ['email' => $email])->assertSessionHasErrors('email');
+        }
+        foreach (["victim@example.test\n", "victim@example.test\r"] as $email) {
+            $this->post(route('contact.store'), $lead + ['email' => $email]);
+        }
+        $this->assertSame(0, Lead::all()->filter(fn (Lead $l) => preg_match('/[\x00-\x1F\x7F]/', (string) $l->email))->count());
 
         $post = Post::factory()->create();
         $this->post(route('blog.comments.store', $post), ['name' => 'X', 'body' => 'Hi', 'email' => "a@example.test\nBcc: b@example.test"])

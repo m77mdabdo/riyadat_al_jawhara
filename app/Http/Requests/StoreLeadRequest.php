@@ -21,8 +21,9 @@ class StoreLeadRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:30', 'regex:/^[0-9+\s\-()]{7,30}$/'],
-            // not_regex: mitigation for the Laravel 11 "CRLF injection in email rule"
-            // advisory (fixed only in 12.60+) -- no control characters, ever.
+            // not_regex: Laravel 12.60+ fixed the CRLF advisory in the `email` rule,
+            // but the rule still accepts some control characters (e.g. NUL in the
+            // local part), so we keep refusing all of them (see SecurityTest).
             'email' => ['nullable', 'email', 'max:255', 'not_regex:/[\x00-\x1F\x7F]/'],
             'city' => ['nullable', 'string', 'max:255'],
             // Only records currently shown on the site may be referenced.

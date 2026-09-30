@@ -76,6 +76,25 @@ Project-specific items to revisit:
 - Laravel 12 security support ends 24 Feb 2027. Laravel 13 (Q1 2026) is supported until Q1 2028, and the installed Filament 3.3 / Livewire / Spatie versions already declare `^13` support. That upgrade is a separate task.
 - Filament 3 will eventually stop receiving updates in favour of newer Filament majors; not needed for Laravel 12 or 13 today.
 
-## 6. Result
+## 6. Result: upgraded, no blocker
 
-_(filled in after the upgrade, below)_
+- `composer.json`: `laravel/framework` `^11.31` → `^12.0`. Installed **12.69.3**, plus the patch/minor updates listed in §2. No other constraint changed and no application code needed changing for the framework itself.
+- **`composer audit`: no advisories** (was 4 `laravel/framework` advisories on 11.55). `npm audit`: 0.
+- **Email rule:** Laravel 12 now rejects CR/LF, tabs and other control characters in most positions, but it still **accepts a NUL byte in the local part** (`"vic\0tim@example.test"` passes the plain `email` rule on 12.69.3). The `not_regex:/[\x00-\x1F\x7F]/` guard is therefore **kept** as defence in depth, with an updated comment. `SecurityTest` now covers the advisory vectors, the trailing-newline case (removed by `TrimStrings`, so nothing is stored with a control character) and the NUL case.
+- **`bootstrap/deprecations.php` removed:** 12.x's bundled `config/database.php` uses `Pdo\Mysql::ATTR_SSL_CA` instead of the deprecated `PDO::MYSQL_ATTR_SSL_CA`. `php artisan about` with `error_reporting=-1` prints no deprecation notice, and the MySQL connection config still boots.
+- Checked items from §3: `config/auth.php` password-reset `expire` stays in minutes (the broker manager multiplies by 60); 92 routes, no duplicate names.
+
+Verification on this branch (same checks as `feature/phase-8-plus`):
+
+| Check | Result |
+|---|---|
+| PHPUnit (incl. query budgets) | **361 passed** (1933 assertions) |
+| Pint / `npm run build` | pass / pass |
+| Screenshot matrix (18 pages × 7 widths × AR/EN) | 252/252 clean: no overflow, no broken images, no text < 14 px, correct `dir`; mobile menu + Esc OK |
+| CSP (8 pages × 2 locales + admin) | 0 violations, 0 console errors |
+| Link checker | 158 pages, 193 URLs + 12 PDFs, all 200, no mixed content |
+| axe-core (72 scans) | 0 violations |
+| Arabic admin (5 pages) | RTL, no overflow, 0 console errors |
+| Lighthouse mobile, production-like | `/ar` 95, `/ar/stones` 96, `/ar/projects` 94; A11y/BP/SEO 100 |
+
+Deploying this branch is the same as any release (DEPLOY.md). No migration comes with the upgrade itself. Run `composer install --no-dev` on PHP 8.4+ as usual.

@@ -22,7 +22,7 @@ class StoreCommentRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            // not_regex: see StoreLeadRequest (Laravel 11 email-rule CRLF advisory).
+            // not_regex: see StoreLeadRequest (control characters, defence in depth).
             'email' => ['required', 'email', 'max:255', 'not_regex:/[\x00-\x1F\x7F]/'],
             'body' => ['required', 'string', 'max:2000'],
             'parent_id' => ['nullable', Rule::exists('comments', 'id')->where('post_id', $post->id)],

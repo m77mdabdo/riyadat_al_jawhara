@@ -114,6 +114,6 @@ Sign in with the account from step 2.2. You can switch the panel to Arabic from 
 
 ## 5. Open decisions for the owner
 
-- **Laravel 12:** Laravel 11 has left security support. The upgrade is prepared on the separate branch `upgrade/laravel-12` (see `docs/UPGRADE_LARAVEL_12.md`). Decide whether to launch on that branch.
+- **Laravel 12:** Laravel 11 security support ended on 12 March 2026. This branch (`upgrade/laravel-12`) runs Laravel 12, which is supported until 24 February 2027 (see `docs/UPGRADE_LARAVEL_12.md`). Launch from this branch; plan Laravel 13 before February 2027.
 - **mPDF licence:** the catalogue PDF uses mPDF (GPL-2.0-only), running on the server only. Confirm this is acceptable for the company, or ask for an alternative.
 - **Error monitoring** provider (1.3).
