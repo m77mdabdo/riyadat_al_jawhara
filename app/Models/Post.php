@@ -7,6 +7,7 @@ use App\Models\Concerns\HasCoverImage;
 use App\Models\Concerns\HasSeoOverrides;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
+use App\Models\Concerns\LogsAdminActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +22,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Post extends Model implements HasMedia
 {
-    use HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia;
+    use HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
         'title_ar',

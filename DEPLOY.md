@@ -146,6 +146,7 @@ Scheduled tasks:
 | Task | When | What it does |
 |---|---|---|
 | `privacy:prune` | daily 03:15 | Sets `ip_address` and `user_agent` to NULL on comments and leads older than `PRIVACY_RETENTION_DAYS` (default 180). The comments and leads themselves are kept. Preview with `php artisan privacy:prune --dry-run` |
+| `activitylog:clean` | weekly, Monday 03:30 | Deletes admin activity-log entries older than 365 days |
 
 ## Backups
 

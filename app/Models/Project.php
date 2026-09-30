@@ -8,6 +8,7 @@ use App\Models\Concerns\HasCoverImage;
 use App\Models\Concerns\HasSeoOverrides;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
+use App\Models\Concerns\LogsAdminActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +24,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Project extends Model implements HasMedia
 {
-    use HasActiveScope, HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia;
+    use HasActiveScope, HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
         'title_ar',
@@ -45,6 +46,11 @@ class Project extends Model implements HasMedia
         'is_featured',
         'is_active',
         'order',
+    ];
+
+    /** Mirrors the column default so a fresh model doesn't report it as changed. */
+    protected $attributes = [
+        'show_client_name' => false,
     ];
 
     protected $casts = [

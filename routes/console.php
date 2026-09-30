@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // Privacy: drop IP/user agent from old comments and leads (config/privacy.php).
 Schedule::command('privacy:prune')->dailyAt('03:15')->withoutOverlapping();
+
+// Admin activity log: keep 365 days (config activitylog.delete_records_older_than_days).
+Schedule::command('activitylog:clean')->weeklyOn(1, '03:30')->withoutOverlapping();

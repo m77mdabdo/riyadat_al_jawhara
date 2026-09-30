@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsAdminActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Lead extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsAdminActivity;
+
+    /** Audit only the admin workflow; the visitor's message and contact data stay out of the log. */
+    protected array $activityLogOnly = ['status', 'assigned_to', 'follow_up_at'];
+
+    protected static array $recordEvents = ['updated', 'deleted'];
 
     protected $fillable = [
         'name',

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsAdminActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Comment extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsAdminActivity;
+
+    /** Audit moderation only; comments are created by visitors. */
+    protected array $activityLogOnly = ['status'];
+
+    protected static array $recordEvents = ['updated', 'deleted'];
 
     protected $fillable = [
         'post_id',

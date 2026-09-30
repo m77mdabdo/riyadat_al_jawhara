@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\LogsAdminActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class BlogCategory extends Model
 {
-    use HasFactory, HasSlug, HasTranslations;
+    use HasFactory, HasSlug, HasTranslations, LogsAdminActivity;
 
     protected $fillable = [
         'name_ar',

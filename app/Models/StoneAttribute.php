@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\LogsAdminActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,7 @@ use Spatie\Sluggable\SlugOptions;
  */
 class StoneAttribute extends Model
 {
-    use HasActiveScope, HasFactory, HasSlug, HasTranslations;
+    use HasActiveScope, HasFactory, HasSlug, HasTranslations, LogsAdminActivity;
 
     public const FINISH = 'finish';
 
