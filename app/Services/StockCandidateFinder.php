@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
+use App\Contracts\StockMediaProvider;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use Spatie\Image\Image;
 
 /**
@@ -17,87 +17,25 @@ use Spatie\Image\Image;
 class StockCandidateFinder
 {
     /**
+     * @param  list<StockMediaProvider>  $providers  Primary provider first
+     */
+    public function __construct(private array $providers) {}
+
+    /**
+     * The primary provider is asked for $count results, the others for about
+     * half as many, so the review page stays focused on the best source.
+     *
      * @return array<int, array<string, mixed>> candidates, best search rank first
      */
     public function search(string $query, int $count = 5, string $orientation = 'landscape'): array
     {
-        return array_merge(
-            $this->searchPexels($query, $count, $orientation),
-            $this->searchPixabay($query, max(3, (int) ceil($count / 2)), $orientation),
-        );
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function searchPexels(string $query, int $count, string $orientation): array
-    {
-        $key = config('services.pexels.key');
-        if (! $key) {
-            return [];
+        $candidates = [];
+        foreach ($this->providers as $index => $provider) {
+            $wanted = $index === 0 ? $count : max(3, (int) ceil($count / 2));
+            $candidates = array_merge($candidates, $provider->searchPhotos($query, $wanted, $orientation));
         }
 
-        $response = Http::withHeaders(['Authorization' => $key])->get('https://api.pexels.com/v1/search', [
-            'query' => $query,
-            'per_page' => $count,
-            'orientation' => $orientation,
-        ]);
-
-        if ($response->failed()) {
-            return [];
-        }
-
-        return $response->collect('photos')->values()->map(fn (array $photo, int $rank) => [
-            'id' => 'pexels-'.$photo['id'],
-            'source' => 'Pexels',
-            'rank' => $rank,
-            'photographer' => $photo['photographer'] ?? null,
-            'photographer_url' => $photo['photographer_url'] ?? null,
-            'page_url' => $photo['url'] ?? null,
-            'download_url' => $photo['src']['large2x'] ?? $photo['src']['original'] ?? null,
-            'width' => $photo['width'] ?? null,
-            'height' => $photo['height'] ?? null,
-            'alt' => $photo['alt'] ?? null,
-            'license_url' => 'https://www.pexels.com/license/',
-        ])->filter(fn ($c) => $c['download_url'])->values()->all();
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function searchPixabay(string $query, int $count, string $orientation): array
-    {
-        $key = config('services.pixabay.key');
-        if (! $key) {
-            return [];
-        }
-
-        $response = Http::get('https://pixabay.com/api/', [
-            'key' => $key,
-            'q' => Str::limit($query, 95, ''),
-            'image_type' => 'photo',
-            'orientation' => $orientation === 'landscape' ? 'horizontal' : 'all',
-            'per_page' => max(3, $count),
-            'safesearch' => 'true',
-        ]);
-
-        if ($response->failed()) {
-            return [];
-        }
-
-        return $response->collect('hits')->take($count)->values()->map(fn (array $hit, int $rank) => [
-            'id' => 'pixabay-'.$hit['id'],
-            'source' => 'Pixabay',
-            'rank' => $rank,
-            'photographer' => $hit['user'] ?? null,
-            'photographer_url' => isset($hit['user'], $hit['user_id']) ? "https://pixabay.com/users/{$hit['user']}-{$hit['user_id']}/" : null,
-            'page_url' => $hit['pageURL'] ?? null,
-            'download_url' => $hit['largeImageURL'] ?? null,
-            'width' => $hit['imageWidth'] ?? null,
-            'height' => $hit['imageHeight'] ?? null,
-            'alt' => $hit['tags'] ?? null,
-            'license_url' => 'https://pixabay.com/service/license-summary/',
-        ])->filter(fn ($c) => $c['download_url'])->values()->all();
+        return $candidates;
     }
 
     /**

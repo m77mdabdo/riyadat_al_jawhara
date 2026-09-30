@@ -17,6 +17,11 @@ use App\Models\Tag;
 use App\Models\TeamMember;
 use App\Models\Testimonial;
 use App\Services\Catalogue\MpdfCatalogueGenerator;
+use App\Services\StockCandidateFinder;
+use App\Services\StockMedia\PexelsProvider;
+use App\Services\StockMedia\PixabayProvider;
+use App\Services\StockMedia\UnsplashProvider;
+use App\Services\StockMediaFetcher;
 use App\Support\FragmentCache;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
@@ -39,6 +44,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(Setting::CACHE_KEY, fn () => Setting::loadCurrent());
 
         $this->app->singleton(CatalogueGenerator::class, MpdfCatalogueGenerator::class);
+
+        // Stock-photo APIs (demo/content tooling only).
+        $this->app->tag([PexelsProvider::class, PixabayProvider::class, UnsplashProvider::class], 'stock-media.providers');
+        $this->app->when(StockMediaFetcher::class)->needs('$providers')->giveTagged('stock-media.providers');
+        $this->app->when(StockCandidateFinder::class)->needs('$providers')
+            ->give(fn ($app) => [$app->make(PexelsProvider::class), $app->make(PixabayProvider::class)]);
     }
 
     /**

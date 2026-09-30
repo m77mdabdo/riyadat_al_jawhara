@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Arr;
+use App\Contracts\StockMediaProvider;
+use App\Services\StockMedia\PexelsProvider;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Spatie\Image\Image;
@@ -24,16 +25,17 @@ class StockMediaFetcher
     private const QUALITY = 80;
 
     /**
+     * @param  iterable<StockMediaProvider>  $providers
+     */
+    public function __construct(private iterable $providers, private PexelsProvider $pexels) {}
+
+    /**
      * @return array<int, string> local file paths (.webp)
      */
     public function fetchPhotos(string $query, string $source = 'pexels', int $count = 1): array
     {
-        $urls = match ($source) {
-            'pexels' => $this->searchPexelsPhotos($query, $count),
-            'pixabay' => $this->searchPixabay($query, $count),
-            'unsplash' => $this->searchUnsplash($query, $count),
-            default => [],
-        };
+        $provider = collect($this->providers)->first(fn (StockMediaProvider $p) => $p->name() === $source);
+        $urls = $provider ? array_column($provider->searchPhotos($query, $count), 'download_url') : [];
 
         $paths = [];
 
@@ -53,7 +55,7 @@ class StockMediaFetcher
      */
     public function fetchVideos(string $query, int $count = 1): array
     {
-        $urls = $this->searchPexelsVideos($query, $count);
+        $urls = $this->pexels->searchVideoUrls($query, $count);
         $paths = [];
 
         foreach ($urls as $index => $url) {
@@ -65,123 +67,6 @@ class StockMediaFetcher
         }
 
         return $paths;
-    }
-
-    /** @return array<int, string> */
-    private function searchPexelsPhotos(string $query, int $count): array
-    {
-        $key = config('services.pexels.key');
-
-        if (! $key) {
-            return [];
-        }
-
-        $response = Http::withHeaders(['Authorization' => $key])
-            ->get('https://api.pexels.com/v1/search', [
-                'query' => $query,
-                'per_page' => $count,
-            ]);
-
-        if ($response->failed()) {
-            return [];
-        }
-
-        return $response->collect('photos')
-            ->pluck('src.large2x')
-            ->filter()
-            ->values()
-            ->all();
-    }
-
-    /** @return array<int, string> */
-    private function searchPexelsVideos(string $query, int $count): array
-    {
-        $key = config('services.pexels.key');
-
-        if (! $key) {
-            return [];
-        }
-
-        $response = Http::withHeaders(['Authorization' => $key])
-            ->get('https://api.pexels.com/videos/search', [
-                'query' => $query,
-                'per_page' => $count,
-            ]);
-
-        if ($response->failed()) {
-            return [];
-        }
-
-        $urls = [];
-
-        foreach ($response->json('videos', []) as $video) {
-            $files = collect(Arr::wrap($video['video_files'] ?? []));
-
-            $file = $files->firstWhere('quality', 'sd')
-                ?? $files->where('quality', 'hd')->sortBy('width')->first()
-                ?? $files->first();
-
-            if ($file) {
-                $urls[] = $file['link'];
-            }
-        }
-
-        return $urls;
-    }
-
-    /** @return array<int, string> */
-    private function searchPixabay(string $query, int $count): array
-    {
-        $key = config('services.pixabay.key');
-
-        if (! $key) {
-            return [];
-        }
-
-        $response = Http::get('https://pixabay.com/api/', [
-            'key' => $key,
-            'q' => $query,
-            'image_type' => 'photo',
-            'per_page' => max(3, $count), // Pixabay requires >= 3
-            'safesearch' => 'true',
-        ]);
-
-        if ($response->failed()) {
-            return [];
-        }
-
-        return $response->collect('hits')
-            ->take($count)
-            ->pluck('largeImageURL')
-            ->filter()
-            ->values()
-            ->all();
-    }
-
-    /** @return array<int, string> */
-    private function searchUnsplash(string $query, int $count): array
-    {
-        $key = config('services.unsplash.key');
-
-        if (! $key) {
-            return [];
-        }
-
-        $response = Http::withHeaders(['Authorization' => "Client-ID {$key}"])
-            ->get('https://api.unsplash.com/search/photos', [
-                'query' => $query,
-                'per_page' => $count,
-            ]);
-
-        if ($response->failed()) {
-            return [];
-        }
-
-        return $response->collect('results')
-            ->pluck('urls.regular')
-            ->filter()
-            ->values()
-            ->all();
     }
 
     private function downloadAndOptimizePhoto(string $url, string $query, int $index): ?string
