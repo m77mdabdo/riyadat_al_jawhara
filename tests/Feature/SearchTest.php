@@ -54,6 +54,19 @@ class SearchTest extends TestCase
         $this->assertSame(['Stone Supply'], $this->titles('Stone'));
     }
 
+    public function test_literal_percent_and_underscore_in_content_are_found(): void
+    {
+        // Regression: escaping must work on every database (SQLite has no
+        // default LIKE escape character, MySQL uses a backslash).
+        Service::factory()->create(['name_en' => 'Stone Supply']);
+        Service::factory()->create(['name_en' => 'Save 50% on slabs']);
+        Service::factory()->create(['name_en' => 'Marble_Collection']);
+
+        $this->assertSame(['Save 50% on slabs'], $this->titles('50%'));
+        $this->assertSame(['Marble_Collection'], $this->titles('e_C'));
+        $this->assertSame([], $this->titles('%%'));
+    }
+
     public function test_short_or_empty_queries_show_guidance(): void
     {
         $this->get(route('search'))->assertOk()->assertSee(__('site.search.hint'));

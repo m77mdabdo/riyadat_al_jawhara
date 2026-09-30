@@ -44,6 +44,18 @@ class BlogTest extends TestCase
         $this->assertSame([], $titles(['category' => 'nope']));
     }
 
+    public function test_search_treats_wildcards_literally(): void
+    {
+        Post::factory()->create(['title_en' => 'Marble care']);
+        Post::factory()->create(['title_en' => 'Save 20% on granite']);
+
+        $titles = fn (string $q) => $this->get(route('blog.index', ['q' => $q]))->viewData('posts')->pluck('title_en')->all();
+
+        $this->assertSame(['Save 20% on granite'], $titles('%'), 'a bare % must not match every post');
+        $this->assertSame([], $titles('_'));
+        $this->assertSame(['Save 20% on granite'], $titles('20%'));
+    }
+
     public function test_unpublished_and_scheduled_posts_are_404(): void
     {
         $this->get(route('blog.show', Post::factory()->draft()->create()))->assertNotFound();

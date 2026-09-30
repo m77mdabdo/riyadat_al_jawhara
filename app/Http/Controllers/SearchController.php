@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\StoneType;
+use App\Support\Like;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -30,8 +31,7 @@ class SearchController extends Controller
         $results = collect();
 
         if (mb_strlen($term) >= 2) {
-            $like = '%'.addcslashes($term, '%_\\').'%';
-            $results = $this->search($like);
+            $results = $this->search($term);
         }
 
         $page = LengthAwarePaginator::resolveCurrentPage();
@@ -49,15 +49,9 @@ class SearchController extends Controller
     /**
      * @return Collection<int, array{type: string, title: string, excerpt: string, url: string}>
      */
-    private function search(string $like): Collection
+    private function search(string $term): Collection
     {
-        $match = function (Builder $query, array $columns) use ($like) {
-            $query->where(function (Builder $q) use ($columns, $like) {
-                foreach ($columns as $column) {
-                    $q->orWhere($column, 'like', $like);
-                }
-            });
-        };
+        $match = fn (Builder $query, array $columns) => Like::anyColumn($query, $columns, $term);
 
         $bilingual = fn (string ...$fields) => collect($fields)->flatMap(fn ($f) => ["{$f}_ar", "{$f}_en"])->all();
 

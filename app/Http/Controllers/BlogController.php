@@ -7,6 +7,7 @@ use App\Models\BlogCategory;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Support\Like;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -29,12 +30,7 @@ class BlogController extends Controller
 
         if ($request->filled('q')) {
             $search = $request->string('q')->toString();
-            $query->where(function ($q) use ($search) {
-                $q->where('title_en', 'like', "%{$search}%")
-                    ->orWhere('title_ar', 'like', "%{$search}%")
-                    ->orWhere('excerpt_en', 'like', "%{$search}%")
-                    ->orWhere('excerpt_ar', 'like', "%{$search}%");
-            });
+            Like::anyColumn($query, ['title_en', 'title_ar', 'excerpt_en', 'excerpt_ar'], $search);
         }
 
         return view('blog.index', [

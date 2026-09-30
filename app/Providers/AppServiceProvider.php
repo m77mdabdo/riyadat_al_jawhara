@@ -18,6 +18,7 @@ use App\Models\Testimonial;
 use App\Services\CataloguePdf;
 use App\Support\FragmentCache;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
@@ -45,6 +46,11 @@ class AppServiceProvider extends ServiceProvider
         // Default {locale} for URLs generated outside a public request (CLI,
         // queued mail, sitemap); SetLocale overrides it per request.
         URL::defaults(['locale' => config('locales.default')]);
+
+        // Outside production, N+1 queries and fills of non-fillable attributes
+        // fail loudly instead of passing silently.
+        Model::preventLazyLoading(! $this->app->isProduction());
+        Model::preventSilentlyDiscardingAttributes(! $this->app->isProduction());
 
         // Catalogue PDFs are fingerprinted by the stone data; also clear the
         // cached files whenever that data changes.
