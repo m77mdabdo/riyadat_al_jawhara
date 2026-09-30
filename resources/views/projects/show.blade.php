@@ -1,4 +1,4 @@
-<x-layout :title="$project->title" :description="$project->description" :image="$project->coverImageUrl()" :breadcrumbs="[['name' => __('site.projects.title'), 'url' => route('projects.index')], ['name' => $project->title, 'url' => route('projects.show', $project)]]" :wa-context="['project', $project->id]">
+<x-layout :title="$project->seoTitle($project->title)" :description="$project->seoDescription($project->description)" :image="$project->coverImageUrl()" :breadcrumbs="[['name' => __('site.projects.title'), 'url' => route('projects.index')], ['name' => $project->title, 'url' => route('projects.show', $project)]]" :wa-context="['project', $project->id]">
     @php
         $hasComparison = $project->getFirstMedia('before') && $project->getFirstMedia('after');
         // Before/after photos already appear in the comparison slider; only add

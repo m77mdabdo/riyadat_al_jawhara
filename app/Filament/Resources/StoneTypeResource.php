@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\StoneTypeResource\Pages;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\SeoFields;
 use App\Models\StoneCategory;
 use App\Models\StoneType;
 use Filament\Forms;
@@ -99,6 +100,7 @@ class StoneTypeResource extends Resource
                     ->multiple()
                     ->reorderable()
                     ->columnSpanFull(),
+                SeoFields::section(),
             ]);
     }
 

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\ServiceResource\Pages;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\SeoFields;
 use App\Models\Service;
 use App\Support\ServiceIcon;
 use Filament\Forms;
@@ -73,6 +74,7 @@ class ServiceResource extends Resource
                     ->default(true),
                 ImageUpload::make('cover')
                     ->columnSpanFull(),
+                SeoFields::section(),
             ]);
     }
 

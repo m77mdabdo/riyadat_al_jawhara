@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\SeoFields;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\StoneType;
@@ -118,6 +119,7 @@ class ProjectResource extends Resource
                     ->multiple()
                     ->reorderable()
                     ->columnSpanFull(),
+                SeoFields::section(),
             ]);
     }
 

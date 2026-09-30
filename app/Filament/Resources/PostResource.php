@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
 use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\SeoFields;
 use App\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -92,6 +93,7 @@ class PostResource extends Resource
                     ->default(fn () => auth()->id()),
                 ImageUpload::make('cover')
                     ->columnSpanFull(),
+                SeoFields::section(),
             ]);
     }
 

@@ -1,4 +1,4 @@
-<x-layout :title="$post->title" :description="$post->excerpt ?: $post->body" :image="$post->coverImageUrl()" type="article" :published-at="$post->published_at" :modified-at="$post->updated_at" :breadcrumbs="[['name' => __('site.blog.title'), 'url' => route('blog.index')], ['name' => $post->title, 'url' => route('blog.show', $post)]]">
+<x-layout :title="$post->seoTitle($post->title)" :description="$post->seoDescription($post->excerpt ?: $post->body)" :image="$post->coverImageUrl()" type="article" :published-at="$post->published_at" :modified-at="$post->updated_at" :breadcrumbs="[['name' => __('site.blog.title'), 'url' => route('blog.index')], ['name' => $post->title, 'url' => route('blog.show', $post)]]">
     @push('head')
         @php
             $articleLd = array_filter([

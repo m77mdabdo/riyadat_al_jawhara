@@ -1,4 +1,4 @@
-<x-layout :title="$service->name" :description="$service->description" :image="$service->coverImageUrl()" :breadcrumbs="[['name' => __('site.services.title'), 'url' => route('services.index')], ['name' => $service->name, 'url' => route('services.show', $service)]]" :wa-context="['service', $service->id]">
+<x-layout :title="$service->seoTitle($service->name)" :description="$service->seoDescription($service->description)" :image="$service->coverImageUrl()" :breadcrumbs="[['name' => __('site.services.title'), 'url' => route('services.index')], ['name' => $service->name, 'url' => route('services.show', $service)]]" :wa-context="['service', $service->id]">
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             @if ($service->getFirstMedia('cover'))

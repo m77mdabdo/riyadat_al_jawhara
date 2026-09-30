@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasCoverImage;
+use App\Models\Concerns\HasSeoOverrides;
 use App\Models\Concerns\HasTranslations;
 use App\Models\Concerns\HasWebpConversions;
 use App\Support\ServiceIcon;
@@ -19,7 +20,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Service extends Model implements HasMedia
 {
-    use HasActiveScope, HasCoverImage, HasFactory, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia;
+    use HasActiveScope, HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia;
 
     protected $fillable = [
         'name_ar',
