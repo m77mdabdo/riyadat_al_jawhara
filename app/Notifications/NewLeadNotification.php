@@ -46,10 +46,18 @@ class NewLeadNotification extends Notification implements ShouldQueue
                 NotificationFacade::send($admins, new self($lead));
             }
 
-            $companyEmail = Setting::current()->email;
+            // The company email plus any extra recipients (Settings → Notifications),
+            // each once and never twice for an administrator.
+            $settings = Setting::current();
+            $extra = array_filter((array) $settings->option('notification_options', 'lead_recipients', []), fn ($email) => is_string($email) && filter_var($email, FILTER_VALIDATE_EMAIL));
+            $sent = $admins->map(fn (User $user) => strtolower($user->email))->all();
 
-            if (filled($companyEmail) && ! $admins->contains(fn (User $user) => strcasecmp($user->email, $companyEmail) === 0)) {
-                NotificationFacade::route('mail', $companyEmail)
+            foreach (array_filter([$settings->email, ...$extra]) as $email) {
+                if (in_array(strtolower($email), $sent, true)) {
+                    continue;
+                }
+                $sent[] = strtolower($email);
+                NotificationFacade::route('mail', $email)
                     ->notify((new self($lead))->locale(config('site.notifications.company_locale')));
             }
         } catch (Throwable $e) {

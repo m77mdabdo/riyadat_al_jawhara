@@ -79,6 +79,10 @@ class Setting extends Model implements HasMedia
         'home_sections',
         'footer_options',
         'floating_options',
+        'contact_options',
+        'seo_options',
+        'analytics_options',
+        'notification_options',
     ];
 
     protected $casts = [
@@ -87,6 +91,10 @@ class Setting extends Model implements HasMedia
         'home_sections' => 'array',
         'footer_options' => 'array',
         'floating_options' => 'array',
+        'contact_options' => 'array',
+        'seo_options' => 'array',
+        'analytics_options' => 'array',
+        'notification_options' => 'array',
     ];
 
     /**

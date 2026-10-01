@@ -8,6 +8,7 @@ use App\Filament\Support\ImageUpload;
 use App\Filament\Support\SiteTextFields;
 use App\Models\Setting;
 use Filament\Forms;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 
@@ -52,6 +53,9 @@ class Branding extends Page implements HasForms
         return ['site.meta.site_name', 'site.meta.tagline'];
     }
 
+    /**
+     * @return array<int, Component>
+     */
     protected function schema(): array
     {
         $image = fn (string $name, string $label, string $help) => ImageUpload::make($name, $name)

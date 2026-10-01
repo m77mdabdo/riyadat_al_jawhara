@@ -30,7 +30,11 @@
     $jsonLdSettings = $settings;
     $siteName = __('site.meta.site_name');
 
-    $pageTitle = $title ? $title.' | '.$siteName : $siteName.' | '.__('site.meta.tagline');
+    $pageTitle = $title ? \App\Support\Seo::title($title, $siteName) : $siteName.' | '.__('site.meta.tagline');
+    // Settings → SEO: hide the whole site (staging / before launch).
+    if (\App\Support\Seo::noindexSite()) {
+        $robots = 'noindex, nofollow';
+    }
     $metaTitle = $title ?? $siteName;
     // Plain text, single line, ~160 chars: what search engines actually show.
     $metaDescription = \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/u', ' ', strip_tags((string) ($description ?: __('site.meta.default_description'))))), 160);
@@ -94,6 +98,9 @@
         <meta name="robots" content="{{ $robots }}">
     @endif
     <link rel="canonical" href="{{ $canonical }}">
+    @foreach (\App\Support\Seo::verifications() as $verificationName => $verificationCode)
+        <meta name="{{ $verificationName }}" content="{{ $verificationCode }}">
+    @endforeach
 
     <meta property="og:site_name" content="{{ $siteName }}">
     <meta property="og:title" content="{{ $metaTitle }}">

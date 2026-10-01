@@ -2,16 +2,41 @@
 
 namespace App\Support;
 
+use App\Models\Setting;
+
 /**
- * Reads config/analytics.php and derives what the page and the CSP need.
+ * Analytics provider from Settings → Analytics, else config/analytics.php
+ * (.env), and what the page and the CSP need for it.
  */
 class Analytics
 {
+    /** Format examples shown in the admin. */
+    public const GA4_EXAMPLE = 'G-XXXXXXXXXX';
+
+    public const DOMAIN_EXAMPLE = 'example.sa';
+
+    public const GA4_PATTERN = '/^G-[A-Z0-9]{4,20}$/';
+
+    public const DOMAIN_PATTERN = '/^(?=.{3,120}$)([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i';
+
+    /**
+     * Admin value for a key, or the configured one. Never throws (error pages).
+     */
+    private static function value(string $key): mixed
+    {
+        $options = rescue(fn () => Setting::current()->analytics_options, [], false) ?? [];
+        if (! empty($options['disabled'])) {
+            return null;
+        }
+
+        return filled($options[$key] ?? null) ? $options[$key] : config('analytics.'.$key);
+    }
+
     public static function ga4(): ?string
     {
-        $id = config('analytics.ga4_id');
+        $id = self::value('ga4_id');
 
-        return is_string($id) && preg_match('/^G-[A-Z0-9]{4,20}$/', $id) ? $id : null;
+        return is_string($id) && preg_match(self::GA4_PATTERN, $id) ? $id : null;
     }
 
     /**
@@ -19,10 +44,10 @@ class Analytics
      */
     public static function plausible(): ?array
     {
-        $domain = config('analytics.plausible_domain');
+        $domain = self::value('plausible_domain');
         $src = config('analytics.plausible_src');
 
-        if (! is_string($domain) || $domain === '' || ! is_string($src) || ! str_starts_with($src, 'https://')) {
+        if (! is_string($domain) || ! preg_match(self::DOMAIN_PATTERN, $domain) || ! is_string($src) || ! str_starts_with($src, 'https://')) {
             return null;
         }
 

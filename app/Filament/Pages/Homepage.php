@@ -12,6 +12,7 @@ use App\Models\SiteImage;
 use App\Models\SiteText;
 use App\Support\HomeSections;
 use Filament\Forms;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Get;
 use Filament\Pages\Page;
@@ -81,6 +82,9 @@ class Homepage extends Page implements HasForms
         return __('admin.home_sections.'.$section);
     }
 
+    /**
+     * @return array<int, Component>
+     */
     protected function schema(): array
     {
         $bilingual = fn (string $name, string $label, bool $area = false) => Forms\Components\Grid::make(2)->schema(array_map(

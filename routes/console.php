@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\FollowUpDigestTime;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -11,9 +12,10 @@ Artisan::command('inspire', function () {
 // Privacy: drop IP/user agent from old comments and leads (config/privacy.php).
 Schedule::command('privacy:prune')->dailyAt('03:15')->withoutOverlapping();
 
-// Daily follow-up digest for staff (config/site.php → notifications).
+// Daily follow-up digest for staff: time from Settings → Notifications,
+// else config/site.php → notifications.
 Schedule::command('leads:follow-up-digest')
-    ->dailyAt(config('site.notifications.digest_time'))
+    ->dailyAt(FollowUpDigestTime::get())
     ->timezone(config('site.notifications.timezone'))
     ->withoutOverlapping();
 

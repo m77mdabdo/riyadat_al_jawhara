@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Pages\Settings;
+use App\Filament\Pages\Settings\StatisticsSettings;
 use App\Models\Project;
 use App\Models\Setting;
 use App\Models\StoneCategory;
@@ -192,12 +192,12 @@ class VisualSystemTest extends TestCase
         Role::create(['name' => 'admin', 'guard_name' => 'web']);
         $this->actingAs(tap(User::factory()->create())->assignRole('admin'));
 
-        Livewire::test(Settings::class)
+        Livewire::test(StatisticsSettings::class)
             ->set('data.stat_years_experience', -3)
             ->call('save')
             ->assertHasErrors(['data.stat_years_experience']);
 
-        Livewire::test(Settings::class)
+        Livewire::test(StatisticsSettings::class)
             ->set('data.stat_years_experience', 15)
             ->call('save')
             ->assertHasNoErrors();

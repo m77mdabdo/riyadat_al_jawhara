@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Filament\Pages\Branding;
-use App\Filament\Pages\Settings;
+use App\Filament\Pages\Settings\SocialSettings;
 use App\Models\Setting;
 use App\Models\Slider;
 use App\Models\User;
@@ -96,13 +96,13 @@ class BrandingAndHeroTest extends TestCase
     {
         $this->actingAsAdmin();
 
-        Livewire::test(Settings::class)
+        Livewire::test(SocialSettings::class)
             ->set('data.linkedin_url', 'https://www.linkedin.com/company/example')
             ->set('data.youtube_url', 'not a url')
             ->call('save')
             ->assertHasErrors(['data.youtube_url']);
 
-        Livewire::test(Settings::class)
+        Livewire::test(SocialSettings::class)
             ->set('data.linkedin_url', 'https://www.linkedin.com/company/example')
             ->call('save')
             ->assertHasNoErrors();

@@ -9,6 +9,7 @@ use App\Filament\Support\OptionToggle;
 use App\Filament\Support\SiteTextFields;
 use App\Models\SiteText;
 use Filament\Forms;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 use Illuminate\Support\HtmlString;
@@ -63,6 +64,9 @@ class FooterSettings extends Page implements HasForms
         return array_keys(self::TEXTS);
     }
 
+    /**
+     * @return array<int, Component>
+     */
     protected function schema(): array
     {
         return [

@@ -142,6 +142,7 @@
             </div>
 
             @if ($settings->map_lat && $settings->map_lng)
+                @if ($settings->option('contact_options', 'show_map', true))
                 <div class="rounded-xl overflow-hidden border border-stone-200 aspect-video">
                     <iframe
                         class="w-full h-full"
@@ -152,6 +153,8 @@
                         src="https://maps.google.com/maps?q={{ $settings->map_lat }},{{ $settings->map_lng }}&z=14&output=embed">
                     </iframe>
                 </div>
+                @endif
+                @if ($settings->option('contact_options', 'show_directions', true))
                 <a
                     href="https://www.google.com/maps/dir/?api=1&destination={{ $settings->map_lat }},{{ $settings->map_lng }}"
                     target="_blank"
@@ -160,6 +163,7 @@
                 >
                     <x-heroicon-o-map class="h-4 w-4" /> {{ __('site.contact.get_directions') }}
                 </a>
+                @endif
             @endif
         </div>
     </section>

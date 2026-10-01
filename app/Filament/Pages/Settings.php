@@ -2,181 +2,66 @@
 
 namespace App\Filament\Pages;
 
-use App\Enums\AdminNavigationGroup;
-use App\Models\Setting;
+use App\Filament\Pages\Concerns\IsSettingsPage;
 use Filament\Forms;
-use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 
 /**
- * @property Forms\Form $form
+ * Settings → General: the phone, WhatsApp and email used across the site
+ * and in emails, and the company introduction (also editable on Pages → About).
  */
 class Settings extends Page implements HasForms
 {
-    use InteractsWithForms;
+    use IsSettingsPage;
 
-    protected static string $view = 'filament.pages.settings';
+    protected static ?int $navigationSort = 10;
 
-    /** @var array<string, mixed>|null */
-    public ?array $data = [];
+    protected static string $view = 'filament.pages.site-settings-form';
 
-    /**
-     * Settings control every public contact detail and the raw legal HTML,
-     * so only admins may open (or save) this page. Filament checks this for
-     * navigation, direct URL access and Livewire requests alike.
-     */
-    public static function getNavigationGroup(): ?string
+    public static function label(): string
     {
-        return AdminNavigationGroup::Settings->value;
-    }
-
-    public static function getNavigationLabel(): string
-    {
-        return __('Settings');
-    }
-
-    public function getTitle(): string
-    {
-        return __('Settings');
-    }
-
-    public static function canAccess(): bool
-    {
-        return auth()->user()?->can('update', Setting::class) ?? false;
-    }
-
-    public function mount(): void
-    {
-        $this->form->fill($this->getSetting()->attributesToArray());
+        return __('General');
     }
 
     /**
-     * The single settings row, needed so the media upload fields can load and
-     * save their files through Spatie Media Library.
+     * @return array<int, Component>
      */
-    public function getSetting(): Setting
+    protected function schema(): array
     {
-        return Setting::editable();
-    }
+        return [
+            Forms\Components\Section::make(__('Contact'))
+                ->description(__('Shown in the header, footer, contact page, buttons and emails.'))
+                ->schema([
+                    Forms\Components\TextInput::make('phone')->label(__('Phone'))->tel()->maxLength(30),
+                    Forms\Components\TextInput::make('whatsapp')
+                        ->label(__('WhatsApp'))
+                        ->helperText(__('With country code, e.g. 966501234567. Spaces and "+" are removed on save.'))
+                        ->maxLength(30)
+                        ->dehydrateStateUsing(fn (?string $state): ?string => filled($state) ? preg_replace('/\D/', '', $state) : null),
+                    Forms\Components\TextInput::make('email')->label(__('Email'))->email()->maxLength(255),
+                ])->columns(3),
 
-    public function form(Forms\Form $form): Forms\Form
-    {
-        return $form
-            ->model($this->getSetting())
-            ->schema([
-                Forms\Components\Section::make(__('Contact'))
-                    ->schema([
-                        Forms\Components\TextInput::make('phone')->tel(),
-                        Forms\Components\TextInput::make('whatsapp')
-                            ->helperText(__('With country code, e.g. 966501234567. Spaces and "+" are removed on save.'))
-                            ->dehydrateStateUsing(fn (?string $state): ?string => filled($state) ? preg_replace('/\D/', '', $state) : null),
-                        Forms\Components\TextInput::make('email')->email(),
-                    ])->columns(3),
-
-                Forms\Components\Section::make(__('Address & Hours'))
-                    ->schema([
-                        Forms\Components\Tabs::make('AddressTranslations')
-                            ->columnSpanFull()
-                            ->tabs([
-                                Forms\Components\Tabs\Tab::make(__('English'))
-                                    ->schema([
-                                        Forms\Components\TextInput::make('address_en')->label(__('Address (EN)')),
-                                        Forms\Components\TextInput::make('working_hours_en')->label(__('Working Hours (EN)')),
-                                    ]),
-                                Forms\Components\Tabs\Tab::make(__('Arabic'))
-                                    ->schema([
-                                        Forms\Components\TextInput::make('address_ar')->label(__('Address (AR)')),
-                                        Forms\Components\TextInput::make('working_hours_ar')->label(__('Working Hours (AR)')),
-                                    ]),
-                            ]),
-                        Forms\Components\TextInput::make('map_lat')->numeric()->label(__('Map Latitude')),
-                        Forms\Components\TextInput::make('map_lng')->numeric()->label(__('Map Longitude')),
-                    ])->columns(2),
-
-                Forms\Components\Section::make(__('About / Vision / Mission'))
-                    ->schema([
-                        Forms\Components\Tabs::make('AboutTranslations')
-                            ->columnSpanFull()
-                            ->tabs([
-                                Forms\Components\Tabs\Tab::make(__('English'))
-                                    ->schema([
-                                        Forms\Components\Textarea::make('about_en')->label(__('About (EN)'))->rows(3),
-                                        Forms\Components\Textarea::make('vision_en')->label(__('Vision (EN)'))->rows(2),
-                                        Forms\Components\Textarea::make('mission_en')->label(__('Mission (EN)'))->rows(2),
-                                    ]),
-                                Forms\Components\Tabs\Tab::make(__('Arabic'))
-                                    ->schema([
-                                        Forms\Components\Textarea::make('about_ar')->label(__('About (AR)'))->rows(3),
-                                        Forms\Components\Textarea::make('vision_ar')->label(__('Vision (AR)'))->rows(2),
-                                        Forms\Components\Textarea::make('mission_ar')->label(__('Mission (AR)'))->rows(2),
-                                    ]),
-                            ]),
-                    ]),
-
-                Forms\Components\Section::make(__('Legal Pages'))
-                    ->schema([
-                        Forms\Components\Tabs::make('LegalTranslations')
-                            ->columnSpanFull()
-                            ->tabs([
-                                Forms\Components\Tabs\Tab::make(__('English'))
-                                    ->schema([
-                                        Forms\Components\RichEditor::make('privacy_policy_en')->label(__('Privacy Policy (EN)')),
-                                        Forms\Components\RichEditor::make('terms_en')->label(__('Terms of Use (EN)')),
-                                    ]),
-                                Forms\Components\Tabs\Tab::make(__('Arabic'))
-                                    ->schema([
-                                        Forms\Components\RichEditor::make('privacy_policy_ar')->label(__('Privacy Policy (AR)')),
-                                        Forms\Components\RichEditor::make('terms_ar')->label(__('Terms of Use (AR)')),
-                                    ]),
-                            ]),
-                    ]),
-
-                Forms\Components\Section::make(__('Statistics (home page)'))
-                    ->description(__('Real figures only. Leave a field empty to hide it; the section is hidden when all are empty.'))
-                    ->schema([
-                        Forms\Components\TextInput::make('stat_projects_completed')->label(__('Projects completed'))->numeric()->minValue(1)->maxValue(100000),
-                        Forms\Components\TextInput::make('stat_years_experience')->label(__('Years of experience'))->numeric()->minValue(1)->maxValue(200),
-                        Forms\Components\TextInput::make('stat_cities_served')->label(__('Cities served'))->numeric()->minValue(1)->maxValue(1000),
-                        Forms\Components\TextInput::make('stat_clients_served')->label(__('Clients served'))->numeric()->minValue(1)->maxValue(1000000),
-                    ])->columns(4),
-
-                Forms\Components\Section::make(__('Notifications'))
-                    ->schema([
-                        Forms\Components\Toggle::make('lead_auto_reply')
-                            ->label(__('Send an automatic confirmation to visitors who leave an email'))
-                            ->helperText(__('Only sent once a phone or WhatsApp number is set above.')),
-                        Forms\Components\Toggle::make('comment_mail_notifications')
-                            ->label(__('Email staff about new comments (the admin bell always shows them)')),
-                    ]),
-
-                Forms\Components\Section::make(__('Social Links'))
-                    ->schema([
-                        Forms\Components\TextInput::make('facebook_url')->url(),
-                        Forms\Components\TextInput::make('instagram_url')->url(),
-                        Forms\Components\TextInput::make('tiktok_url')->url(),
-                        Forms\Components\TextInput::make('snapchat_url')->url(),
-                        Forms\Components\TextInput::make('linkedin_url')->label(__('LinkedIn URL'))->url(),
-                        Forms\Components\TextInput::make('x_url')->label(__('X (Twitter) URL'))->url(),
-                        Forms\Components\TextInput::make('youtube_url')->label(__('YouTube URL'))->url(),
-                    ])->columns(2),
-            ])
-            ->statePath('data');
-    }
-
-    public function save(): void
-    {
-        $setting = $this->getSetting();
-        $setting->fill($this->form->getState())->save();
-        $this->form->model($setting)->saveRelationships();
-        // Media uploads don't touch the settings row, so flush explicitly
-        // (the media observer already cleared the public caches).
-        Setting::flushCache();
-
-        Notification::make()
-            ->title(__('Settings saved'))
-            ->success()
-            ->send();
+            Forms\Components\Section::make(__('About / Vision / Mission'))
+                ->schema([
+                    Forms\Components\Tabs::make('AboutTranslations')
+                        ->columnSpanFull()
+                        ->tabs([
+                            Forms\Components\Tabs\Tab::make(__('Arabic'))
+                                ->schema([
+                                    Forms\Components\Textarea::make('about_ar')->label(__('About (AR)'))->rows(3),
+                                    Forms\Components\Textarea::make('vision_ar')->label(__('Vision (AR)'))->rows(2),
+                                    Forms\Components\Textarea::make('mission_ar')->label(__('Mission (AR)'))->rows(2),
+                                ]),
+                            Forms\Components\Tabs\Tab::make(__('English'))
+                                ->schema([
+                                    Forms\Components\Textarea::make('about_en')->label(__('About (EN)'))->rows(3),
+                                    Forms\Components\Textarea::make('vision_en')->label(__('Vision (EN)'))->rows(2),
+                                    Forms\Components\Textarea::make('mission_en')->label(__('Mission (EN)'))->rows(2),
+                                ]),
+                        ]),
+                ]),
+        ];
     }
 }

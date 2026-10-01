@@ -8,6 +8,7 @@ use App\Filament\Support\OptionToggle;
 use App\Filament\Support\SiteTextFields;
 use App\Models\SiteText;
 use Filament\Forms;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 
@@ -66,6 +67,9 @@ class FloatingElements extends Page implements HasForms
         return [...array_keys(self::WHATSAPP_TEXTS), ...array_keys(self::CONSENT_TEXTS)];
     }
 
+    /**
+     * @return array<int, Component>
+     */
     protected function schema(): array
     {
         return [
