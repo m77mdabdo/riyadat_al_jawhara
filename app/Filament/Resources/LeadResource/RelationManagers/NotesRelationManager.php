@@ -47,10 +47,17 @@ class NotesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('body')
             ->modifyQueryUsing(fn ($query) => $query->with('user'))
+            // Timeline: newest first, author and time above each note.
+            ->contentGrid(['md' => 1])
             ->columns([
-                Tables\Columns\TextColumn::make('body')->label(__('Note'))->wrap(),
-                Tables\Columns\TextColumn::make('user.name')->label(__('By'))->placeholder('—'),
-                Tables\Columns\TextColumn::make('created_at')->label(__('When'))->dateTime()->sortable(),
+                Tables\Columns\Layout\Stack::make([
+                    Tables\Columns\Layout\Split::make([
+                        Tables\Columns\TextColumn::make('user.name')->label(__('By'))->placeholder('—')->weight('medium')->icon('heroicon-m-user-circle')->grow(false),
+                        Tables\Columns\TextColumn::make('created_at')->label(__('When'))->since()->color('gray')->size('sm')
+                            ->tooltip(fn (LeadNote $record) => $record->created_at?->toDayDateTimeString()),
+                    ]),
+                    Tables\Columns\TextColumn::make('body')->label(__('Note'))->wrap()->extraAttributes(['style' => 'white-space: pre-line; margin-top: 0.25rem']),
+                ])->space(1),
             ])
             ->defaultSort('created_at', 'desc')
             ->headerActions([

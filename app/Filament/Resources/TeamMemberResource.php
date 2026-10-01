@@ -65,7 +65,7 @@ class TeamMemberResource extends Resource
             Tables\Columns\TextColumn::make('phone'),
             Tables\Columns\TextColumn::make('email'),
             Tables\Columns\IconColumn::make('is_active')->label(__('Active'))->boolean(),
-        ]));
+        ]), actions: [static::previewAction('team-member')]);
     }
 
     public static function getRelations(): array

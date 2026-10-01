@@ -69,7 +69,7 @@ class TestimonialResource extends Resource
             Tables\Columns\TextColumn::make('rating')->numeric()->sortable(),
             Tables\Columns\TextColumn::make('project.'.Localized::column('title'))->label(__('Project')),
             Tables\Columns\IconColumn::make('is_active')->label(__('Active'))->boolean(),
-        ]));
+        ]), actions: [static::previewAction('testimonial')]);
     }
 
     public static function getRelations(): array

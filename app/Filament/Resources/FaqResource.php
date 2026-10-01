@@ -52,7 +52,7 @@ class FaqResource extends Resource
         return static::publicRecordTable($table->columns([
             Tables\Columns\TextColumn::make(Localized::column('question'))->label(__('Question'))->searchable(['question_en', 'question_ar'])->wrap(),
             Tables\Columns\IconColumn::make('is_active')->label(__('Active'))->boolean(),
-        ]));
+        ]), actions: [static::previewAction('faq')]);
     }
 
     public static function getRelations(): array

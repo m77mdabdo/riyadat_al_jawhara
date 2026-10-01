@@ -579,5 +579,7 @@
     "Open record": "فتح السجل",
     "Please choose a new password to continue.": "يرجى اختيار كلمة مرور جديدة للمتابعة.",
     "role": "دور",
-    "roles": "الأدوار"
+    "roles": "الأدوار",
+    "Pick the values that apply; add a missing one with “+”. All values are listed in Catalogue → Stone Attributes.": "اختر القيم المناسبة؛ وأضف القيمة الناقصة بزر «+». كل القيم موجودة في الكتالوج ← خصائص الأحجار.",
+    "Close": "إغلاق"
 }

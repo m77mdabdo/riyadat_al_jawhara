@@ -194,6 +194,14 @@ class LeadResource extends Resource
                     ->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
+            ->groups([
+                Tables\Grouping\Group::make('status')
+                    ->label(__('Status'))
+                    ->getTitleFromRecordUsing(fn (Lead $record): string => LeadStatus::labelFor($record->status)),
+                Tables\Grouping\Group::make('source')
+                    ->label(__('Source'))
+                    ->getTitleFromRecordUsing(fn (Lead $record): string => LeadSource::labelFor($record->source)),
+            ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\SelectFilter::make('status')

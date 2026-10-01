@@ -3,10 +3,13 @@
 namespace App\Filament\Resources\LeadResource\Pages;
 
 use App\Actions\Leads\ExportLeadsCsv;
+use App\Enums\LeadStatus;
 use App\Filament\Resources\LeadResource;
 use App\Models\Lead;
 use Filament\Actions;
+use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
 
 class ListLeads extends ListRecords
 {
@@ -25,5 +28,25 @@ class ListLeads extends ListRecords
                 ->action(fn () => app(ExportLeadsCsv::class)->handle($this->getFilteredTableQuery())),
             Actions\CreateAction::make(),
         ];
+    }
+
+    /**
+     * One tab per status (with counts), like the columns of a board.
+     *
+     * @return array<string, Tab>
+     */
+    public function getTabs(): array
+    {
+        $counts = Lead::query()->selectRaw('status, COUNT(*) as total')->groupBy('status')->pluck('total', 'status');
+        $tabs = ['all' => Tab::make(__('All'))->badge(array_sum($counts->all()) ?: null)];
+
+        foreach (LeadStatus::cases() as $status) {
+            $tabs[$status->value] = Tab::make($status->getLabel())
+                ->badge($counts[$status->value] ?? null)
+                ->badgeColor($status->getColor())
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', $status->value));
+        }
+
+        return $tabs;
     }
 }

@@ -31,6 +31,21 @@ trait ManagesPublicRecords
     }
 
     /**
+     * "Preview" row action: how the record reads in both languages, using
+     * resources/views/filament/previews/{$view}.blade.php.
+     */
+    public static function previewAction(string $view): Tables\Actions\Action
+    {
+        return Tables\Actions\Action::make('preview')
+            ->label(__('Preview'))
+            ->icon('heroicon-o-eye')
+            ->modalHeading(__('Preview'))
+            ->modalContent(fn (Model $record) => view('filament.previews.'.$view, ['record' => $record]))
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel(__('Close'));
+    }
+
+    /**
      * "Missing image" (records with a cover collection) and "Missing
      * translation" (a bilingual field filled in one language only); the
      * dashboard's content-health list links to these.
@@ -89,8 +104,9 @@ trait ManagesPublicRecords
      * Applies the shared actions, bulk actions, filters and reordering.
      *
      * @param  list<Tables\Filters\BaseFilter>  $filters  resource-specific filters
+     * @param  list<Tables\Actions\Action>  $actions  extra row actions, shown first
      */
-    public static function publicRecordTable(Table $table, array $filters = []): Table
+    public static function publicRecordTable(Table $table, array $filters = [], array $actions = []): Table
     {
         if (static::modelHas('order')) {
             $table->reorderable('order')->defaultSort('order');
@@ -105,6 +121,7 @@ trait ManagesPublicRecords
             ->filters([...$filters, ...$shared])
             ->actions([
                 Tables\Actions\ActionGroup::make([
+                    ...$actions,
                     static::viewOnSiteTableAction(),
                     Tables\Actions\EditAction::make(),
                     static::duplicateAction(),

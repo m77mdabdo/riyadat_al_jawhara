@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\AdminNavigationGroup;
+use App\Enums\StoneAttributeType;
 use App\Enums\StoneOriginType;
 use App\Filament\Concerns\ManagesPublicRecords;
 use App\Filament\Concerns\TranslatesResourceLabels;
@@ -11,6 +12,7 @@ use App\Filament\Support\Bilingual;
 use App\Filament\Support\ImageUpload;
 use App\Filament\Support\Localized;
 use App\Filament\Support\SeoFields;
+use App\Models\StoneAttribute;
 use App\Models\StoneCategory;
 use App\Models\StoneType;
 use Filament\Forms;
@@ -53,17 +55,17 @@ class StoneTypeResource extends Resource
                         ], slugFrom: 'name'),
                     ]),
                 Forms\Components\Section::make(__('Specifications'))
-                    ->description(__('Values are managed under Stones → Stone Attributes.'))
+                    ->description(__('Pick the values that apply; add a missing one with “+”. All values are listed in Catalogue → Stone Attributes.'))
                     ->schema([
                         Forms\Components\Select::make('origin_type')
                             ->label(__('Local / Imported'))
                             ->options(StoneOriginType::options())
                             ->in(StoneOriginType::values())
                             ->placeholder(__('Not specified')),
-                        static::attributeSelect('finishes', 'Finishes'),
-                        static::attributeSelect('colours', 'Colours'),
-                        static::attributeSelect('sizes', 'Sizes / Thickness'),
-                        static::attributeSelect('applications', 'Applications'),
+                        static::attributeSelect('finishes', 'Finishes', StoneAttributeType::Finish),
+                        static::attributeSelect('colours', 'Colours', StoneAttributeType::Colour),
+                        static::attributeSelect('sizes', 'Sizes / Thickness', StoneAttributeType::Size),
+                        static::attributeSelect('applications', 'Applications', StoneAttributeType::Application),
                     ])->columns(2),
                 Forms\Components\Section::make(__('Publishing'))
                     ->schema([
@@ -122,14 +124,21 @@ class StoneTypeResource extends Resource
         return $record instanceof StoneType ? $record->name : '';
     }
 
-    protected static function attributeSelect(string $relationship, string $label): Forms\Components\Select
+    protected static function attributeSelect(string $relationship, string $label, StoneAttributeType $type): Forms\Components\Select
     {
         return Forms\Components\Select::make($relationship)
             ->label(__($label))
             ->relationship($relationship, Localized::column('name'), fn (Builder $query) => $query->orderBy('stone_attributes.order'))
             ->multiple()
             ->preload()
-            ->searchable();
+            ->searchable()
+            // Quick-add a value of this group without leaving the stone.
+            ->createOptionForm([
+                Forms\Components\TextInput::make('name_ar')->label(__('Name (AR)'))->required()->maxLength(100)->extraInputAttributes(['dir' => 'rtl']),
+                Forms\Components\TextInput::make('name_en')->label(__('Name (EN)'))->required()->maxLength(100),
+            ])
+            ->createOptionUsing(fn (array $data): int => StoneAttribute::create($data + ['type' => $type->value, 'is_active' => true])->getKey())
+            ->createOptionAction(fn (Forms\Components\Actions\Action $action) => $action->visible(auth()->user()?->can('create', StoneAttribute::class) ?? false));
     }
 
     public static function getRelations(): array
