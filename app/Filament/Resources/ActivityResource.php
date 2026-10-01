@@ -6,6 +6,7 @@ use App\Enums\AdminNavigationGroup;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\ActivityResource\Pages;
 use App\Models\User;
+use Filament\Forms;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -43,6 +44,38 @@ class ActivityResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->with(['causer', 'subject']);
+    }
+
+    /**
+     * Admin resource that manages a model class, if any.
+     *
+     * @return class-string<resource>|null
+     */
+    public static function resourceFor(?string $type): ?string
+    {
+        if (! $type) {
+            return null;
+        }
+
+        return collect(filament()->getPanel('admin')->getResources())->first(fn (string $resource) => $resource::getModel() === $type);
+    }
+
+    /** Where the changed record can be opened, while it still exists. */
+    public static function subjectUrl(Activity $activity): ?string
+    {
+        $resource = self::resourceFor($activity->subject_type);
+        $subject = $activity->subject;
+        if (! $resource || ! $subject instanceof Model) {
+            return null;
+        }
+
+        foreach (['edit', 'view'] as $page) {
+            if ($resource::hasPage($page) && ($page === 'view' ? $resource::canView($subject) : $resource::canEdit($subject))) {
+                return $resource::getUrl($page, ['record' => $subject]);
+            }
+        }
+
+        return null;
     }
 
     /** "Project #12" style label for the subject column. */
@@ -86,14 +119,31 @@ class ActivityResource extends Resource
                     ->label(__('admin.activity.subject'))
                     ->options(fn () => Activity::query()->distinct()->orderBy('subject_type')->pluck('subject_type')
                         ->filter()
-                        ->mapWithKeys(fn ($type) => [$type => class_basename($type)])
+                        ->mapWithKeys(fn ($type) => [$type => ($resource = static::resourceFor($type)) ? $resource::getPluralModelLabel() : class_basename($type)])
                         ->all()),
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')->label(__('From')),
+                        Forms\Components\DatePicker::make('until')->label(__('Until')),
+                    ])
+                    ->query(fn (Builder $query, array $data) => $query
+                        ->when($data['from'] ?? null, fn (Builder $q, $date) => $q->whereDate('created_at', '>=', $date))
+                        ->when($data['until'] ?? null, fn (Builder $q, $date) => $q->whereDate('created_at', '<=', $date)))
+                    ->indicateUsing(fn (array $data) => array_filter([
+                        ($data['from'] ?? null) ? __('From').' '.$data['from'] : null,
+                        ($data['until'] ?? null) ? __('Until').' '.$data['until'] : null,
+                    ])),
                 Tables\Filters\SelectFilter::make('causer_id')
                     ->label(__('admin.activity.user'))
                     ->options(fn () => User::query()->orderBy('name')->pluck('name', 'id')->all()),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('openRecord')
+                    ->label(__('Open record'))
+                    ->icon('heroicon-o-arrow-top-right-on-square')
+                    ->url(fn (Activity $record) => static::subjectUrl($record))
+                    ->visible(fn (Activity $record) => static::subjectUrl($record) !== null),
             ])
             ->bulkActions([]);
     }
@@ -110,7 +160,9 @@ class ActivityResource extends Resource
                     Infolists\Components\TextEntry::make('event')->label(__('admin.activity.event'))
                         ->formatStateUsing(fn (?string $state) => $state ? __('admin.activity.events.'.$state) : '—'),
                     Infolists\Components\TextEntry::make('subject_type')->label(__('admin.activity.subject'))
-                        ->formatStateUsing(fn ($state, Activity $record) => static::subjectLabel($record)),
+                        ->formatStateUsing(fn ($state, Activity $record) => static::subjectLabel($record))
+                        ->url(fn (Activity $record) => static::subjectUrl($record))
+                        ->color(fn (Activity $record) => static::subjectUrl($record) ? 'primary' : null),
                 ]),
             Infolists\Components\Section::make(__('admin.activity.changes'))
                 ->schema([

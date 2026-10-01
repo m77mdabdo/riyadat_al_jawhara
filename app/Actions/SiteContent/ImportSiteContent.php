@@ -33,6 +33,7 @@ class ImportSiteContent
             'menus' => $this->menus(),
             'pages' => $this->pages(),
             'site_images' => $this->siteImages(),
+            'permissions' => app(ImportPermissions::class)->handle(),
         ]);
     }
 

@@ -4,11 +4,13 @@ namespace App\Policies;
 
 use App\Models\User;
 
-/** Site settings (contact details, legal texts, branding): admins only. */
+/**
+ * Settings, branding and email previews: admins, or the settings.manage permission.
+ */
 class SettingPolicy
 {
     public function update(User $user): bool
     {
-        return false;
+        return $user->hasPermission('settings.manage');
     }
 }

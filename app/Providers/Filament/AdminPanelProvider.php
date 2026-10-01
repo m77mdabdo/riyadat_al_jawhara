@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Enums\AdminNavigationGroup;
 use App\Filament\Pages\Auth\EditProfile;
+use App\Http\Middleware\RequirePasswordChange;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetAdminLocale;
 use Filament\FontProviders\LocalFontProvider;
@@ -106,6 +107,7 @@ class AdminPanelProvider extends PanelProvider
             ->middleware([SetAdminLocale::class], isPersistent: true)
             ->authMiddleware([
                 Authenticate::class,
+                RequirePasswordChange::class,
             ]);
     }
 }

@@ -101,4 +101,39 @@ return [
         'map_missing' => 'Map location not set',
     ],
 
+    'permissions' => [
+        'areas' => [
+            'leads' => 'Leads',
+            'comments' => 'Comments',
+            'services' => 'Services',
+            'stone_types' => 'Stone types',
+            'stone_categories' => 'Stone categories',
+            'stone_attributes' => 'Stone attributes',
+            'projects' => 'Projects',
+            'testimonials' => 'Testimonials',
+            'sliders' => 'Slides',
+            'faqs' => 'FAQs',
+            'team_members' => 'Team members',
+            'menus' => 'Menus',
+            'pages' => 'Pages',
+            'site_images' => 'Site images',
+            'site_texts' => 'Site texts, homepage, footer and floating elements',
+            'posts' => 'Articles',
+            'blog_categories' => 'Blog categories',
+            'tags' => 'Tags',
+        ],
+        'abilities' => [
+            'view' => 'View',
+            'create' => 'Create',
+            'update' => 'Edit',
+            'delete' => 'Delete',
+        ],
+        'special' => [
+            'leads_export' => 'Export leads (CSV)',
+            'settings_manage' => 'Settings, branding and email previews',
+            'users_manage' => 'Users and roles',
+            'activity_view' => 'Activity log',
+        ],
+    ],
+
 ];

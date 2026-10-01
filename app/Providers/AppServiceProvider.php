@@ -25,6 +25,7 @@ use App\Models\User;
 use App\Notifications\Mail\PasswordResetMail;
 use App\Observers\PublicContentObserver;
 use App\Policies\ActivityPolicy;
+use App\Policies\RolePolicy;
 use App\Services\Catalogue\MpdfCatalogueGenerator;
 use App\Services\StockCandidateFinder;
 use App\Services\StockMedia\PexelsProvider;
@@ -37,11 +38,13 @@ use App\Support\SiteTexts;
 use App\Translation\OverridableTranslationLoader;
 use App\View\Composers\NavigationComposer;
 use App\View\Composers\SiteSettingsComposer;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Translation\Loader;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
@@ -50,6 +53,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Permission\Models\Role;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -111,6 +115,16 @@ class AppServiceProvider extends ServiceProvider
         // Authorization lives in app/Policies; admins may do everything.
         Gate::before(fn (User $user): ?bool => $user->hasRole(UserRole::Admin->value) ? true : null);
         Gate::policy(Activity::class, ActivityPolicy::class);
+        Gate::policy(Role::class, RolePolicy::class);
+
+        // Last login, shown in Administration → Users (not an audited change).
+        Event::listen(Login::class, function (Login $event) {
+            if ($event->user instanceof User) {
+                $event->user->timestamps = false;
+                $event->user->forceFill(['last_login_at' => now()])->saveQuietly();
+                $event->user->timestamps = true;
+            }
+        });
 
         // Branded, localized admin password-reset email (Filament's own
         // ResetPassword notification stays in place; only the content changes).

@@ -101,4 +101,39 @@ return [
         'map_missing' => 'موقع الخريطة غير محدد',
     ],
 
+    'permissions' => [
+        'areas' => [
+            'leads' => 'العملاء المحتملون',
+            'comments' => 'التعليقات',
+            'services' => 'الخدمات',
+            'stone_types' => 'أنواع الأحجار',
+            'stone_categories' => 'تصنيفات الأحجار',
+            'stone_attributes' => 'خصائص الأحجار',
+            'projects' => 'المشاريع',
+            'testimonials' => 'آراء العملاء',
+            'sliders' => 'شرائح العرض',
+            'faqs' => 'الأسئلة الشائعة',
+            'team_members' => 'أعضاء الفريق',
+            'menus' => 'القوائم',
+            'pages' => 'الصفحات',
+            'site_images' => 'صور الموقع',
+            'site_texts' => 'نصوص الموقع والصفحة الرئيسية والتذييل والعناصر العائمة',
+            'posts' => 'المقالات',
+            'blog_categories' => 'تصنيفات المدونة',
+            'tags' => 'الوسوم',
+        ],
+        'abilities' => [
+            'view' => 'عرض',
+            'create' => 'إنشاء',
+            'update' => 'تعديل',
+            'delete' => 'حذف',
+        ],
+        'special' => [
+            'leads_export' => 'تصدير العملاء (CSV)',
+            'settings_manage' => 'الإعدادات والهوية ومعاينة الرسائل',
+            'users_manage' => 'المستخدمون والأدوار',
+            'activity_view' => 'سجل النشاط',
+        ],
+    ],
+
 ];
