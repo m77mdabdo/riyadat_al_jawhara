@@ -84,6 +84,15 @@ Route::get('/dev/typography', TypographyController::class)->name('dev.typography
 // Admin panel language (saved on the user; POST + CSRF from the user menu).
 Route::post('/admin-locale/{language}', AdminLocaleController::class)->name('admin.locale');
 
+// Screenshots of the admin guide (Help page): signed-in admin users only.
+Route::get('/admin-help/images/{file}', function (string $file) {
+    abort_unless(auth()->user()?->canAccessPanel(filament()->getPanel('admin')), 404);
+    $path = base_path('docs/images/admin/'.$file);
+    abort_unless(is_file($path), 404);
+
+    return response()->file($path, ['Content-Type' => 'image/webp', 'Cache-Control' => 'private, max-age=86400']);
+})->where('file', '[a-z0-9-]+\.webp')->name('admin.help.image');
+
 // Anonymous WhatsApp-button click beacon (see WhatsappClickController).
 Route::post('/whatsapp-click', WhatsappClickController::class)
     ->middleware('throttle:beacons')

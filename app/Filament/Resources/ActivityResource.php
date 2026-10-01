@@ -167,6 +167,7 @@ class ActivityResource extends Resource
             Infolists\Components\Section::make(__('admin.activity.changes'))
                 ->schema([
                     Infolists\Components\ViewEntry::make('properties')
+                        ->label(__('admin.activity.changes'))
                         ->hiddenLabel()
                         ->view('filament.activity.changes'),
                 ]),

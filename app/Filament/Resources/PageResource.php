@@ -184,6 +184,7 @@ class PageResource extends Resource
             ->helperText(__('JPG, PNG or WebP, up to :size MB.', ['size' => round(ImageUpload::maxKb() / 1024)]));
 
         return Forms\Components\Builder::make('blocks')
+            ->label(__('Content blocks'))
             ->hiddenLabel()
             ->blocks([
                 Forms\Components\Builder\Block::make('rich_text')->label(__('Text'))->icon('heroicon-o-bars-3-bottom-left')

@@ -110,6 +110,7 @@ class Homepage extends Page implements HasForms
                 ->description(__('Drag to change the order; switch a section off to hide it.'))
                 ->schema([
                     Forms\Components\Repeater::make('layout')
+                        ->label(__('Sections'))
                         ->hiddenLabel()
                         ->schema([
                             Forms\Components\Hidden::make('section'),
@@ -177,7 +178,7 @@ class Homepage extends Page implements HasForms
                     ->addActionLabel(__('Add step')),
             ]),
             $section('stats', [
-                Forms\Components\Placeholder::make('stats_help')->hiddenLabel()
+                Forms\Components\Placeholder::make('stats_help')->label(__('Statistics'))->hiddenLabel()
                     ->content(__('The figures themselves are entered in Settings → Statistics; the section stays hidden until at least one is set.')),
             ]),
             $section('heritage', [

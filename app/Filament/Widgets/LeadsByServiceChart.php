@@ -12,6 +12,9 @@ use Filament\Widgets\ChartWidget;
  */
 class LeadsByServiceChart extends ChartWidget
 {
+    /** Figures are cached for minutes; reloading the page is enough. */
+    protected static ?string $pollingInterval = null;
+
     protected static ?int $sort = 3;
 
     protected static ?string $maxHeight = '260px';

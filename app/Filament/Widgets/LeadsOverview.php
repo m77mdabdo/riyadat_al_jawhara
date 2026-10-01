@@ -12,6 +12,9 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
  */
 class LeadsOverview extends BaseWidget
 {
+    /** Figures are cached for minutes; reloading the page is enough. */
+    protected static ?string $pollingInterval = null;
+
     protected static ?int $sort = 0;
 
     public static function canView(): bool

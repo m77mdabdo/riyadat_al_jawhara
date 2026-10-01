@@ -56,6 +56,15 @@ class DashboardTest extends TestCase
         $this->assertNotContains(FilamentInfoWidget::class, filament()->getPanel('admin')->getWidgets());
     }
 
+    public function test_avatars_are_drawn_locally(): void
+    {
+        $this->actingAsRole('editor');
+
+        $html = $this->get('/admin')->assertOk()->getContent();
+        $this->assertStringNotContainsString('ui-avatars.com', $html);
+        $this->assertStringContainsString('data:image/svg+xml;base64,', $html);
+    }
+
     public function test_kpis_trends_and_charts(): void
     {
         $service = Service::factory()->create();

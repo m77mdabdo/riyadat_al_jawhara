@@ -9,6 +9,9 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class PendingCommentsWidget extends BaseWidget
 {
+    /** Figures are cached for minutes; reloading the page is enough. */
+    protected static ?string $pollingInterval = null;
+
     protected static ?int $sort = -1;
 
     protected function getStats(): array

@@ -75,7 +75,8 @@ class User extends Authenticatable implements FilamentUser, HasLocalePreference
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->is_active && $this->roles->isNotEmpty();
+        // A missing value (code deployed before the migration) counts as active.
+        return ($this->is_active ?? true) !== false && $this->roles->isNotEmpty();
     }
 
     protected static function booted(): void

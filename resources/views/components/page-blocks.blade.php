@@ -43,7 +43,7 @@
             @break
 
         @case('cta')
-            <section class="bg-sand-100 py-16">
+            <section class="bg-cream border-y border-sand-200 py-16">
                 <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <x-section-heading :title="$block['title']" :subtitle="$block['text'] ?: null" />
                     <div class="mt-8">

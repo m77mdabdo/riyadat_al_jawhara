@@ -80,7 +80,7 @@ class Branding extends Page implements HasForms
                 ])->columns(2),
             Forms\Components\Section::make(__('Colours'))
                 ->schema([
-                    Forms\Components\Placeholder::make('colours')->hiddenLabel()
+                    Forms\Components\Placeholder::make('colours')->label(__('Colours'))->hiddenLabel()
                         ->content(__('The brand colours are part of the design and checked for readability, so they are not editable here.')),
                 ]),
         ];

@@ -66,7 +66,9 @@ Riyadat Al-Jawhara Al-Ibdaeya supplies and installs marble, granite, quartz and 
 
 **Admin panel and roles**
 - Filament admin for all content, leads, settings, users and the activity log (who changed what).
-- Two roles: admin and editor (see the matrix below).
+- Website content without code: menus, homepage sections, page headers and content blocks, site images, every interface text, branding, footer and floating buttons — each falls back to the built-in version when left empty.
+- Built-in admin and editor roles plus custom roles with per-area permissions.
+- **[Admin guide](docs/ADMIN_GUIDE.md)** (Arabic and English, task by task; also under "Help" in the admin user menu).
 
 **Security**
 - Content Security Policy and security headers, rate limits on every public form and download, spam honeypots, upload whitelist (JPG/PNG/WebP).
@@ -208,6 +210,8 @@ docs/             architecture, launch checklist, image credits
 | Edit or delete another user's lead notes | ✓ | – |
 | Settings, users, activity log, email previews | ✓ | – |
 
+Custom roles (Administration → Roles) get view / create / edit / delete per area plus the special permissions above. After deploying, run `php artisan app:import-site-content` once: it creates the permissions and gives the editor role exactly the rights in this table.
+
 ## Localization
 
 - URLs: `/ar/...` and `/en/...`; `/` redirects to `/ar`. Older un-prefixed URLs redirect permanently to their Arabic version.
@@ -239,7 +243,7 @@ Developed by **Mohamed Abdo** — Full Stack Developer · [GitHub](https://githu
 - **كتالوج أحجار** بمواصفات قابلة للتصفية (التشطيب، اللون، الاستخدام، المنشأ) وملف PDF قابل للتنزيل بالعربية والإنجليزية.
 - **جذب العملاء المحتملين:** طلبات عرض السعر ونقرات واتساب تُسجَّل مع سياقها، ويتابعها الفريق من لوحة التحكم (الحالة، المسؤول، موعد المتابعة، الملاحظات، التصدير).
 - **إشعارات** بريدية بتصميم الهوية وبلغة المستلم، مع جرس إشعارات داخل لوحة التحكم.
-- **لوحة تحكم** بالعربية أو الإنجليزية لكل مستخدم، بصلاحيتين: مدير ومحرر.
+- **لوحة تحكم** بالعربية أو الإنجليزية لكل مستخدم، بدوري مدير ومحرر وأدوار مخصصة بصلاحيات لكل قسم، ويُعدَّل منها كل محتوى الموقع (القوائم، الصفحة الرئيسية، الصفحات، الصور، النصوص) دون برمجة. **[دليل لوحة التحكم](docs/ADMIN_GUIDE.md)**.
 
 للتثبيت والتشغيل راجع قسم «Local installation» أعلاه، وللنشر راجع [`DEPLOY.md`](DEPLOY.md) و[`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md).
 

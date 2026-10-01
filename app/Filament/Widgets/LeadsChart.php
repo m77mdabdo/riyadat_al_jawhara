@@ -13,6 +13,9 @@ use Illuminate\Support\Carbon;
  */
 class LeadsChart extends ChartWidget
 {
+    /** Figures are cached for minutes; reloading the page is enough. */
+    protected static ?string $pollingInterval = null;
+
     protected static ?int $sort = 2;
 
     protected int|string|array $columnSpan = 'full';

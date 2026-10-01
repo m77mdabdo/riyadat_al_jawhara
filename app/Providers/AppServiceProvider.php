@@ -121,7 +121,8 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(Login::class, function (Login $event) {
             if ($event->user instanceof User) {
                 $event->user->timestamps = false;
-                $event->user->forceFill(['last_login_at' => now()])->saveQuietly();
+                // Never let this break signing in (e.g. before the migration ran).
+                rescue(fn () => $event->user->forceFill(['last_login_at' => now()])->saveQuietly());
                 $event->user->timestamps = true;
             }
         });

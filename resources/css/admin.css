@@ -37,3 +37,17 @@ html[dir='rtl'] [class*='tracking-'] {
 html[dir='rtl'] .fi-body {
     line-height: 1.7;
 }
+
+/* Help page (docs/ADMIN_GUIDE.md rendered in the panel). */
+.jra-help { line-height: 1.8; max-width: 52rem; }
+.jra-help h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 1rem; }
+.jra-help h2 { font-size: 1.25rem; font-weight: 700; margin: 2rem 0 0.75rem; padding-top: 1rem; border-top: 1px solid rgb(229 231 235); }
+.jra-help h3 { font-size: 1.05rem; font-weight: 600; margin: 1.25rem 0 0.5rem; }
+.jra-help p, .jra-help ul, .jra-help ol, .jra-help table { margin: 0 0 0.75rem; }
+.jra-help ul { list-style: disc; padding-inline-start: 1.5rem; }
+.jra-help ol { list-style: decimal; padding-inline-start: 1.5rem; }
+.jra-help img { max-width: 100%; height: auto; border: 1px solid rgb(229 231 235); border-radius: 0.5rem; margin: 0.5rem 0 1rem; }
+.jra-help code { font-size: 0.875em; background: rgb(243 244 246); padding: 0.1rem 0.3rem; border-radius: 0.25rem; }
+.jra-help table { border-collapse: collapse; width: 100%; }
+.jra-help th, .jra-help td { border: 1px solid rgb(229 231 235); padding: 0.4rem 0.6rem; text-align: start; }
+.jra-help a { text-decoration: underline; }

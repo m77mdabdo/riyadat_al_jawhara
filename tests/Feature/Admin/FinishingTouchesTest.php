@@ -51,6 +51,17 @@ class FinishingTouchesTest extends TestCase
         $this->assertTrue((bool) $attribute->is_active);
     }
 
+    public function test_record_titles_follow_the_admin_language(): void
+    {
+        $stone = StoneType::factory()->create(['name_ar' => 'رخام كرارا', 'name_en' => 'Carrara Marble']);
+
+        $this->editor->update(['locale' => 'ar']);
+        $this->get("/admin/stone-types/{$stone->id}/edit")->assertOk()->assertSee('تعديل رخام كرارا')->assertDontSee('تعديل Carrara Marble');
+
+        $this->editor->update(['locale' => 'en']);
+        $this->get("/admin/stone-types/{$stone->id}/edit")->assertOk()->assertSee('Edit Carrara Marble');
+    }
+
     public function test_leads_have_status_tabs_and_grouping(): void
     {
         $new = Lead::factory()->create(['status' => 'new']);

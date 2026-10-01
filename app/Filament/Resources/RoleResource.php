@@ -77,6 +77,7 @@ class RoleResource extends Resource
             Forms\Components\Section::make(__('Special permissions'))
                 ->schema([
                     Forms\Components\CheckboxList::make('special')
+                        ->label(__('Special permissions'))
                         ->hiddenLabel()
                         ->options(collect(Permissions::SPECIAL)->mapWithKeys(fn (string $name) => [$name => __('admin.permissions.special.'.str_replace('.', '_', $name))])->all())
                         ->columns(2),

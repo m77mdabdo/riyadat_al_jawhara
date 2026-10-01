@@ -6,6 +6,7 @@ use App\Models\Contracts\HasPublicUrl;
 use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -91,6 +92,23 @@ trait ManagesPublicRecords
                 }
             }
         });
+    }
+
+    /**
+     * Page titles and breadcrumbs ("Edit …") in the admin's language: the
+     * record's name/title/question in that language (other one as fallback).
+     */
+    public static function getRecordTitle(?Model $record): string|Htmlable|null
+    {
+        if ($record && method_exists($record, 'localizedFields')) {
+            foreach (['name', 'title', 'question'] as $base) {
+                if (in_array($base, $record->localizedFields(), true) && filled($title = $record->getAttribute($base))) {
+                    return $title;
+                }
+            }
+        }
+
+        return parent::getRecordTitle($record);
     }
 
     protected static function modelHas(string $column): bool

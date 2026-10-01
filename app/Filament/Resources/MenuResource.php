@@ -54,6 +54,7 @@ class MenuResource extends Resource
     {
         return $form->schema([
             Forms\Components\Placeholder::make('help')
+                ->label(__('Where'))
                 ->hiddenLabel()
                 ->content(fn (?Menu $record) => $record?->location->description())
                 ->columnSpanFull(),
@@ -133,6 +134,7 @@ class MenuResource extends Resource
         }
 
         return Forms\Components\Repeater::make($relationship)
+            ->label(__('Items'))
             ->hiddenLabel($nested)
             ->relationship($relationship)
             ->orderColumn('order')

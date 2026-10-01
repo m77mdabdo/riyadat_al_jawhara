@@ -88,7 +88,7 @@ class FooterSettings extends Page implements HasForms
                         Forms\Components\TextInput::make('footer_options.copyright_ar')->label(__('Copyright line (AR)'))->maxLength(200)->extraInputAttributes(['dir' => 'rtl']),
                         Forms\Components\TextInput::make('footer_options.copyright_en')->label(__('Copyright line (EN)'))->maxLength(200),
                     ]),
-                    Forms\Components\Placeholder::make('copyright_help')->hiddenLabel()
+                    Forms\Components\Placeholder::make('copyright_help')->label(__('Copyright line'))->hiddenLabel()
                         ->content(__('Write {year} where the current year should appear. Empty = “© year, site name — rights reserved”.')),
                 ]),
         ];

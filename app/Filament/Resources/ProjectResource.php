@@ -109,6 +109,7 @@ class ProjectResource extends Resource
                                     ->label(__('After')),
                             ]),
                         Forms\Components\Placeholder::make('before_after_hint')
+                            ->label(__('Before and after'))
                             ->hiddenLabel()
                             ->content(__('Use the same camera position and size for both; the comparison slider only shows when both are uploaded.')),
                         ImageUpload::make('gallery', size: '1600×1200', ratio: '4:3')

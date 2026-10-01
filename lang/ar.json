@@ -581,5 +581,8 @@
     "role": "دور",
     "roles": "الأدوار",
     "Pick the values that apply; add a missing one with “+”. All values are listed in Catalogue → Stone Attributes.": "اختر القيم المناسبة؛ وأضف القيمة الناقصة بزر «+». كل القيم موجودة في الكتالوج ← خصائص الأحجار.",
-    "Close": "إغلاق"
+    "Close": "إغلاق",
+    "Help": "مساعدة",
+    "Before and after": "قبل وبعد",
+    "Copyright line": "سطر حقوق النشر"
 }

@@ -4,6 +4,8 @@ namespace App\Providers\Filament;
 
 use App\Enums\AdminNavigationGroup;
 use App\Filament\Pages\Auth\EditProfile;
+use App\Filament\Pages\Help;
+use App\Filament\Support\InitialsAvatarProvider;
 use App\Http\Middleware\RequirePasswordChange;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetAdminLocale;
@@ -54,6 +56,7 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile(EditProfile::class, isSimple: false)
             ->brandName('JRA Admin')
+            ->defaultAvatarProvider(InitialsAvatarProvider::class)
             // Sidebar groups in a fixed order; labels follow the admin's language.
             ->navigationGroups(collect(AdminNavigationGroup::cases())->mapWithKeys(fn (AdminNavigationGroup $group) => [
                 $group->value => NavigationGroup::make()->label(fn (): string => $group->getLabel())->icon($group->getIcon()),
@@ -68,6 +71,10 @@ class AdminPanelProvider extends PanelProvider
             ->font('Inter Variable', provider: LocalFontProvider::class)
             ->renderHook(PanelsRenderHook::HEAD_END, fn (): string => Blade::render("@vite('resources/css/admin.css')"))
             ->userMenuItems([
+                'help' => MenuItem::make()
+                    ->label(fn (): string => __('Help'))
+                    ->icon('heroicon-o-question-mark-circle')
+                    ->url(fn (): string => Help::getUrl()),
                 'locale-ar' => MenuItem::make()
                     ->label('العربية')
                     ->icon('heroicon-o-language')
