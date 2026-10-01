@@ -10,12 +10,14 @@ use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\HasSeoOverrides;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
+use App\Models\Contracts\HasPublicUrl;
 use Database\Factories\StoneTypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -28,10 +30,10 @@ use Spatie\Sluggable\SlugOptions;
  * @property-read string|null $origin
  * @property-read string|null $description
  */
-class StoneType extends Model implements HasMedia
+class StoneType extends Model implements HasMedia, HasPublicUrl
 {
     /** @use HasFactory<StoneTypeFactory> */
-    use HasActiveScope, HasCoverImage, HasFactory, HasLocalizedAttributes, HasSeoOverrides, HasSlug, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+    use HasActiveScope, HasCoverImage, HasFactory, HasLocalizedAttributes, HasSeoOverrides, HasSlug, HasWebpConversions, InteractsWithMedia, LogsAdminActivity, SoftDeletes;
 
     /**
      * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
@@ -55,10 +57,17 @@ class StoneType extends Model implements HasMedia
         'description_ar',
         'description_en',
         'is_active',
+        'spec_sheet_enabled',
         'order',
     ];
 
+    /** Column defaults, so a new model behaves like the migration. */
+    protected $attributes = [
+        'spec_sheet_enabled' => true,
+    ];
+
     protected $casts = [
+        'spec_sheet_enabled' => 'boolean',
         'is_active' => 'boolean',
     ];
 
@@ -155,5 +164,10 @@ class StoneType extends Model implements HasMedia
             ->toBase()
             ->groupBy('type')
             ->sortBy(fn ($group, string $type) => array_search($type, StoneAttributeType::values(), true));
+    }
+
+    public function publicUrl(?string $locale = null): ?string
+    {
+        return $this->is_active ? route('stones.show', ['locale' => $locale ?? app()->getLocale(), 'stoneType' => $this]) : null;
     }
 }

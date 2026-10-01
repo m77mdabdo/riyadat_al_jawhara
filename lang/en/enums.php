@@ -20,6 +20,12 @@ return [
         'spam' => 'Spam',
     ],
 
+    'post_status' => [
+        'draft' => 'Draft',
+        'scheduled' => 'Scheduled',
+        'published' => 'Published',
+    ],
+
     'user_role' => [
         'admin' => 'Administrator',
         'editor' => 'Editor',

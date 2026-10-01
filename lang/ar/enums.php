@@ -20,6 +20,12 @@ return [
         'spam' => 'مزعج',
     ],
 
+    'post_status' => [
+        'draft' => 'مسودة',
+        'scheduled' => 'مجدول',
+        'published' => 'منشور',
+    ],
+
     'user_role' => [
         'admin' => 'مدير',
         'editor' => 'محرر',

@@ -3,8 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Enums\AdminNavigationGroup;
+use App\Filament\Concerns\ManagesPublicRecords;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\TeamMemberResource\Pages;
+use App\Filament\Support\Bilingual;
 use App\Filament\Support\ImageUpload;
 use App\Filament\Support\Localized;
 use App\Models\TeamMember;
@@ -17,7 +19,7 @@ use Filament\Tables\Table;
 
 class TeamMemberResource extends Resource
 {
-    use TranslatesResourceLabels;
+    use ManagesPublicRecords, TranslatesResourceLabels;
 
     protected static ?string $model = TeamMember::class;
 
@@ -29,67 +31,41 @@ class TeamMemberResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Tabs::make('Translations')
-                    ->columnSpanFull()
-                    ->tabs([
-                        Forms\Components\Tabs\Tab::make(__('English'))
-                            ->schema([
-                                Forms\Components\TextInput::make('name_en')
-                                    ->label(__('Name (EN)'))
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('position_en')
-                                    ->label(__('Position (EN)'))
-                                    ->maxLength(255),
-                            ]),
-                        Forms\Components\Tabs\Tab::make(__('Arabic'))
-                            ->schema([
-                                Forms\Components\TextInput::make('name_ar')
-                                    ->label(__('Name (AR)'))
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('position_ar')
-                                    ->label(__('Position (AR)'))
-                                    ->maxLength(255),
-                            ]),
+                Forms\Components\Section::make(__('Team member'))
+                    ->description(__('Shown on the About page. Publish a person\'s name, photo and contact details only with their consent.'))
+                    ->schema([
+                        Bilingual::tabs([
+                            'name' => fn (string $l) => Forms\Components\TextInput::make("name_{$l}")->label(Bilingual::label('Name', $l))->required()->maxLength(255),
+                            'position' => fn (string $l) => Forms\Components\TextInput::make("position_{$l}")->label(Bilingual::label('Position', $l))->maxLength(255),
+                        ]),
+                        Forms\Components\TextInput::make('phone')
+                            ->tel()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('email')
+                            ->email()
+                            ->maxLength(255),
+                        Forms\Components\Toggle::make('is_active')
+                            ->default(true)
+                            ->helperText(__('Inactive items are hidden from the website.')),
+                    ])->columns(3),
+                Forms\Components\Section::make(__('Photo'))
+                    ->schema([
+                        ImageUpload::make('photo', size: '600×600', ratio: '1:1'),
+                        ImageUpload::altFields('photo'),
                     ]),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('order')
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Toggle::make('is_active')
-                    ->default(true),
-                ImageUpload::make('photo'),
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                SpatieMediaLibraryImageColumn::make('photo')->collection('photo')->circular()->label(__('Photo')),
-                Tables\Columns\TextColumn::make(Localized::column('name'))->label(__('Name'))->searchable(['name_en', 'name_ar']),
-                Tables\Columns\TextColumn::make('position_en')->label(__('Position')),
-                Tables\Columns\TextColumn::make('phone'),
-                Tables\Columns\TextColumn::make('email'),
-                Tables\Columns\IconColumn::make('is_active')->boolean(),
-                Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
-            ])
-            ->defaultSort('order')
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+        return static::publicRecordTable($table->columns([
+            SpatieMediaLibraryImageColumn::make('photo')->collection('photo')->circular()->label(__('Photo')),
+            Tables\Columns\TextColumn::make(Localized::column('name'))->label(__('Name'))->searchable(['name_en', 'name_ar']),
+            Tables\Columns\TextColumn::make(Localized::column('position'))->label(__('Position')),
+            Tables\Columns\TextColumn::make('phone'),
+            Tables\Columns\TextColumn::make('email'),
+            Tables\Columns\IconColumn::make('is_active')->label(__('Active'))->boolean(),
+        ]));
     }
 
     public static function getRelations(): array

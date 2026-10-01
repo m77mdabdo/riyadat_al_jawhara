@@ -2,18 +2,13 @@
 
 namespace App\Filament\Resources\StoneTypeResource\Pages;
 
+use App\Filament\Concerns\EditsPublicRecord;
 use App\Filament\Resources\StoneTypeResource;
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditStoneType extends EditRecord
 {
-    protected static string $resource = StoneTypeResource::class;
+    use EditsPublicRecord;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
+    protected static string $resource = StoneTypeResource::class;
 }

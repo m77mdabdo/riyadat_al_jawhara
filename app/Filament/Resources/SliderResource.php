@@ -3,8 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Enums\AdminNavigationGroup;
+use App\Filament\Concerns\ManagesPublicRecords;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\SliderResource\Pages;
+use App\Filament\Support\Bilingual;
 use App\Filament\Support\ImageUpload;
 use App\Filament\Support\Localized;
 use App\Models\Slider;
@@ -17,7 +19,7 @@ use Filament\Tables\Table;
 
 class SliderResource extends Resource
 {
-    use TranslatesResourceLabels;
+    use ManagesPublicRecords, TranslatesResourceLabels;
 
     protected static ?string $model = Slider::class;
 
@@ -29,68 +31,37 @@ class SliderResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Tabs::make('Translations')
-                    ->columnSpanFull()
-                    ->tabs([
-                        Forms\Components\Tabs\Tab::make(__('English'))
-                            ->schema([
-                                Forms\Components\TextInput::make('title_en')
-                                    ->label(__('Title (EN)'))
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('subtitle_en')
-                                    ->label(__('Subtitle (EN)'))
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('button_text_en')
-                                    ->label(__('Button Text (EN)'))
-                                    ->maxLength(255),
-                            ]),
-                        Forms\Components\Tabs\Tab::make(__('Arabic'))
-                            ->schema([
-                                Forms\Components\TextInput::make('title_ar')
-                                    ->label(__('Title (AR)'))
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('subtitle_ar')
-                                    ->label(__('Subtitle (AR)'))
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('button_text_ar')
-                                    ->label(__('Button Text (AR)'))
-                                    ->maxLength(255),
-                            ]),
+                Forms\Components\Section::make(__('Slide'))
+                    ->description(__('Hero slides at the top of the home page. Without slides, the home page shows the default hero.'))
+                    ->schema([
+                        Bilingual::tabs([
+                            'title' => fn (string $l) => Forms\Components\TextInput::make("title_{$l}")->label(Bilingual::label('Title', $l))->required()->maxLength(255),
+                            'subtitle' => fn (string $l) => Forms\Components\TextInput::make("subtitle_{$l}")->label(Bilingual::label('Subtitle', $l))->maxLength(255),
+                            'button_text' => fn (string $l) => Forms\Components\TextInput::make("button_text_{$l}")->label(Bilingual::label('Button Text', $l))->maxLength(255),
+                        ]),
+                        Forms\Components\TextInput::make('button_link')
+                            ->helperText(__('A page of this site like /contact opens in the visitor\'s language automatically. Full https:// links are used as they are.'))
+                            ->maxLength(255)
+                            ->regex('~^(/[^\s]*|https?://[^\s]+|#[\w-]*)$~'),
+                        Forms\Components\Toggle::make('is_active')
+                            ->default(true)
+                            ->helperText(__('Inactive items are hidden from the website.')),
                     ]),
-                Forms\Components\TextInput::make('button_link')
-                    ->helperText(__('A page of this site like /contact opens in the visitor\'s language automatically. Full https:// links are used as they are.'))
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('order')
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Toggle::make('is_active')
-                    ->default(true),
-                ImageUpload::make('image')
-                    ->columnSpanFull(),
+                Forms\Components\Section::make(__('Image'))
+                    ->schema([
+                        ImageUpload::make('image', size: '1920×1080', ratio: '16:9')->columnSpanFull(),
+                        ImageUpload::altFields('image'),
+                    ]),
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                SpatieMediaLibraryImageColumn::make('image')->collection('image')->label(__('Image')),
-                Tables\Columns\TextColumn::make(Localized::column('title'))->label(__('Title'))->searchable(['title_en', 'title_ar']),
-                Tables\Columns\IconColumn::make('is_active')->boolean(),
-                Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
-            ])
-            ->defaultSort('order')
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+        return static::publicRecordTable($table->columns([
+            SpatieMediaLibraryImageColumn::make('image')->collection('image')->label(__('Image')),
+            Tables\Columns\TextColumn::make(Localized::column('title'))->label(__('Title'))->searchable(['title_en', 'title_ar']),
+            Tables\Columns\IconColumn::make('is_active')->label(__('Active'))->boolean(),
+        ]));
     }
 
     public static function getRelations(): array

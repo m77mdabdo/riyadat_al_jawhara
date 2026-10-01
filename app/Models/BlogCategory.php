@@ -4,21 +4,23 @@ namespace App\Models;
 
 use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\LogsAdminActivity;
+use App\Models\Contracts\HasPublicUrl;
 use Database\Factories\BlogCategoryFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 /**
  * @property-read string $name
  */
-class BlogCategory extends Model
+class BlogCategory extends Model implements HasPublicUrl
 {
     /** @use HasFactory<BlogCategoryFactory> */
-    use HasFactory, HasLocalizedAttributes, HasSlug, LogsAdminActivity;
+    use HasFactory, HasLocalizedAttributes, HasSlug, LogsAdminActivity, SoftDeletes;
 
     /**
      * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
@@ -56,5 +58,10 @@ class BlogCategory extends Model
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function publicUrl(?string $locale = null): ?string
+    {
+        return route('blog.index', ['locale' => $locale ?? app()->getLocale(), 'category' => $this->slug]);
     }
 }

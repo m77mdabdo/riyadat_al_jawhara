@@ -33,7 +33,7 @@ class AdminTranslationCoverageTest extends TestCase
         $violations = [];
         foreach ($this->sources() as $path => $code) {
             // ->label('Literal'), Section::make('Literal') …
-            preg_match_all('/->('.self::UI_METHODS.")\\(\\s*'([^']*[A-Za-z][^']*)'/", $code, $m);
+            preg_match_all('/->('.self::UI_METHODS.")\\(\\s*'([^']*[A-Za-z\\x{0600}-\\x{06FF}][^']*)'/u", $code, $m);
             foreach ($m[2] as $i => $literal) {
                 $violations[] = "{$path}: ->{$m[1][$i]}('{$literal}')";
             }
@@ -61,7 +61,9 @@ class AdminTranslationCoverageTest extends TestCase
 
         foreach ($this->sources() as $path => $code) {
             preg_match_all("/__\\(\\s*'((?:[^'\\\\]|\\\\.)+)'/", $code, $m);
-            foreach (array_unique($m[1]) as $key) {
+            // Conditional keys: __($cond ? 'One' : 'Other')
+            preg_match_all("/__\\(\\s*\\$[^?()]*\\?\\s*'([^']+)'\\s*:\\s*'([^']+)'\\s*\\)/", $code, $c);
+            foreach (array_unique([...$m[1], ...$c[1], ...$c[2]]) as $key) {
                 $key = stripslashes($key);
                 if (str_ends_with($key, '.')) {
                     continue; // dynamic key prefix, e.g. 'admin.activity.events.'.$state

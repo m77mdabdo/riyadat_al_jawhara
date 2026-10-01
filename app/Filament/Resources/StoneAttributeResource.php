@@ -4,8 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Enums\AdminNavigationGroup;
 use App\Enums\StoneAttributeType;
+use App\Filament\Concerns\ManagesPublicRecords;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\StoneAttributeResource\Pages;
+use App\Filament\Support\Bilingual;
 use App\Filament\Support\Localized;
 use App\Models\StoneAttribute;
 use Filament\Forms;
@@ -14,12 +16,11 @@ use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 
 class StoneAttributeResource extends Resource
 {
-    use TranslatesResourceLabels;
+    use ManagesPublicRecords, TranslatesResourceLabels;
 
     protected static ?string $model = StoneAttribute::class;
 
@@ -33,68 +34,47 @@ class StoneAttributeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('type')
-                    ->options(StoneAttributeType::options())
-                    ->in(StoneAttributeType::values())
-                    ->required()
-                    ->live(),
-                Forms\Components\TextInput::make('name_en')
-                    ->label(__('Name (EN)'))
-                    ->required()
-                    ->maxLength(255)
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
-                Forms\Components\TextInput::make('name_ar')
-                    ->label(__('Name (AR)'))
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('slug')
-                    ->required()
-                    ->maxLength(255)
-                    ->alphaDash()
-                    ->unique(ignoreRecord: true, modifyRuleUsing: fn (Unique $rule, Get $get) => $rule->where('type', $get('type')))
-                    ->helperText(__('Used in public filter URLs. Unique within its type.')),
-                Forms\Components\ColorPicker::make('hex_color')
-                    ->label(__('Swatch colour'))
-                    ->regex('/^#[0-9A-Fa-f]{6}$/')
-                    ->visible(fn (Get $get): bool => $get('type') === StoneAttributeType::Colour->value),
-                Forms\Components\TextInput::make('order')
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Toggle::make('is_active')
-                    ->default(true),
-            ])->columns(2);
+                Forms\Components\Section::make(__('Value'))
+                    ->description(__('Finishes, colours, sizes and applications offered as filters and shown on stone pages.'))
+                    ->schema([
+                        Forms\Components\Select::make('type')
+                            ->options(StoneAttributeType::options())
+                            ->in(StoneAttributeType::values())
+                            ->required()
+                            ->live(),
+                        Bilingual::tabs([
+                            'name' => fn (string $l) => Forms\Components\TextInput::make("name_{$l}")->label(Bilingual::label('Name', $l))->required()->maxLength(255),
+                        ], slugFrom: 'name'),
+                        Forms\Components\TextInput::make('slug')
+                            ->required()
+                            ->maxLength(255)
+                            ->alphaDash()
+                            ->unique(ignoreRecord: true, modifyRuleUsing: fn (Unique $rule, Get $get) => $rule->where('type', $get('type')))
+                            ->helperText(__('Used in public filter URLs. Unique within its type.')),
+                        Forms\Components\ColorPicker::make('hex_color')
+                            ->label(__('Swatch colour'))
+                            ->regex('/^#[0-9A-Fa-f]{6}$/')
+                            ->visible(fn (Get $get): bool => $get('type') === StoneAttributeType::Colour->value),
+                        Forms\Components\Toggle::make('is_active')
+                            ->default(true)
+                            ->helperText(__('Inactive values are hidden from filters and stone pages.')),
+                    ])->columns(2),
+            ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('type')
-                    ->badge()
-                    ->formatStateUsing(fn (string $state): string => StoneAttributeType::labelFor($state)),
-                Tables\Columns\ColorColumn::make('hex_color')->label(__('Swatch'))->toggleable(),
-                Tables\Columns\TextColumn::make(Localized::column('name'))->label(__('Name'))->searchable(['name_en', 'name_ar']),
-                Tables\Columns\TextColumn::make('name_ar')->label('الاسم'),
-                Tables\Columns\TextColumn::make('stone_types_count')->counts('stoneTypes')->label(__('Stones')),
-                Tables\Columns\IconColumn::make('is_active')->boolean(),
-                Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
-            ])
-            ->defaultSort('order')
-            ->defaultGroup('type')
-            ->filters([
-                Tables\Filters\SelectFilter::make('type')->options(StoneAttributeType::options()),
-                Tables\Filters\TernaryFilter::make('is_active'),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+        return static::publicRecordTable($table->columns([
+            Tables\Columns\TextColumn::make('type')
+                ->badge()
+                ->formatStateUsing(fn (string $state): string => StoneAttributeType::labelFor($state)),
+            Tables\Columns\ColorColumn::make('hex_color')->label(__('Swatch'))->toggleable(),
+            Tables\Columns\TextColumn::make(Localized::column('name'))->label(__('Name'))->searchable(['name_en', 'name_ar']),
+            Tables\Columns\TextColumn::make('stone_types_count')->counts('stoneTypes')->label(__('Stones')),
+            Tables\Columns\IconColumn::make('is_active')->label(__('Active'))->boolean(),
+        ])->defaultGroup('type'), [
+            Tables\Filters\SelectFilter::make('type')->options(StoneAttributeType::options()),
+        ]);
     }
 
     public static function getPages(): array

@@ -4,8 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Enums\AdminNavigationGroup;
 use App\Enums\StoneOriginType;
+use App\Filament\Concerns\ManagesPublicRecords;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\StoneTypeResource\Pages;
+use App\Filament\Support\Bilingual;
 use App\Filament\Support\ImageUpload;
 use App\Filament\Support\Localized;
 use App\Filament\Support\SeoFields;
@@ -18,11 +20,11 @@ use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
 
 class StoneTypeResource extends Resource
 {
-    use TranslatesResourceLabels;
+    use ManagesPublicRecords, TranslatesResourceLabels;
 
     protected static ?string $model = StoneType::class;
 
@@ -30,53 +32,26 @@ class StoneTypeResource extends Resource
 
     protected static ?int $navigationSort = 20;
 
+    protected static ?string $recordTitleAttribute = 'name_en';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('stone_category_id')
-                    ->label(__('Category'))
-                    ->options(fn () => StoneCategory::ordered()->pluck(Localized::column('name'), 'id'))
-                    ->required()
-                    ->searchable(),
-                Forms\Components\Tabs::make('Translations')
-                    ->columnSpanFull()
-                    ->tabs([
-                        Forms\Components\Tabs\Tab::make(__('English'))
-                            ->schema([
-                                Forms\Components\TextInput::make('name_en')
-                                    ->label(__('Name (EN)'))
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
-                                Forms\Components\TextInput::make('origin_en')
-                                    ->label(__('Origin (EN)'))
-                                    ->maxLength(255),
-                                Forms\Components\Textarea::make('description_en')
-                                    ->label(__('Description (EN)'))
-                                    ->rows(4)
-                                    ->columnSpanFull(),
-                            ]),
-                        Forms\Components\Tabs\Tab::make(__('Arabic'))
-                            ->schema([
-                                Forms\Components\TextInput::make('name_ar')
-                                    ->label(__('Name (AR)'))
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('origin_ar')
-                                    ->label(__('Origin (AR)'))
-                                    ->maxLength(255),
-                                Forms\Components\Textarea::make('description_ar')
-                                    ->label(__('Description (AR)'))
-                                    ->rows(4)
-                                    ->columnSpanFull(),
-                            ]),
+                Forms\Components\Section::make(__('Content'))
+                    ->description(__('Shown on the stone page, in the catalogue PDF and in search results.'))
+                    ->schema([
+                        Forms\Components\Select::make('stone_category_id')
+                            ->label(__('Category'))
+                            ->options(fn () => StoneCategory::ordered()->pluck(Localized::column('name'), 'id'))
+                            ->required()
+                            ->searchable(),
+                        Bilingual::tabs([
+                            'name' => fn (string $l) => Forms\Components\TextInput::make("name_{$l}")->label(Bilingual::label('Name', $l))->required()->maxLength(255),
+                            'origin' => fn (string $l) => Forms\Components\TextInput::make("origin_{$l}")->label(Bilingual::label('Origin', $l))->maxLength(255),
+                            'description' => fn (string $l) => Forms\Components\Textarea::make("description_{$l}")->label(Bilingual::label('Description', $l))->rows(4)->columnSpanFull(),
+                        ], slugFrom: 'name'),
                     ]),
-                Forms\Components\TextInput::make('slug')
-                    ->required()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
                 Forms\Components\Section::make(__('Specifications'))
                     ->description(__('Values are managed under Stones → Stone Attributes.'))
                     ->schema([
@@ -90,24 +65,63 @@ class StoneTypeResource extends Resource
                         static::attributeSelect('sizes', 'Sizes / Thickness'),
                         static::attributeSelect('applications', 'Applications'),
                     ])->columns(2),
-                Forms\Components\TextInput::make('order')
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Toggle::make('is_active')
-                    ->default(true),
-                ImageUpload::make('cover'),
-                ImageUpload::make('gallery')
-                    ->multiple()
-                    ->reorderable()
-                    ->columnSpanFull(),
+                Forms\Components\Section::make(__('Publishing'))
+                    ->schema([
+                        Forms\Components\TextInput::make('slug')
+                            ->required()
+                            ->maxLength(255)
+                            ->unique(ignoreRecord: true)
+                            ->helperText(__('Part of the page address. Filled from the English name; change it only before publishing.')),
+                        Forms\Components\Toggle::make('is_active')
+                            ->default(true)
+                            ->helperText(__('Inactive items are hidden from the website.')),
+                        Forms\Components\Toggle::make('spec_sheet_enabled')
+                            ->label(__('Offer a PDF spec sheet'))
+                            ->default(true)
+                            ->helperText(__('Shows the "Download spec sheet" button on the stone page.')),
+                    ])->columns(3),
+                Forms\Components\Section::make(__('Images'))
+                    ->schema([
+                        ImageUpload::make('cover', size: '1200×1200', ratio: '1:1'),
+                        ImageUpload::altFields('cover'),
+                        ImageUpload::make('gallery', size: '1600×1200', ratio: '4:3')
+                            ->multiple()
+                            ->reorderable()
+                            ->panelLayout('grid')
+                            ->helperText(__('Drag to reorder. Recommended 1600×1200 (4:3). JPG, PNG or WebP, up to :size MB.', ['size' => round(ImageUpload::maxKb() / 1024)]))
+                            ->columnSpanFull(),
+                    ]),
                 SeoFields::section(),
             ]);
     }
 
+    public static function table(Table $table): Table
+    {
+        return static::publicRecordTable($table->columns([
+            SpatieMediaLibraryImageColumn::make('cover')->collection('cover')->label(__('Cover')),
+            Tables\Columns\TextColumn::make(Localized::column('name'))->label(__('Name'))->searchable(['name_en', 'name_ar']),
+            Tables\Columns\TextColumn::make('stoneCategory.'.Localized::column('name'))->label(__('Category')),
+            Tables\Columns\IconColumn::make('is_active')->label(__('Active'))->boolean(),
+        ]), [
+            Tables\Filters\SelectFilter::make('stone_category_id')
+                ->label(__('Category'))
+                ->options(fn () => StoneCategory::ordered()->pluck(Localized::column('name'), 'id')),
+        ]);
+    }
+
     /**
-     * Multi-select bound to one of the per-type relations on StoneType, so each
-     * select only lists (and only syncs) values of its own type.
+     * @return list<string>
      */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name_en', 'name_ar', 'slug'];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return $record instanceof StoneType ? $record->name : '';
+    }
+
     protected static function attributeSelect(string $relationship, string $label): Forms\Components\Select
     {
         return Forms\Components\Select::make($relationship)
@@ -116,33 +130,6 @@ class StoneTypeResource extends Resource
             ->multiple()
             ->preload()
             ->searchable();
-    }
-
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                SpatieMediaLibraryImageColumn::make('cover')->collection('cover')->label(__('Cover')),
-                Tables\Columns\TextColumn::make(Localized::column('name'))->label(__('Name'))->searchable(['name_en', 'name_ar']),
-                Tables\Columns\TextColumn::make('stoneCategory.'.Localized::column('name'))->label(__('Category')),
-                Tables\Columns\IconColumn::make('is_active')->boolean(),
-                Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
-            ])
-            ->defaultSort('order')
-            ->filters([
-                Tables\Filters\SelectFilter::make('stone_category_id')
-                    ->label(__('Category'))
-                    ->options(fn () => StoneCategory::ordered()->pluck(Localized::column('name'), 'id')),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
     }
 
     public static function getRelations(): array

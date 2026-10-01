@@ -2,18 +2,13 @@
 
 namespace App\Filament\Resources\FaqResource\Pages;
 
+use App\Filament\Concerns\EditsPublicRecord;
 use App\Filament\Resources\FaqResource;
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditFaq extends EditRecord
 {
-    protected static string $resource = FaqResource::class;
+    use EditsPublicRecord;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
+    protected static string $resource = FaqResource::class;
 }

@@ -15,7 +15,7 @@ class CatalogueController extends Controller
 
     public function specSheet(GenerateCatalogue $generate, StoneType $stoneType): BinaryFileResponse
     {
-        abort_unless($stoneType->is_active, 404);
+        abort_unless($stoneType->is_active && $stoneType->spec_sheet_enabled, 404);
 
         return $this->pdf($generate->handle(app()->getLocale(), $stoneType));
     }

@@ -14,6 +14,7 @@ use App\Models\Project;
 use App\Models\Service;
 use App\Models\StoneType;
 use App\Models\User;
+use App\Support\Phone;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -22,6 +23,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LeadResource extends Resource
 {
@@ -32,6 +35,8 @@ class LeadResource extends Resource
     protected static ?string $navigationGroup = AdminNavigationGroup::Leads->value;
 
     protected static ?int $navigationSort = 10;
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationBadgeTooltip = 'New leads';
 
@@ -190,6 +195,7 @@ class LeadResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
+                Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\SelectFilter::make('status')
                     ->options(LeadStatus::options()),
                 Tables\Filters\SelectFilter::make('assigned_to')
@@ -213,13 +219,39 @@ class LeadResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // Quick contact straight from the list.
+                Tables\Actions\Action::make('whatsapp')
+                    ->label(__('WhatsApp'))
+                    ->iconButton()
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('success')
+                    ->url(fn (Lead $record): ?string => ($digits = Phone::whatsappDigits($record->phone)) ? 'https://wa.me/'.$digits : null, shouldOpenInNewTab: true)
+                    ->visible(fn (Lead $record): bool => Phone::whatsappDigits($record->phone) !== null),
+                Tables\Actions\Action::make('call')
+                    ->label(__('Call'))
+                    ->iconButton()
+                    ->icon('heroicon-o-phone')
+                    ->url(fn (Lead $record): ?string => Phone::telHref($record->phone))
+                    ->visible(fn (Lead $record): bool => Phone::telHref($record->phone) !== null),
+                Tables\Actions\Action::make('email')
+                    ->label(__('Email'))
+                    ->iconButton()
+                    ->icon('heroicon-o-envelope')
+                    ->url(fn (Lead $record): ?string => $record->email ? 'mailto:'.$record->email : null)
+                    ->visible(fn (Lead $record): bool => filled($record->email)),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(),
+                    Tables\Actions\ForceDeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -239,5 +271,31 @@ class LeadResource extends Resource
             'view' => Pages\ViewLead::route('/{record}'),
             'edit' => Pages\EditLead::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * Trashed leads stay reachable (Trash filter, restore).
+     *
+     * @return Builder<Lead>
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScopes([SoftDeletingScope::class]);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'phone', 'email', 'city'];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return $record instanceof Lead ? [__('Phone') => (string) $record->phone, __('Status') => LeadStatus::labelFor($record->status)] : [];
     }
 }

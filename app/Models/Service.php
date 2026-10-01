@@ -9,11 +9,13 @@ use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\HasSeoOverrides;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
+use App\Models\Contracts\HasPublicUrl;
 use App\Support\ServiceIcon;
 use Database\Factories\ServiceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -24,10 +26,10 @@ use Spatie\Sluggable\SlugOptions;
  * @property-read string $name
  * @property-read string|null $description
  */
-class Service extends Model implements HasMedia
+class Service extends Model implements HasMedia, HasPublicUrl
 {
     /** @use HasFactory<ServiceFactory> */
-    use HasActiveScope, HasCoverImage, HasFactory, HasLocalizedAttributes, HasSeoOverrides, HasSlug, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+    use HasActiveScope, HasCoverImage, HasFactory, HasLocalizedAttributes, HasSeoOverrides, HasSlug, HasWebpConversions, InteractsWithMedia, LogsAdminActivity, SoftDeletes;
 
     /**
      * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
@@ -92,5 +94,10 @@ class Service extends Model implements HasMedia
     public function getSafeIconAttribute(): string
     {
         return ServiceIcon::resolve($this->icon);
+    }
+
+    public function publicUrl(?string $locale = null): ?string
+    {
+        return $this->is_active ? route('services.show', ['locale' => $locale ?? app()->getLocale(), 'service' => $this]) : null;
     }
 }

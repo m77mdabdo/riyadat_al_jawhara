@@ -14,6 +14,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CommentResource extends Resource
 {
@@ -79,6 +81,7 @@ class CommentResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
+                Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\SelectFilter::make('status')
                     ->options(CommentStatus::options()),
                 Tables\Filters\Filter::make('created_at')
@@ -105,12 +108,18 @@ class CommentResource extends Resource
                     ->color('danger')
                     ->visible(fn (Comment $record) => $record->status !== CommentStatus::Spam->value)
                     ->action(fn (Comment $record) => $record->update(['status' => CommentStatus::Spam->value])),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(),
+                    Tables\Actions\ForceDeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -126,5 +135,15 @@ class CommentResource extends Resource
             'index' => Pages\ListComments::route('/'),
             'edit' => Pages\EditComment::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * Trashed comments stay reachable (Trash filter, restore).
+     *
+     * @return Builder<Model>
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScopes([SoftDeletingScope::class]);
     }
 }

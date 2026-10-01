@@ -33,7 +33,7 @@ abstract class ContentPolicy
         return $this->isStaff($user);
     }
 
-    public function update(User $user, Model $record): bool
+    public function update(User $user, ?Model $record = null): bool
     {
         return $this->isStaff($user);
     }

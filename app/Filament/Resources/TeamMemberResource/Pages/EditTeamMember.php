@@ -2,18 +2,13 @@
 
 namespace App\Filament\Resources\TeamMemberResource\Pages;
 
+use App\Filament\Concerns\EditsPublicRecord;
 use App\Filament\Resources\TeamMemberResource;
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditTeamMember extends EditRecord
 {
-    protected static string $resource = TeamMemberResource::class;
+    use EditsPublicRecord;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
+    protected static string $resource = TeamMemberResource::class;
 }

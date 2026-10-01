@@ -6,9 +6,11 @@ use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\LogsAdminActivity;
+use App\Models\Contracts\HasPublicUrl;
 use Database\Factories\SliderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -19,10 +21,10 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property-read string|null $subtitle
  * @property-read string|null $button_text
  */
-class Slider extends Model implements HasMedia
+class Slider extends Model implements HasMedia, HasPublicUrl
 {
     /** @use HasFactory<SliderFactory> */
-    use HasActiveScope, HasFactory, HasLocalizedAttributes, InteractsWithMedia, LogsAdminActivity;
+    use HasActiveScope, HasFactory, HasLocalizedAttributes, InteractsWithMedia, LogsAdminActivity, SoftDeletes;
 
     /**
      * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
@@ -77,5 +79,10 @@ class Slider extends Model implements HasMedia
         }
 
         return $media->hasGeneratedConversion('hero') ? $media->getUrl('hero') : $media->getUrl();
+    }
+
+    public function publicUrl(?string $locale = null): ?string
+    {
+        return $this->is_active ? route('home', ['locale' => $locale ?? app()->getLocale()]) : null;
     }
 }

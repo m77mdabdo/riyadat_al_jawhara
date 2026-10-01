@@ -3,8 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Enums\AdminNavigationGroup;
+use App\Filament\Concerns\ManagesPublicRecords;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\ServiceResource\Pages;
+use App\Filament\Support\Bilingual;
 use App\Filament\Support\ImageUpload;
 use App\Filament\Support\Localized;
 use App\Filament\Support\SeoFields;
@@ -16,11 +18,11 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
 
 class ServiceResource extends Resource
 {
-    use TranslatesResourceLabels;
+    use ManagesPublicRecords, TranslatesResourceLabels;
 
     protected static ?string $model = Service::class;
 
@@ -28,82 +30,75 @@ class ServiceResource extends Resource
 
     protected static ?int $navigationSort = 10;
 
+    protected static ?string $recordTitleAttribute = 'name_en';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Tabs::make('Translations')
-                    ->columnSpanFull()
-                    ->tabs([
-                        Forms\Components\Tabs\Tab::make(__('English'))
-                            ->schema([
-                                Forms\Components\TextInput::make('name_en')
-                                    ->label(__('Name (EN)'))
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
-                                Forms\Components\Textarea::make('description_en')
-                                    ->label(__('Description (EN)'))
-                                    ->rows(4)
-                                    ->columnSpanFull(),
-                            ]),
-                        Forms\Components\Tabs\Tab::make(__('Arabic'))
-                            ->schema([
-                                Forms\Components\TextInput::make('name_ar')
-                                    ->label(__('Name (AR)'))
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\Textarea::make('description_ar')
-                                    ->label(__('Description (AR)'))
-                                    ->rows(4)
-                                    ->columnSpanFull(),
-                            ]),
+                Forms\Components\Section::make(__('Content'))
+                    ->description(__('Shown on the services page, the home page and in search results.'))
+                    ->schema([
+                        Bilingual::tabs([
+                            'name' => fn (string $l) => Forms\Components\TextInput::make("name_{$l}")
+                                ->label(Bilingual::label('Name', $l))
+                                ->required()
+                                ->maxLength(255),
+                            'description' => fn (string $l) => Forms\Components\Textarea::make("description_{$l}")
+                                ->label(Bilingual::label('Description', $l))
+                                ->rows(4)
+                                ->columnSpanFull(),
+                        ], slugFrom: 'name'),
                     ]),
-                Forms\Components\TextInput::make('slug')
-                    ->required()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
-                Forms\Components\Select::make('icon')
-                    ->label(__('Icon'))
-                    ->options(Localized::options(ServiceIcon::OPTIONS))
-                    ->in(array_keys(ServiceIcon::OPTIONS))
-                    ->placeholder(__('Default (Cube)')),
-                Forms\Components\TextInput::make('order')
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Toggle::make('is_active')
-                    ->default(true),
-                ImageUpload::make('cover')
-                    ->columnSpanFull(),
+                Forms\Components\Section::make(__('Publishing'))
+                    ->schema([
+                        Forms\Components\TextInput::make('slug')
+                            ->required()
+                            ->maxLength(255)
+                            ->unique(ignoreRecord: true)
+                            ->helperText(__('Part of the page address. Filled from the English name; change it only before publishing.')),
+                        Forms\Components\Select::make('icon')
+                            ->label(__('Icon'))
+                            ->options(Localized::options(ServiceIcon::OPTIONS))
+                            ->in(array_keys(ServiceIcon::OPTIONS))
+                            ->placeholder(__('Default (Cube)')),
+                        Forms\Components\Toggle::make('is_active')
+                            ->default(true)
+                            ->helperText(__('Inactive items are hidden from the website.')),
+                    ])->columns(3),
+                Forms\Components\Section::make(__('Image'))
+                    ->schema([
+                        ImageUpload::make('cover', size: '1600×900', ratio: '16:9')->columnSpanFull(),
+                        ImageUpload::altFields('cover'),
+                    ]),
                 SeoFields::section(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                SpatieMediaLibraryImageColumn::make('cover')
-                    ->collection('cover')
-                    ->label(__('Cover')),
-                Tables\Columns\TextColumn::make(Localized::column('name'))
-                    ->label(__('Name'))
-                    ->searchable(['name_en', 'name_ar']),
-                Tables\Columns\IconColumn::make('is_active')->boolean(),
-                Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
-            ])
-            ->defaultSort('order')
-            ->filters([])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+        return static::publicRecordTable($table->columns([
+            SpatieMediaLibraryImageColumn::make('cover')
+                ->collection('cover')
+                ->label(__('Cover')),
+            Tables\Columns\TextColumn::make(Localized::column('name'))
+                ->label(__('Name'))
+                ->searchable(['name_en', 'name_ar']),
+            Tables\Columns\IconColumn::make('is_active')->label(__('Active'))->boolean(),
+        ]));
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name_en', 'name_ar', 'slug'];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return $record instanceof Service ? $record->name : '';
     }
 
     public static function getRelations(): array

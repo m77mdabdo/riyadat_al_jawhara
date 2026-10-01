@@ -35,11 +35,14 @@
         $src = $conversion && $media->hasGeneratedConversion($conversion) ? $media->getUrl($conversion) : $media->getUrl();
 
         // Responsive WebP renditions (see HasWebpConversions), when generated.
-        $webp = collect(['card' => 800, 'large' => 1600])
+        $webp = collect(config('site.webp_widths'))
             ->filter(fn ($w, $name) => $media->hasGeneratedConversion($name))
             ->map(fn ($w, $name) => $media->getUrl($name).' '.$w.'w');
         $srcset = $responsive && $webp->isNotEmpty() ? $webp->implode(', ') : null;
     }
+
+    // Alt text set in the admin for this image (current language) wins over the default.
+    $alt = filled($media?->getCustomProperty('alt_'.app()->getLocale())) ? $media->getCustomProperty('alt_'.app()->getLocale()) : $alt;
 
     $dimensions = ['thumb' => [400, 300], 'medium' => [1200, 700], 'hero' => [1920, 1080]];
     [$defaultWidth, $defaultHeight] = $dimensions[$conversion] ?? [800, 600];

@@ -7,10 +7,12 @@ use App\Models\Concerns\HasActiveScope;
 use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
+use App\Models\Contracts\HasPublicUrl;
 use Database\Factories\TestimonialFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -18,10 +20,10 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 /**
  * @property-read string $comment
  */
-class Testimonial extends Model implements HasMedia
+class Testimonial extends Model implements HasMedia, HasPublicUrl
 {
     /** @use HasFactory<TestimonialFactory> */
-    use HasActiveScope, HasFactory, HasLocalizedAttributes, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+    use HasActiveScope, HasFactory, HasLocalizedAttributes, HasWebpConversions, InteractsWithMedia, LogsAdminActivity, SoftDeletes;
 
     /**
      * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
@@ -62,5 +64,10 @@ class Testimonial extends Model implements HasMedia
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function publicUrl(?string $locale = null): ?string
+    {
+        return $this->is_active ? route('home', ['locale' => $locale ?? app()->getLocale()]) : null;
     }
 }

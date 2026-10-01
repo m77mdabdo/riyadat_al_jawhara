@@ -3,8 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Enums\AdminNavigationGroup;
+use App\Filament\Concerns\ManagesPublicRecords;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\FaqResource\Pages;
+use App\Filament\Support\Bilingual;
 use App\Filament\Support\Localized;
 use App\Models\Faq;
 use Filament\Forms;
@@ -15,9 +17,13 @@ use Filament\Tables\Table;
 
 class FaqResource extends Resource
 {
-    use TranslatesResourceLabels;
+    use ManagesPublicRecords, TranslatesResourceLabels;
 
     protected static ?string $model = Faq::class;
+
+    protected static ?string $modelLabel = 'FAQ';
+
+    protected static ?string $pluralModelLabel = 'FAQs';
 
     protected static ?string $navigationGroup = AdminNavigationGroup::WebsiteContent->value;
 
@@ -27,58 +33,26 @@ class FaqResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Tabs::make('Translations')
-                    ->columnSpanFull()
-                    ->tabs([
-                        Forms\Components\Tabs\Tab::make(__('English'))
-                            ->schema([
-                                Forms\Components\TextInput::make('question_en')
-                                    ->label(__('Question (EN)'))
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\Textarea::make('answer_en')
-                                    ->label(__('Answer (EN)'))
-                                    ->required()
-                                    ->rows(4),
-                            ]),
-                        Forms\Components\Tabs\Tab::make(__('Arabic'))
-                            ->schema([
-                                Forms\Components\TextInput::make('question_ar')
-                                    ->label(__('Question (AR)'))
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\Textarea::make('answer_ar')
-                                    ->label(__('Answer (AR)'))
-                                    ->required()
-                                    ->rows(4),
-                            ]),
+                Forms\Components\Section::make(__('Question and answer'))
+                    ->description(__('Shown on the FAQ page; the first ones also appear on the home page.'))
+                    ->schema([
+                        Bilingual::tabs([
+                            'question' => fn (string $l) => Forms\Components\TextInput::make("question_{$l}")->label(Bilingual::label('Question', $l))->required()->maxLength(255),
+                            'answer' => fn (string $l) => Forms\Components\Textarea::make("answer_{$l}")->label(Bilingual::label('Answer', $l))->required()->rows(4),
+                        ]),
+                        Forms\Components\Toggle::make('is_active')
+                            ->default(true)
+                            ->helperText(__('Inactive items are hidden from the website.')),
                     ]),
-                Forms\Components\TextInput::make('order')
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Toggle::make('is_active')
-                    ->default(true),
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make(Localized::column('question'))->label(__('Question'))->searchable(['question_en', 'question_ar']),
-                Tables\Columns\IconColumn::make('is_active')->boolean(),
-                Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
-            ])
-            ->defaultSort('order')
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+        return static::publicRecordTable($table->columns([
+            Tables\Columns\TextColumn::make(Localized::column('question'))->label(__('Question'))->searchable(['question_en', 'question_ar'])->wrap(),
+            Tables\Columns\IconColumn::make('is_active')->label(__('Active'))->boolean(),
+        ]));
     }
 
     public static function getRelations(): array

@@ -57,6 +57,9 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups(collect(AdminNavigationGroup::cases())->mapWithKeys(fn (AdminNavigationGroup $group) => [
                 $group->value => NavigationGroup::make()->label(fn (): string => $group->getLabel())->icon($group->getIcon()),
             ])->all())
+            // Warn before leaving a form with unsaved changes; Ctrl/Cmd+K opens search.
+            ->unsavedChangesAlerts()
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             // Bell icon: new leads, follow-ups due, comments awaiting review.
             ->databaseNotifications()
             ->databaseNotificationsPolling('60s')

@@ -7,11 +7,13 @@ use App\Models\Concerns\HasCoverImage;
 use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
+use App\Models\Contracts\HasPublicUrl;
 use Database\Factories\StoneCategoryFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -22,10 +24,10 @@ use Spatie\Sluggable\SlugOptions;
  * @property-read string|null $description
  * @property-read string $name
  */
-class StoneCategory extends Model implements HasMedia
+class StoneCategory extends Model implements HasMedia, HasPublicUrl
 {
     /** @use HasFactory<StoneCategoryFactory> */
-    use HasCoverImage, HasFactory, HasLocalizedAttributes, HasSlug, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+    use HasCoverImage, HasFactory, HasLocalizedAttributes, HasSlug, HasWebpConversions, InteractsWithMedia, LogsAdminActivity, SoftDeletes;
 
     /**
      * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
@@ -77,5 +79,10 @@ class StoneCategory extends Model implements HasMedia
     public function stoneTypes(): HasMany
     {
         return $this->hasMany(StoneType::class);
+    }
+
+    public function publicUrl(?string $locale = null): ?string
+    {
+        return route('stones.index', ['locale' => $locale ?? app()->getLocale(), 'stone_category' => $this->slug]);
     }
 }

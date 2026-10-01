@@ -9,6 +9,7 @@ use App\Models\Concerns\HasLocalizedAttributes;
 use App\Models\Concerns\HasSeoOverrides;
 use App\Models\Concerns\HasWebpConversions;
 use App\Models\Concerns\LogsAdminActivity;
+use App\Models\Contracts\HasPublicUrl;
 use Database\Factories\ProjectFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -29,10 +31,10 @@ use Spatie\Sluggable\SlugOptions;
  * @property-read string|null $city
  * @property-read string|null $location
  */
-class Project extends Model implements HasMedia
+class Project extends Model implements HasMedia, HasPublicUrl
 {
     /** @use HasFactory<ProjectFactory> */
-    use HasActiveScope, HasCoverImage, HasFactory, HasLocalizedAttributes, HasSeoOverrides, HasSlug, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
+    use HasActiveScope, HasCoverImage, HasFactory, HasLocalizedAttributes, HasSeoOverrides, HasSlug, HasWebpConversions, InteractsWithMedia, LogsAdminActivity, SoftDeletes;
 
     /**
      * Bilingual fields (see HasLocalizedAttributes): field => value when both languages are empty.
@@ -208,5 +210,10 @@ class Project extends Model implements HasMedia
     public function testimonials(): HasMany
     {
         return $this->hasMany(Testimonial::class);
+    }
+
+    public function publicUrl(?string $locale = null): ?string
+    {
+        return $this->is_active ? route('projects.show', ['locale' => $locale ?? app()->getLocale(), 'project' => $this]) : null;
     }
 }

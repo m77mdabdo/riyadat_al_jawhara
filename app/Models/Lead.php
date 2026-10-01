@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Lead extends Model
 {
     /** @use HasFactory<LeadFactory> */
-    use HasFactory, LogsAdminActivity;
+    use HasFactory, LogsAdminActivity, SoftDeletes;
 
     /** Audit only the admin workflow; the visitor's message and contact data stay out of the log. */
     /** @var list<string> */

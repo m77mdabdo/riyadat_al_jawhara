@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -23,7 +24,7 @@ use Spatie\Sluggable\SlugOptions;
 class StoneAttribute extends Model
 {
     /** @use HasFactory<StoneAttributeFactory> */
-    use HasActiveScope, HasFactory, HasLocalizedAttributes, HasSlug, LogsAdminActivity;
+    use HasActiveScope, HasFactory, HasLocalizedAttributes, HasSlug, LogsAdminActivity, SoftDeletes;
 
     // Types: App\Enums\StoneAttributeType.
 

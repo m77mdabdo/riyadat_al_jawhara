@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comment extends Model
 {
     /** @use HasFactory<CommentFactory> */
-    use HasFactory, LogsAdminActivity;
+    use HasFactory, LogsAdminActivity, SoftDeletes;
 
     /** Audit moderation only; comments are created by visitors. */
     /** @var list<string> */
