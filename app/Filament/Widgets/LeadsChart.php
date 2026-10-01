@@ -2,36 +2,44 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\LeadSource;
 use App\Models\Lead;
+use App\Support\Dashboard;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Carbon;
 
+/**
+ * Leads per day for the last 30 days, website form vs WhatsApp.
+ */
 class LeadsChart extends ChartWidget
 {
+    protected static ?int $sort = 2;
+
+    protected int|string|array $columnSpan = 'full';
+
+    protected static ?string $maxHeight = '260px';
+
+    public static function canView(): bool
+    {
+        return auth()->user()?->can('viewAny', Lead::class) ?? false;
+    }
+
     public function getHeading(): string
     {
-        return __('Leads per Month');
+        return __('Leads per day (30 days)');
     }
 
     protected function getData(): array
     {
-        $months = collect(range(5, 0))->map(fn (int $i) => now()->subMonths($i)->startOfMonth());
-
-        $counts = $months->map(
-            fn ($month) => Lead::whereYear('created_at', $month->year)
-                ->whereMonth('created_at', $month->month)
-                ->count()
-        );
+        $website = Dashboard::leadsPerDay(30, LeadSource::Website);
+        $whatsapp = Dashboard::leadsPerDay(30, LeadSource::Whatsapp);
 
         return [
             'datasets' => [
-                [
-                    'label' => __('Leads'),
-                    'data' => $counts->values(),
-                    'backgroundColor' => '#2B2B2B',
-                    'borderColor' => '#2B2B2B',
-                ],
+                ['label' => LeadSource::Website->getLabel(), 'data' => array_values($website), 'borderColor' => '#2B2B2B', 'backgroundColor' => '#2B2B2B'],
+                ['label' => LeadSource::Whatsapp->getLabel(), 'data' => array_values($whatsapp), 'borderColor' => '#1DA851', 'backgroundColor' => '#1DA851'],
             ],
-            'labels' => $months->map(fn ($month) => $month->translatedFormat('M Y'))->values(),
+            'labels' => array_map(fn (string $day) => Carbon::parse($day)->translatedFormat('j M'), array_keys($website)),
         ];
     }
 

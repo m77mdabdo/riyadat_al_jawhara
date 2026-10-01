@@ -86,4 +86,19 @@ return [
         'cta' => 'الدعوة الختامية',
     ],
 
+    'content_health' => [
+        'services_without_image' => 'خدمات بدون صورة',
+        'services_missing_translation' => 'خدمات تنقصها ترجمة',
+        'stones_without_image' => 'أحجار بدون صورة غلاف',
+        'stones_missing_translation' => 'أحجار تنقصها ترجمة',
+        'projects_without_image' => 'مشاريع بدون صورة غلاف',
+        'projects_missing_translation' => 'مشاريع تنقصها ترجمة',
+        'posts_without_image' => 'مقالات بدون صورة غلاف',
+        'posts_missing_translation' => 'مقالات تنقصها ترجمة',
+        'posts_without_excerpt' => 'مقالات منشورة بدون ملخص باللغتين',
+        'leads_waiting' => 'عملاء جدد ينتظرون أكثر من يومين',
+        'contact_missing' => 'بيانات التواصل غير مكتملة (الجوال أو واتساب أو البريد)',
+        'map_missing' => 'موقع الخريطة غير محدد',
+    ],
+
 ];

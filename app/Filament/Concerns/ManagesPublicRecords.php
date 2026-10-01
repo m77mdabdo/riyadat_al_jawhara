@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Spatie\MediaLibrary\HasMedia;
 
 /**
  * Shared table behaviour for records shown on the public site:
@@ -27,6 +28,54 @@ trait ManagesPublicRecords
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->withoutGlobalScopes([SoftDeletingScope::class]);
+    }
+
+    /**
+     * "Missing image" (records with a cover collection) and "Missing
+     * translation" (a bilingual field filled in one language only); the
+     * dashboard's content-health list links to these.
+     *
+     * @return list<Tables\Filters\BaseFilter>
+     */
+    protected static function healthFilters(): array
+    {
+        $model = static::getModel();
+        $record = new $model;
+        $filters = [];
+
+        if ($record instanceof HasMedia && $record->getMediaCollection('cover')) {
+            $filters[] = Tables\Filters\Filter::make('missing_image')
+                ->label(__('Missing image'))
+                ->query(fn (Builder $query) => $query->whereDoesntHave('media', fn (Builder $media) => $media->where('collection_name', 'cover')));
+        }
+
+        $bases = method_exists($record, 'localizedFields') ? $record->localizedFields() : [];
+        $bases = array_values(array_filter($bases, fn (string $base) => static::modelHas($base.'_ar') && static::modelHas($base.'_en')));
+        if ($bases !== []) {
+            $filters[] = Tables\Filters\Filter::make('missing_translation')
+                ->label(__('Missing translation'))
+                ->query(fn (Builder $query) => static::whereMissingTranslation($query, $bases));
+        }
+
+        return $filters;
+    }
+
+    /**
+     * @param  Builder<Model>  $query
+     * @param  list<string>  $bases
+     * @return Builder<Model>
+     */
+    public static function whereMissingTranslation(Builder $query, array $bases): Builder
+    {
+        return $query->where(function (Builder $query) use ($bases) {
+            foreach ($bases as $base) {
+                foreach ([['ar', 'en'], ['en', 'ar']] as [$empty, $filled]) {
+                    $query->orWhere(fn (Builder $q) => $q
+                        ->where(fn (Builder $e) => $e->whereNull("{$base}_{$empty}")->orWhere("{$base}_{$empty}", ''))
+                        ->whereNotNull("{$base}_{$filled}")->where("{$base}_{$filled}", '!=', ''));
+                }
+            }
+        });
     }
 
     protected static function modelHas(string $column): bool
@@ -47,7 +96,7 @@ trait ManagesPublicRecords
             $table->reorderable('order')->defaultSort('order');
         }
 
-        $shared = [Tables\Filters\TrashedFilter::make()];
+        $shared = [...static::healthFilters(), Tables\Filters\TrashedFilter::make()];
         if (static::modelHas('is_active')) {
             array_unshift($shared, Tables\Filters\TernaryFilter::make('is_active')->label(__('Active')));
         }

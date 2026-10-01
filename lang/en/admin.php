@@ -86,4 +86,19 @@ return [
         'cta' => 'Closing call to action',
     ],
 
+    'content_health' => [
+        'services_without_image' => 'Services without an image',
+        'services_missing_translation' => 'Services with a missing translation',
+        'stones_without_image' => 'Stones without a cover image',
+        'stones_missing_translation' => 'Stones with a missing translation',
+        'projects_without_image' => 'Projects without a cover image',
+        'projects_missing_translation' => 'Projects with a missing translation',
+        'posts_without_image' => 'Articles without a cover image',
+        'posts_missing_translation' => 'Articles with a missing translation',
+        'posts_without_excerpt' => 'Published articles without a summary in both languages',
+        'leads_waiting' => 'New leads waiting more than 2 days',
+        'contact_missing' => 'Contact details not set (phone, WhatsApp or email)',
+        'map_missing' => 'Map location not set',
+    ],
+
 ];
