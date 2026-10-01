@@ -30,3 +30,6 @@ yarn-error.log
 /.kilo/
 /storage/framework/phpstan
 /storage/media-library/
+
+# Local database dumps
+/*.sql
