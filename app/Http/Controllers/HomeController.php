@@ -11,6 +11,7 @@ use App\Models\StoneCategory;
 use App\Models\StoneType;
 use App\Models\Testimonial;
 use App\Support\FragmentCache;
+use App\Support\HomeSections;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -20,11 +21,11 @@ class HomeController extends Controller
         // Everything below the hero is visitor-independent: render it once per
         // locale and reuse it until content changes (FragmentCache::flush()).
         $sections = FragmentCache::remember('home.sections', fn () => view('home.sections', [
-            'services' => Service::active()->ordered()->with('media')->get(),
-            'featuredProjects' => Project::active()->featured()->ordered()->with('media')->take(config('site.lists.home_featured_projects'))->get(),
-            'stoneTypes' => StoneType::active()->ordered()->with('media')->take(config('site.lists.home_stones'))->get(),
+            'services' => Service::active()->ordered()->with('media')->when(HomeSections::count('services'), fn ($query, $count) => $query->take($count))->get(),
+            'featuredProjects' => Project::active()->featured()->ordered()->with('media')->take(HomeSections::count('projects'))->get(),
+            'stoneTypes' => StoneType::active()->ordered()->with('media')->take(HomeSections::count('stones'))->get(),
             'testimonials' => Testimonial::active()->ordered()->with('media')->get(),
-            'faqs' => Faq::active()->ordered()->take(config('site.lists.home_faqs'))->get(),
+            'faqs' => Faq::active()->ordered()->take(HomeSections::count('faq'))->get(),
             'stoneCategories' => StoneCategory::ordered()->with('media')
                 ->withCount(['stoneTypes' => fn ($query) => $query->active()])
                 ->get(),

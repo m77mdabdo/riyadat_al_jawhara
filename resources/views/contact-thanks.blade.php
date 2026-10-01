@@ -1,4 +1,4 @@
-<x-layout :title="__('site.contact.thanks_title')" :description="__('site.contact.success_message')" robots="noindex, follow">
+<x-layout page="thanks" :title="__('site.contact.thanks_title')" :description="__('site.contact.success_message')" robots="noindex, follow">
     @if ($justSubmitted)
         @push('head')
             {{-- Conversion marker read by the consent-gated analytics loader. --}}
@@ -6,7 +6,7 @@
         @endpush
     @endif
 
-    <x-page-header :title="__('site.contact.thanks_heading')" :subtitle="session('success') ?? __('site.contact.success_message')" texture="texture-sandstone" />
+    <x-page-header page="thanks" :title="__('site.contact.thanks_heading')" :subtitle="session('success') ?? __('site.contact.success_message')" texture="texture-sandstone" />
 
     <section class="py-16 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="rounded-xl border border-sand-200 bg-white p-6 sm:p-8">

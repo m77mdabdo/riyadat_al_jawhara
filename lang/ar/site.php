@@ -77,6 +77,9 @@ return [
     ],
 
     'home' => [
+        // Hero heading when there are no slides (empty = site name / tagline).
+        'hero_title' => '',
+        'hero_subtitle' => '',
         'our_services' => 'خدماتنا',
         'our_services_subtitle' => 'حلول متكاملة للحجر من التوريد إلى التركيب والتصميم',
         'featured_projects' => 'مشاريع مميزة',
@@ -129,6 +132,8 @@ return [
 
     'about' => [
         'title' => 'من نحن',
+        // Optional line under the page title (empty = none).
+        'subtitle' => '',
         'our_vision' => 'رؤيتنا',
         'our_mission' => 'رسالتنا',
         'our_team' => 'فريقنا',
@@ -365,6 +370,8 @@ return [
     'legal' => [
         'privacy_policy_title' => 'سياسة الخصوصية',
         'terms_title' => 'شروط الاستخدام',
+        'privacy_subtitle' => '',
+        'terms_subtitle' => '',
         'content_missing' => 'لم يتم تعبئة هذه الصفحة بعد.',
     ],
 
@@ -383,6 +390,8 @@ return [
     ],
 
     'footer' => [
+        // Short text under the footer logo (empty = the tagline).
+        'about' => '',
         'quick_links' => 'روابط سريعة',
         'follow_us' => 'تابعنا',
         'contact_info' => 'معلومات التواصل',
@@ -390,6 +399,7 @@ return [
     ],
 
     'whatsapp_default_message' => 'مرحباً، حابب أستفسر عن خدماتكم',
+    'whatsapp_tooltip' => 'مرحباً، حابب أستفسر عن خدماتكم',
     'whatsapp_aria_label' => 'تواصل معنا عبر واتساب',
 
 ];

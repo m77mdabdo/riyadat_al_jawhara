@@ -1,5 +1,5 @@
-<x-layout :title="__('site.services.title')" :description="__('site.services.meta_description')" :breadcrumbs="[['name' => __('site.services.title'), 'url' => route('services.index')]]">
-    <x-page-header :title="__('site.services.title')" :subtitle="__('site.services.meta_description')" texture="texture-marble" />
+<x-layout page="services" :title="__('site.services.title')" :description="__('site.services.meta_description')" :breadcrumbs="[['name' => __('site.services.title'), 'url' => route('services.index')]]">
+    <x-page-header page="services" :title="__('site.services.title')" :subtitle="__('site.services.meta_description')" texture="texture-marble" />
 
     <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -1,4 +1,4 @@
-<x-layout :title="__('site.faq.title')" :description="__('site.faq.subtitle')" :breadcrumbs="[['name' => __('site.faq.title'), 'url' => route('faq')]]">
+<x-layout page="faq" :title="__('site.faq.title')" :description="__('site.faq.subtitle')" :breadcrumbs="[['name' => __('site.faq.title'), 'url' => route('faq')]]">
     @if ($faqs->isNotEmpty())
         @push('head')
             <script type="application/ld+json">{!! json_encode([
@@ -13,7 +13,7 @@
         @endpush
     @endif
 
-    <x-page-header :title="__('site.faq.title')" :subtitle="__('site.faq.subtitle')" texture="texture-quartz" />
+    <x-page-header page="faq" :title="__('site.faq.title')" :subtitle="__('site.faq.subtitle')" texture="texture-quartz" />
 
     <section class="py-16 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="space-y-3">

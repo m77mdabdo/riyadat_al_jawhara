@@ -6,10 +6,14 @@ use App\Contracts\CatalogueGenerator;
 use App\Enums\UserRole;
 use App\Models\BlogCategory;
 use App\Models\Faq;
+use App\Models\Menu;
+use App\Models\MenuItem;
+use App\Models\Page;
 use App\Models\Post;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\Setting;
+use App\Models\SiteImage;
 use App\Models\Slider;
 use App\Models\StoneAttribute;
 use App\Models\StoneCategory;
@@ -27,10 +31,15 @@ use App\Services\StockMedia\PexelsProvider;
 use App\Services\StockMedia\PixabayProvider;
 use App\Services\StockMedia\UnsplashProvider;
 use App\Services\StockMediaFetcher;
+use App\Support\PageContent;
+use App\Support\SiteImages;
+use App\Support\SiteTexts;
+use App\Translation\OverridableTranslationLoader;
 use App\View\Composers\NavigationComposer;
 use App\View\Composers\SiteSettingsComposer;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Contracts\Translation\Loader;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -52,6 +61,12 @@ class AppServiceProvider extends ServiceProvider
         // One Setting instance per request (reset between requests, queue jobs
         // and tests), backed by the cache -- see Setting::current().
         $this->app->scoped(Setting::CACHE_KEY, fn () => Setting::loadCurrent());
+
+        // Public texts: lang files with the admin's overrides on top (SiteTexts).
+        $this->app->scoped(SiteTexts::CACHE_KEY, fn () => SiteTexts::loadCached());
+        $this->app->scoped(SiteImages::CACHE_KEY, fn () => SiteImages::loadUploads());
+        $this->app->scoped(PageContent::CACHE_KEY, fn () => PageContent::load());
+        $this->app->extend('translation.loader', fn (Loader $loader) => new OverridableTranslationLoader($loader));
 
         $this->app->singleton(CatalogueGenerator::class, MpdfCatalogueGenerator::class);
 
@@ -81,7 +96,7 @@ class AppServiceProvider extends ServiceProvider
         foreach ([
             Service::class, StoneType::class, StoneCategory::class, StoneAttribute::class, Project::class,
             Post::class, BlogCategory::class, Tag::class, Faq::class, Slider::class, Testimonial::class,
-            TeamMember::class, Setting::class, Media::class,
+            TeamMember::class, Setting::class, Media::class, Menu::class, MenuItem::class, Page::class, SiteImage::class,
         ] as $model) {
             $model::observe(PublicContentObserver::class);
         }

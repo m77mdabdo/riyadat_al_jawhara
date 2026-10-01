@@ -9,6 +9,16 @@ class NavigationComposer
 {
     public function compose(View $view): void
     {
-        $view->with('navLinks', Navigation::main());
+        if ($view->name() === 'partials.footer') {
+            $view->with('footerColumns', Navigation::footerColumns());
+
+            return;
+        }
+
+        $view->with([
+            'navLinks' => Navigation::main(),
+            'mobileLinks' => Navigation::mobile(),
+            'headerOptions' => Navigation::header(),
+        ]);
     }
 }

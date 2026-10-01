@@ -1,5 +1,5 @@
-<x-layout :title="__('site.gallery.title')" :description="__('site.gallery.subtitle')" :breadcrumbs="[['name' => __('site.gallery.title'), 'url' => route('gallery')]]">
-    <x-page-header :title="__('site.gallery.title')" :subtitle="__('site.gallery.subtitle')" texture="texture-granite" />
+<x-layout page="gallery" :title="__('site.gallery.title')" :description="__('site.gallery.subtitle')" :breadcrumbs="[['name' => __('site.gallery.title'), 'url' => route('gallery')]]">
+    <x-page-header page="gallery" :title="__('site.gallery.title')" :subtitle="__('site.gallery.subtitle')" texture="texture-granite" />
 
     <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php

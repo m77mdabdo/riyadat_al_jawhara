@@ -76,12 +76,39 @@ class Setting extends Model implements HasMedia
         'stat_clients_served',
         'lead_auto_reply',
         'comment_mail_notifications',
+        'home_sections',
+        'footer_options',
+        'floating_options',
     ];
 
     protected $casts = [
         'lead_auto_reply' => 'boolean',
         'comment_mail_notifications' => 'boolean',
+        'home_sections' => 'array',
+        'footer_options' => 'array',
+        'floating_options' => 'array',
     ];
+
+    /**
+     * A website-content option (JSON column) with its built-in default when
+     * unset: option('floating_options', 'back_to_top', true).
+     */
+    public function option(string $column, string $key, mixed $default = null): mixed
+    {
+        $value = data_get($this->getAttribute($column), $key);
+
+        return $value === null || $value === '' ? $default : $value;
+    }
+
+    /**
+     * Option in the current language ("{key}_ar" / "{key}_en"), or null.
+     */
+    public function localizedOption(string $column, string $key): ?string
+    {
+        $value = $this->option($column, $key.'_'.app()->getLocale());
+
+        return is_string($value) ? $value : null;
+    }
 
     /** Column defaults, so a new/empty settings row behaves like the migration. */
     protected $attributes = [
@@ -123,6 +150,7 @@ class Setting extends Model implements HasMedia
         $this->addMediaCollection('logo')->singleFile()->acceptsMimeTypes($mimes);
         $this->addMediaCollection('logo_light')->singleFile()->acceptsMimeTypes($mimes);
         $this->addMediaCollection('og_image')->singleFile()->acceptsMimeTypes($mimes);
+        $this->addMediaCollection('favicon')->singleFile()->acceptsMimeTypes($mimes);
     }
 
     public function registerMediaConversions(?Media $media = null): void
@@ -131,6 +159,27 @@ class Setting extends Model implements HasMedia
             ->nonQueued()
             ->performOnCollections('og_image')
             ->fit(Fit::Crop, 1200, 630);
+
+        foreach (self::FAVICON_SIZES as $size) {
+            $this->addMediaConversion("favicon-{$size}")
+                ->nonQueued()
+                ->performOnCollections('favicon')
+                ->fit(Fit::Crop, $size, $size)
+                ->format('png');
+        }
+    }
+
+    /** Favicon renditions generated from an uploaded icon (px). */
+    public const FAVICON_SIZES = [16, 32, 48, 180, 192, 512];
+
+    /**
+     * URL of the uploaded favicon at $size px, or null (built-in icons are used).
+     */
+    public function faviconUrl(int $size): ?string
+    {
+        $media = $this->getFirstMedia('favicon');
+
+        return $media && $media->hasGeneratedConversion("favicon-{$size}") ? $media->getUrl("favicon-{$size}") : null;
     }
 
     public function logoUrl(): string

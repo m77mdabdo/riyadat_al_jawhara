@@ -22,13 +22,26 @@ class FragmentCache
      */
     public static function remember(string $key, Closure $render, ?int $ttl = null): string
     {
+        return self::rememberValue($key, $render, $ttl);
+    }
+
+    /**
+     * Same invalidation for computed data: any serializable value.
+     *
+     * @template T
+     *
+     * @param  Closure(): T  $build
+     * @return T
+     */
+    public static function rememberValue(string $key, Closure $build, ?int $ttl = null): mixed
+    {
         $version = Cache::rememberForever(self::VERSION_KEY, fn () => Str::random(12));
 
         // Host and locale are part of the key: fragments contain absolute URLs
         // and translated text.
         $scope = request()->getSchemeAndHttpHost().':'.app()->getLocale();
 
-        return Cache::remember("fragment:{$version}:{$scope}:{$key}", $ttl ?? (int) config('site.cache.fragment_ttl'), $render);
+        return Cache::remember("fragment:{$version}:{$scope}:{$key}", $ttl ?? (int) config('site.cache.fragment_ttl'), $build);
     }
 
     public static function flush(): void

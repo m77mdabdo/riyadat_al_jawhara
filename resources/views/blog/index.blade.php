@@ -1,5 +1,5 @@
-<x-layout :title="__('site.blog.title')" :description="__('site.blog.subtitle')" :robots="$search !== '' ? 'noindex, follow' : null" :breadcrumbs="[['name' => __('site.blog.title'), 'url' => route('blog.index')]]">
-    <x-page-header :title="__('site.blog.title')" :subtitle="__('site.blog.subtitle')" texture="texture-marble" />
+<x-layout page="blog" :title="__('site.blog.title')" :description="__('site.blog.subtitle')" :robots="$search !== '' ? 'noindex, follow' : null" :breadcrumbs="[['name' => __('site.blog.title'), 'url' => route('blog.index')]]">
+    <x-page-header page="blog" :title="__('site.blog.title')" :subtitle="__('site.blog.subtitle')" texture="texture-marble" />
 
     <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <form method="GET" role="search" class="flex flex-wrap gap-3 sm:gap-4 mb-10">

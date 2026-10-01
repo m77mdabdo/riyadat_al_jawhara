@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Pages\Branding;
 use App\Filament\Pages\Settings;
 use App\Models\Setting;
 use App\Models\Slider;
@@ -45,7 +46,7 @@ class BrandingAndHeroTest extends TestCase
     {
         $this->actingAsAdmin();
 
-        Livewire::test(Settings::class)
+        Livewire::test(Branding::class)
             ->set('data.logo', [UploadedFile::fake()->image('brand-logo.png', 560, 112)])
             ->set('data.og_image', [UploadedFile::fake()->image('share.jpg', 1200, 630)])
             ->call('save')
@@ -67,7 +68,7 @@ class BrandingAndHeroTest extends TestCase
     {
         $this->actingAsAdmin();
 
-        Livewire::test(Settings::class)
+        Livewire::test(Branding::class)
             ->set('data.logo', [UploadedFile::fake()->create('evil.svg', 5, 'image/svg+xml')])
             ->call('save')
             ->assertHasErrors();

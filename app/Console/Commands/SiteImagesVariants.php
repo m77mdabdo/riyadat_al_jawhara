@@ -22,13 +22,13 @@ class SiteImagesVariants extends Command
         $slots = $this->argument('slot') ? [$this->argument('slot')] : array_keys(config('site-images.slots', []));
 
         foreach ($slots as $slot) {
-            if (! SiteImages::exists($slot)) {
+            if (! SiteImages::hasFile($slot)) {
                 $this->line("{$slot}: no image, skipped");
 
                 continue;
             }
 
-            $width = SiteImages::size($slot)[0];
+            $width = SiteImages::fileSize($slot)[0];
             foreach (SiteImages::VARIANT_WIDTHS as $target) {
                 $path = SiteImages::variantPath($slot, $target);
                 if ($target >= $width) {

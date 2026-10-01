@@ -3,23 +3,25 @@
     slot) + faint geometric pattern + Najdi frieze. The cream wash keeps
     heading contrast >= AA regardless of the texture.
 --}}
-@props(['title', 'subtitle' => null, 'texture' => 'texture-marble'])
+@props(['title', 'subtitle' => null, 'texture' => 'texture-marble', 'page' => null])
 
 @php
-    $textureUrl = \App\Support\SiteImages::url($texture);
-    $textureSrcset = \App\Support\SiteImages::srcset($texture);
+    // A banner uploaded in Website Content → Pages replaces the texture.
+    $banner = \App\Support\PageContent::banner(\App\Support\PageContent::get($page));
+    $textureUrl = $banner['url'] ?? \App\Support\SiteImages::url($texture);
+    $textureSrcset = $banner ? $banner['srcset'] : \App\Support\SiteImages::srcset($texture);
 @endphp
 
 @if ($textureUrl)
     {{-- The header band is the LCP element on inner pages. --}}
     @push('head')
-        <link rel="preload" as="image" href="{{ $textureUrl }}" imagesrcset="{{ $textureSrcset }}" imagesizes="100vw" fetchpriority="high">
+        <link rel="preload" as="image" href="{{ $textureUrl }}" @if ($textureSrcset) imagesrcset="{{ $textureSrcset }}" imagesizes="100vw" @endif fetchpriority="high">
     @endpush
 @endif
 
 <section class="relative overflow-hidden bg-sand-100 border-b border-sand-200">
     @if ($textureUrl)
-        <img src="{{ $textureUrl }}" srcset="{{ $textureSrcset }}" sizes="100vw" alt="" width="1280" height="853" loading="eager" fetchpriority="high" decoding="async" class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-40" aria-hidden="true">
+        <img src="{{ $textureUrl }}" @if ($textureSrcset) srcset="{{ $textureSrcset }}" sizes="100vw" @endif alt="" width="1280" height="853" loading="eager" fetchpriority="high" decoding="async" class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-40" aria-hidden="true">
     @endif
     <div class="absolute inset-0 bg-gradient-to-b from-cream/80 via-cream/70 to-sand-100/90" aria-hidden="true"></div>
     <x-motif.geo-pattern />

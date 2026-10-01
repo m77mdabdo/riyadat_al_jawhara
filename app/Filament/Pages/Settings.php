@@ -3,7 +3,6 @@
 namespace App\Filament\Pages;
 
 use App\Enums\AdminNavigationGroup;
-use App\Filament\Support\ImageUpload;
 use App\Models\Setting;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -64,22 +63,9 @@ class Settings extends Page implements HasForms
 
     public function form(Forms\Form $form): Forms\Form
     {
-        $image = fn (string $name, string $collection, string $label, string $help) => ImageUpload::make($name, $collection)
-            ->label($label)
-            ->maxSize((int) config('site.uploads.branding_max_kb'))
-            ->helperText(__($help).' '.__('JPG, PNG or WebP, up to :size MB.', ['size' => round(config('site.uploads.branding_max_kb') / 1024)]));
-
         return $form
             ->model($this->getSetting())
             ->schema([
-                Forms\Components\Section::make(__('Branding'))
-                    ->description(__('Leave empty to keep the built-in logo and share image.'))
-                    ->schema([
-                        $image('logo', 'logo', 'Logo (dark, for light backgrounds)', 'Transparent PNG, same proportions as the current logo (~294×256 px). Header and error pages.'),
-                        $image('logo_light', 'logo_light', 'Logo (light, for dark backgrounds)', 'Transparent PNG (white artwork), ~294×256 px. Footer.'),
-                        $image('og_image', 'og_image', 'Default share image', '1200×630 px JPG/PNG/WebP. Used when a page has no image of its own.'),
-                    ])->columns(3),
-
                 Forms\Components\Section::make(__('Contact'))
                     ->schema([
                         Forms\Components\TextInput::make('phone')->tel(),

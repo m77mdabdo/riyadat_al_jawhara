@@ -5,6 +5,7 @@ export default {
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './resources/**/*.blade.php',
+        './app/Support/HomeSections.php',
         './resources/**/*.js',
         './resources/**/*.vue',
     ],

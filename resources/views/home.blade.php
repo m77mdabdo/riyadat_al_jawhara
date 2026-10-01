@@ -6,7 +6,8 @@
         $hasSlideImages = $slideImages->isNotEmpty();
         // The old marble video only plays when there is no slide image and no
         // curated hero photo.
-        $useVideo = ! $hasSlideImages && ! \App\Support\SiteImages::exists('hero');
+        $useVideo = ! $hasSlideImages && ! \App\Support\SiteImages::exists('hero') && \App\Support\HomeSections::videoAllowed();
+        $heroButtons = \App\Support\HomeSections::heroButtons();
         $firstSlideImage = $slideImages->get(0);
         // Hero background when a slide has no image of its own: the curated
         // stock hero (config/site-images.php), else the original poster.
@@ -70,7 +71,7 @@
             @foreach ($slideImages as $index => $imageUrl)
                 <img src="{{ $imageUrl }}" alt="" width="1920" height="1080" decoding="async" x-show="active === {{ $index }}" x-transition:enter="transition-opacity duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index === 0) fetchpriority="high" @else x-cloak loading="lazy" @endif class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
             @endforeach
-            <div class="absolute inset-0 bg-gradient-to-t from-charcoal/90 to-charcoal/40"></div>
+            <div class="absolute inset-0 bg-gradient-to-t {{ \App\Support\HomeSections::overlay() }}"></div>
         </div>
 
         <div x-show="cursorFx" x-cloak class="absolute inset-0" :style="`background: radial-gradient(500px circle at ${mx}% ${my}%, rgba(248,246,243,0.10), transparent 60%)`"></div>
@@ -88,9 +89,9 @@
                             @if ($slider->button_text && $slider->button_link)
                                 <x-button :href="\App\Support\LocalizedUrl::link($slider->button_link)" variant="inverted">{{ $slider->button_text }}</x-button>
                             @else
-                                <x-button :href="route('contact')" variant="inverted">{{ __('site.common.request_quote') }}</x-button>
+                                <x-button :href="$heroButtons['url']" variant="inverted">{{ $heroButtons['label'] }}</x-button>
                             @endif
-                            @if ($settings->whatsapp_url)
+                            @if ($settings->whatsapp_url && $heroButtons['whatsapp'])
                                 <x-button :href="$settings->whatsapp_url" variant="outline-light" data-wa-track target="_blank" rel="noopener noreferrer">
                                     <x-social-icon network="whatsapp" class="h-4 w-4" /> {{ __('site.common.whatsapp_us') }}
                                 </x-button>
@@ -99,11 +100,11 @@
                     </div>
                 @empty
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
-                        <h1 class="text-hero font-bold ltr:tracking-tight break-words">{{ __('site.meta.site_name') }}</h1>
-                        <p class="mt-5 text-base sm:text-lg text-stone-300">{{ __('site.meta.tagline') }}</p>
+                        <h1 class="text-hero font-bold ltr:tracking-tight break-words">{{ \App\Support\HomeSections::heroTitle() }}</h1>
+                        <p class="mt-5 text-base sm:text-lg text-stone-300">{{ \App\Support\HomeSections::heroSubtitle() }}</p>
                         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-                            <x-button :href="route('contact')" variant="inverted">{{ __('site.common.request_quote') }}</x-button>
-                            @if ($settings->whatsapp_url)
+                            <x-button :href="$heroButtons['url']" variant="inverted">{{ $heroButtons['label'] }}</x-button>
+                            @if ($settings->whatsapp_url && $heroButtons['whatsapp'])
                                 <x-button :href="$settings->whatsapp_url" variant="outline-light" data-wa-track target="_blank" rel="noopener noreferrer">
                                     <x-social-icon network="whatsapp" class="h-4 w-4" /> {{ __('site.common.whatsapp_us') }}
                                 </x-button>

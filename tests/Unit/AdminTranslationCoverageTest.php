@@ -35,6 +35,10 @@ class AdminTranslationCoverageTest extends TestCase
             // ->label('Literal'), Section::make('Literal') …
             preg_match_all('/->('.self::UI_METHODS.")\\(\\s*'([^']*[A-Za-z\\x{0600}-\\x{06FF}][^']*)'/u", $code, $m);
             foreach ($m[2] as $i => $literal) {
+                // Example addresses (placeholder('/contact'), 'https://…') are not words.
+                if (preg_match('~^(/|https?://|#|mailto:|tel:)~', $literal) === 1) {
+                    continue;
+                }
                 $violations[] = "{$path}: ->{$m[1][$i]}('{$literal}')";
             }
             preg_match_all("/(?:Section|Tab|Fieldset|Stat|Step)::make\\(\\s*'([^']*[A-Z][^']*)'/", $code, $m);
@@ -65,7 +69,7 @@ class AdminTranslationCoverageTest extends TestCase
             preg_match_all("/__\\(\\s*\\$[^?()]*\\?\\s*'([^']+)'\\s*:\\s*'([^']+)'\\s*\\)/", $code, $c);
             foreach (array_unique([...$m[1], ...$c[1], ...$c[2]]) as $key) {
                 $key = stripslashes($key);
-                if (str_ends_with($key, '.')) {
+                if (preg_match('/^[a-z_]+(\.[a-z0-9_-]+)*\.$/', $key) === 1) {
                     continue; // dynamic key prefix, e.g. 'admin.activity.events.'.$state
                 }
                 $dotted = preg_match('/^[a-z_]+(\.[a-z0-9_-]+)+$/', $key) === 1;

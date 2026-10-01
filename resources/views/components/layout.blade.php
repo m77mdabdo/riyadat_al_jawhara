@@ -13,8 +13,20 @@
     'robots' => null,
     // [type, id] of the service/stone/project a WhatsApp click comes from.
     'waContext' => null,
+    // App\Enums\PageKey value: SEO overrides, noindex, share image and
+    // content blocks from Website Content → Pages.
+    'page' => null,
 ])
 @php
+    $pageContent = \App\Support\PageContent::get($page);
+    if ($pageContent) {
+        $title = $pageContent->seoTitle($title);
+        $description = $pageContent->seoDescription($description);
+        $image = \App\Support\PageContent::ogImage($pageContent) ?? $image;
+        if ($pageContent->noindex) {
+            $robots = 'noindex, follow';
+        }
+    }
     $jsonLdSettings = $settings;
     $siteName = __('site.meta.site_name');
 
@@ -119,11 +131,13 @@
         <script type="application/ld+json">{!! json_encode($breadcrumbList, $jsonFlags) !!}</script>
     @endif
 
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}">
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    @foreach ([16, 32, 48] as $iconSize)
+        <link rel="icon" type="image/png" sizes="{{ $iconSize }}x{{ $iconSize }}" href="{{ $jsonLdSettings->faviconUrl($iconSize) ?? asset("favicon-{$iconSize}x{$iconSize}.png") }}">
+    @endforeach
+    @unless ($jsonLdSettings->faviconUrl(32))
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    @endunless
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ $jsonLdSettings->faviconUrl(180) ?? asset('apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     <meta name="theme-color" content="#2B2B2B">
 
@@ -152,11 +166,16 @@
 
         <main id="main-content" class="flex-1">
             {{ $slot }}
+
+            @if ($pageContent?->blocks)
+                <x-page-blocks :page="$pageContent" />
+            @endif
         </main>
 
         @include('partials.footer')
     </div>
 
+    @if ($jsonLdSettings->option('floating_options', 'back_to_top', true))
     <button
         x-data="{ visible: false }"
         x-show="visible"
@@ -170,6 +189,7 @@
     >
         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
     </button>
+    @endif
 
     <x-whatsapp-float />
 

@@ -1,21 +1,32 @@
+{{-- $footerColumns: App\View\Composers\NavigationComposer; options: Website Content → Footer --}}
+@php
+    $footerShow = fn (string $part) => (bool) $settings->option('footer_options', 'show_'.$part, true);
+    $footerAbout = __('site.footer.about') ?: __('site.meta.tagline');
+    $copyright = $settings->localizedOption('footer_options', 'copyright');
+@endphp
 <footer class="bg-charcoal text-cream mt-auto">
     <x-motif.najdi-band tone="light" class="bg-charcoal pt-4" />
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         <div>
             <img src="{{ $settings->logoLightUrl() }}" alt="{{ __('site.meta.site_name') }}" width="138" height="120" loading="lazy" decoding="async" class="h-12 w-auto mb-3">
-            <p class="text-sm text-stone-300 leading-prose">{{ __('site.meta.tagline') }}</p>
+            @if ($footerShow('about'))
+                <p class="text-sm text-stone-300 leading-prose">{{ $footerAbout }}</p>
+            @endif
         </div>
 
-        <div>
-            <h2 class="text-base font-semibold mb-4">{{ __('site.footer.quick_links') }}</h2>
-            <ul class="text-sm text-stone-300">
-                @foreach ($navLinks as $link)
-                    @continue($link['route'] === 'home')
-                    <li><a href="{{ $link['url'] }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ $link['label'] }}</a></li>
-                @endforeach
-            </ul>
-        </div>
+        @foreach ($footerColumns as $column)
+            <div>
+                <h2 class="text-base font-semibold mb-4">{{ $column['title'] }}</h2>
+                <ul class="text-sm text-stone-300">
+                    @foreach ($column['links'] as $link)
+                        @continue($link['url'] === '#')
+                        <li><a href="{{ $link['url'] }}" @if ($link['new_tab']) target="_blank" rel="noopener noreferrer" @endif class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">@if ($link['icon'] ?? null)<x-dynamic-component :component="$link['icon']" class="inline h-4 w-4 me-1 align-[-0.125em]" aria-hidden="true" />@endif{{ $link['label'] }}</a></li>
+                    @endforeach
+                </ul>
+            </div>
+        @endforeach
 
+        @if ($footerShow('contact'))
         <div>
             <h2 class="text-base font-semibold mb-4">{{ __('site.footer.contact_info') }}</h2>
             <ul class="text-sm text-stone-300">
@@ -33,7 +44,9 @@
                 @endif
             </ul>
         </div>
+        @endif
 
+        @if ($footerShow('social'))
         <div>
             <h2 class="text-base font-semibold mb-4">{{ __('site.footer.follow_us') }}</h2>
             @php
@@ -48,15 +61,24 @@
                 @endforeach
             </div>
         </div>
+        @endif
     </div>
 
     <div class="border-t border-stone-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-24 sm:pb-4 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm sm:text-xs text-stone-400 text-center">
-            <span class="text-center">&copy; {{ now()->year }} {{ __('site.meta.site_name') }} — {{ __('site.footer.rights_reserved') }}</span>
+            <span class="text-center">
+                @if ($copyright)
+                    {{ str_replace('{year}', (string) now()->year, $copyright) }}
+                @else
+                    &copy; {{ now()->year }} {{ __('site.meta.site_name') }} — {{ __('site.footer.rights_reserved') }}
+                @endif
+            </span>
+            @if ($footerShow('legal'))
             <span class="hidden sm:inline">&middot;</span>
             <a href="{{ route('legal.privacy') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.legal.privacy_policy_title') }}</a>
             <span class="hidden sm:inline">&middot;</span>
             <a href="{{ route('legal.terms') }}" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.legal.terms_title') }}</a>
+            @endif
             @if (\App\Support\Analytics::enabled())
                 <span class="hidden sm:inline">&middot;</span>
                 <button type="button" x-data @click="window.dispatchEvent(new CustomEvent('jra:consent-open'))" class="inline-flex min-h-11 items-center hover:text-cream transition-colors rounded-sm focus-visible:ring-cream focus-visible:ring-offset-charcoal">{{ __('site.consent.settings') }}</button>

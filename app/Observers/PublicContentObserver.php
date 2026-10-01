@@ -3,11 +3,18 @@
 namespace App\Observers;
 
 use App\Contracts\CatalogueGenerator;
+use App\Models\Menu;
+use App\Models\MenuItem;
+use App\Models\Page;
 use App\Models\Setting;
+use App\Models\SiteImage;
 use App\Models\StoneAttribute;
 use App\Models\StoneCategory;
 use App\Models\StoneType;
 use App\Support\FragmentCache;
+use App\Support\Navigation;
+use App\Support\PageContent;
+use App\Support\SiteImages;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -36,6 +43,20 @@ class PublicContentObserver
     private function invalidate(Model $model): void
     {
         FragmentCache::flush();
+
+        // Uploaded site images and page banners are media files.
+        if ($model instanceof Media && $model->model_type === (new SiteImage)->getMorphClass()) {
+            SiteImages::flush();
+        }
+        if ($model instanceof Media && $model->model_type === (new Page)->getMorphClass()) {
+            PageContent::flush();
+        }
+
+        if ($model instanceof Menu || $model instanceof MenuItem) {
+            Navigation::flush();
+        } elseif (in_array($model::class, Navigation::LINKABLE, true)) {
+            Navigation::flushIfLinked($model);
+        }
 
         if (in_array($model::class, self::CATALOGUE_MODELS, true)) {
             $this->catalogue->flush();

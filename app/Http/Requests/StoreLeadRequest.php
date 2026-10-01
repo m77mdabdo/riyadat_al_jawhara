@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Support\ContactForm;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -18,19 +19,22 @@ class StoreLeadRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Optional fields follow Website Content → Pages → Contact.
+        $presence = fn (string $field) => ContactForm::requires($field) ? 'required' : 'nullable';
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:30', 'regex:/^[0-9+\s\-()]{7,30}$/'],
             // not_regex: Laravel 12.60+ fixed the CRLF advisory in the `email` rule,
             // but the rule still accepts some control characters (e.g. NUL in the
             // local part), so we keep refusing all of them (see SecurityTest).
-            'email' => ['nullable', 'email', 'max:255', 'not_regex:/[\x00-\x1F\x7F]/'],
-            'city' => ['nullable', 'string', 'max:255'],
+            'email' => [$presence('email'), 'email', 'max:255', 'not_regex:/[\x00-\x1F\x7F]/'],
+            'city' => [$presence('city'), 'string', 'max:255'],
             // Only records currently shown on the site may be referenced.
-            'service_id' => ['nullable', Rule::exists('services', 'id')->where('is_active', true)],
-            'stone_type_id' => ['nullable', Rule::exists('stone_types', 'id')->where('is_active', true)],
+            'service_id' => [$presence('service_id'), Rule::exists('services', 'id')->where('is_active', true)],
+            'stone_type_id' => [$presence('stone_type_id'), Rule::exists('stone_types', 'id')->where('is_active', true)],
             'project_id' => ['nullable', Rule::exists('projects', 'id')->where('is_active', true)],
-            'message' => ['required', 'string', 'max:2000'],
+            'message' => [$presence('message'), 'string', 'max:2000'],
             'consent' => ['accepted'],
             'website' => ['nullable', 'string', 'max:255'],
         ];
@@ -42,6 +46,13 @@ class StoreLeadRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        // Values of fields the form doesn't show are ignored.
+        foreach (array_keys(ContactForm::FIELDS) as $field) {
+            if (! ContactForm::shows($field)) {
+                $this->merge([$field => null]);
+            }
+        }
+
         if (is_string($this->input('phone'))) {
             $this->merge([
                 'phone' => trim(strtr($this->input('phone'), [

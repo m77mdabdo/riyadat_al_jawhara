@@ -1,4 +1,15 @@
-@if ($settings->whatsapp_url)
+@php
+    // Website Content → Floating elements. "right" (default) keeps the button on
+    // the right in both languages; start/end follow the reading direction.
+    $waPosition = $settings->option('floating_options', 'whatsapp_position', 'right');
+    $waSide = match ($waPosition) {
+        'start' => app()->getLocale() === 'ar' ? 'right' : 'left',
+        'end' => app()->getLocale() === 'ar' ? 'left' : 'right',
+        default => 'right',
+    };
+    $waOther = $waSide === 'right' ? 'left' : 'right';
+@endphp
+@if ($settings->whatsapp_url && $settings->option('floating_options', 'whatsapp_show', true))
     {{-- A landmark so the float isn't "content outside any region" for screen readers. --}}
     <aside
         aria-label="{{ __('site.common.whatsapp_us') }}"
@@ -14,25 +25,25 @@
             },
         }"
         class="fixed z-50"
-        style="right: calc(1rem + env(safe-area-inset-right)); left: auto; bottom: calc(1rem + env(safe-area-inset-bottom) + var(--consent-h, 0px));"
+        style="{{ $waSide }}: calc(1rem + env(safe-area-inset-{{ $waSide }})); {{ $waOther }}: auto; bottom: calc(1rem + env(safe-area-inset-bottom) + var(--consent-h, 0px));"
     >
         <div
             x-show="showTooltip"
             x-cloak
             x-transition.opacity.duration.300ms
-            class="absolute bottom-full w-64 max-w-[calc(100vw-2rem)] rounded-xl border border-stone-200 bg-white p-4 pr-11 text-sm text-stone-700 shadow-lg"
-            style="right: 0; left: auto; margin-bottom: 0.75rem;"
+            class="absolute bottom-full w-64 max-w-[calc(100vw-2rem)] rounded-xl border border-stone-200 bg-white p-4 {{ $waSide === 'right' ? 'pr-11' : 'pl-11' }} text-sm text-stone-700 shadow-lg"
+            style="{{ $waSide }}: 0; {{ $waOther }}: auto; margin-bottom: 0.75rem;"
         >
             <button
                 @click="showTooltip = false"
                 type="button"
                 class="absolute h-11 w-11 flex items-center justify-center text-stone-400 hover:text-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-1 rounded"
-                style="top: 0; right: 0; left: auto;"
+                style="top: 0; {{ $waSide }}: 0; {{ $waOther }}: auto;"
                 aria-label="{{ __('site.common.close') }}"
             >
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
-            <p>{{ __('site.whatsapp_default_message') }}</p>
+            <p>{{ __('site.whatsapp_tooltip') }}</p>
         </div>
 
         <a

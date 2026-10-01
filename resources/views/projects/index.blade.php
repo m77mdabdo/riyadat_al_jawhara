@@ -1,5 +1,5 @@
-<x-layout :title="__('site.projects.title')" :description="__('site.projects.meta_description')" :breadcrumbs="[['name' => __('site.projects.title'), 'url' => route('projects.index')]]">
-    <x-page-header :title="__('site.projects.title')" :subtitle="__('site.projects.meta_description')" texture="texture-sandstone" />
+<x-layout page="projects" :title="__('site.projects.title')" :description="__('site.projects.meta_description')" :breadcrumbs="[['name' => __('site.projects.title'), 'url' => route('projects.index')]]">
+    <x-page-header page="projects" :title="__('site.projects.title')" :subtitle="__('site.projects.meta_description')" texture="texture-sandstone" />
 
     <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <form method="GET" class="flex flex-wrap gap-3 sm:gap-4 mb-10">

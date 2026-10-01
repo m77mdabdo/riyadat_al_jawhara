@@ -77,6 +77,9 @@ return [
     ],
 
     'home' => [
+        // Hero heading when there are no slides (empty = site name / tagline).
+        'hero_title' => '',
+        'hero_subtitle' => '',
         'our_services' => 'Our Services',
         'our_services_subtitle' => 'Comprehensive stone solutions from supply to installation and design',
         'featured_projects' => 'Featured Projects',
@@ -129,6 +132,8 @@ return [
 
     'about' => [
         'title' => 'About Us',
+        // Optional line under the page title (empty = none).
+        'subtitle' => '',
         'our_vision' => 'Our Vision',
         'our_mission' => 'Our Mission',
         'our_team' => 'Our Team',
@@ -365,6 +370,8 @@ return [
     'legal' => [
         'privacy_policy_title' => 'Privacy Policy',
         'terms_title' => 'Terms of Use',
+        'privacy_subtitle' => '',
+        'terms_subtitle' => '',
         'content_missing' => 'This page has not been filled in yet.',
     ],
 
@@ -383,6 +390,8 @@ return [
     ],
 
     'footer' => [
+        // Short text under the footer logo (empty = the tagline).
+        'about' => '',
         'quick_links' => 'Quick Links',
         'follow_us' => 'Follow Us',
         'contact_info' => 'Contact Info',
@@ -390,6 +399,7 @@ return [
     ],
 
     'whatsapp_default_message' => "Hi, I'd like to ask about your services.",
+    'whatsapp_tooltip' => "Hi, I'd like to ask about your services.",
     'whatsapp_aria_label' => 'Contact us on WhatsApp',
 
 ];

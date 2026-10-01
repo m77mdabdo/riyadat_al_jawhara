@@ -1,5 +1,5 @@
-<x-layout :title="$term !== '' ? __('site.search.title').': '.$term : __('site.search.title')" :description="__('site.search.subtitle')" robots="noindex, follow">
-    <x-page-header :title="__('site.search.title')" :subtitle="__('site.search.subtitle')" texture="texture-quartz">
+<x-layout page="search" :title="$term !== '' ? __('site.search.title').': '.$term : __('site.search.title')" :description="__('site.search.subtitle')" robots="noindex, follow">
+    <x-page-header page="search" :title="__('site.search.title')" :subtitle="__('site.search.subtitle')" texture="texture-quartz">
         <form method="GET" action="{{ route('search') }}" role="search" class="mt-8 mx-auto flex max-w-xl flex-col gap-3 sm:flex-row">
             <label for="site-search" class="sr-only">{{ __('site.search.label') }}</label>
             <input id="site-search" type="search" name="q" value="{{ $term }}" minlength="2" maxlength="100" required autofocus

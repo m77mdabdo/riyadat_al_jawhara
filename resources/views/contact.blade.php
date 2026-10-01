@@ -1,5 +1,5 @@
-<x-layout :title="__('site.contact.title')" :description="__('site.contact.subtitle')" :breadcrumbs="[['name' => __('site.contact.title'), 'url' => route('contact')]]">
-    <x-page-header :title="__('site.contact.title')" :subtitle="__('site.contact.subtitle')" texture="texture-sandstone" />
+<x-layout page="contact" :title="__('site.contact.title')" :description="__('site.contact.subtitle')" :breadcrumbs="[['name' => __('site.contact.title'), 'url' => route('contact')]]">
+    <x-page-header page="contact" :title="__('site.contact.title')" :subtitle="__('site.contact.subtitle')" texture="texture-sandstone" />
 
     <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-5 gap-12">
         <div class="lg:col-span-3">
@@ -47,22 +47,27 @@
                         <p id="phone-hint" class="mt-1 text-sm sm:text-xs text-stone-600">{{ __('site.contact.phone_hint') }} <bdi dir="ltr">+966 5X XXX XXXX</bdi></p>
                         @error('phone') <p id="phone-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
+                    @if (\App\Support\ContactForm::shows('email'))
                     <div>
-                        <label for="email" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_email') }}</label>
-                        <input type="email" name="email" id="email" autocomplete="email" dir="ltr" value="{{ old('email') }}" @error('email') aria-invalid="true" aria-describedby="email-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('email') border-red-400 @else border-stone-300 @enderror">
+                        <label for="email" class="block text-sm font-medium text-charcoal mb-1">{{ \App\Support\ContactForm::label('email', __('site.contact.form_email')) }}</label>
+                        <input type="email" name="email" id="email" @if (\App\Support\ContactForm::requires('email')) required @endif autocomplete="email" dir="ltr" value="{{ old('email') }}" @error('email') aria-invalid="true" aria-describedby="email-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('email') border-red-400 @else border-stone-300 @enderror">
                         @error('email') <p id="email-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
+                    @endif
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    @if (\App\Support\ContactForm::shows('city'))
                     <div>
-                        <label for="city" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_city') }}</label>
-                        <input type="text" name="city" id="city" autocomplete="address-level2" value="{{ old('city') }}" @error('city') aria-invalid="true" aria-describedby="city-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('city') border-red-400 @else border-stone-300 @enderror">
+                        <label for="city" class="block text-sm font-medium text-charcoal mb-1">{{ \App\Support\ContactForm::label('city', __('site.contact.form_city')) }}</label>
+                        <input type="text" name="city" id="city" @if (\App\Support\ContactForm::requires('city')) required @endif autocomplete="address-level2" value="{{ old('city') }}" @error('city') aria-invalid="true" aria-describedby="city-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('city') border-red-400 @else border-stone-300 @enderror">
                         @error('city') <p id="city-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
+                    @endif
+                    @if (\App\Support\ContactForm::shows('service_id'))
                     <div>
-                        <label for="service_id" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_service') }}</label>
-                        <select name="service_id" id="service_id" @error('service_id') aria-invalid="true" aria-describedby="service_id-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('service_id') border-red-400 @else border-stone-300 @enderror">
+                        <label for="service_id" class="block text-sm font-medium text-charcoal mb-1">{{ \App\Support\ContactForm::label('service_id', __('site.contact.form_service')) }}</label>
+                        <select name="service_id" id="service_id" @if (\App\Support\ContactForm::requires('service_id')) required @endif @error('service_id') aria-invalid="true" aria-describedby="service_id-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('service_id') border-red-400 @else border-stone-300 @enderror">
                             <option value="">{{ __('site.contact.choose_service') }}</option>
                             @foreach ($services as $service)
                                 <option value="{{ $service->id }}" @selected(old('service_id', $selectedServiceId) == $service->id)>{{ $service->name }}</option>
@@ -70,11 +75,13 @@
                         </select>
                         @error('service_id') <p id="service_id-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
+                    @endif
                 </div>
 
+                @if (\App\Support\ContactForm::shows('stone_type_id'))
                 <div>
-                    <label for="stone_type_id" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_stone_type') }}</label>
-                    <select name="stone_type_id" id="stone_type_id" @error('stone_type_id') aria-invalid="true" aria-describedby="stone_type_id-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('stone_type_id') border-red-400 @else border-stone-300 @enderror">
+                    <label for="stone_type_id" class="block text-sm font-medium text-charcoal mb-1">{{ \App\Support\ContactForm::label('stone_type_id', __('site.contact.form_stone_type')) }}</label>
+                    <select name="stone_type_id" id="stone_type_id" @if (\App\Support\ContactForm::requires('stone_type_id')) required @endif @error('stone_type_id') aria-invalid="true" aria-describedby="stone_type_id-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('stone_type_id') border-red-400 @else border-stone-300 @enderror">
                         <option value="">{{ __('site.contact.choose_stone_type') }}</option>
                         @foreach ($stoneTypes as $stoneType)
                             <option value="{{ $stoneType->id }}" @selected(old('stone_type_id', $selectedStoneTypeId) == $stoneType->id)>{{ $stoneType->name }}</option>
@@ -82,12 +89,15 @@
                     </select>
                     @error('stone_type_id') <p id="stone_type_id-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
+                @endif
 
+                @if (\App\Support\ContactForm::shows('message'))
                 <div>
-                    <label for="message" class="block text-sm font-medium text-charcoal mb-1">{{ __('site.contact.form_message') }}</label>
-                    <textarea name="message" id="message" rows="4" @error('message') aria-invalid="true" aria-describedby="message-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('message') border-red-400 @else border-stone-300 @enderror">{{ old('message') }}</textarea>
+                    <label for="message" class="block text-sm font-medium text-charcoal mb-1">{{ \App\Support\ContactForm::label('message', __('site.contact.form_message')) }}</label>
+                    <textarea name="message" id="message" @if (\App\Support\ContactForm::requires('message')) required @endif rows="4" @error('message') aria-invalid="true" aria-describedby="message-error" @enderror class="w-full min-h-11 rounded-md px-3 py-2.5 text-base focus:border-charcoal focus:ring-charcoal @error('message') border-red-400 @else border-stone-300 @enderror">{{ old('message') }}</textarea>
                     @error('message') <p id="message-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>
+                @endif
 
                 <div>
                     <label for="consent" class="flex min-h-11 items-start gap-3 text-sm text-stone-700 leading-prose cursor-pointer">
