@@ -1,115 +1,246 @@
-# Riyadat Al-Jawhara (JRA) — Website & Admin
+# Riyadat Al-Jawhara · ريادة الجوهرة الإبداعية
 
-Bilingual (Arabic / English, full RTL) company website for **Riyadat Al-Jawhara Al-Ibdaeya**, a natural stone, marble and granite supply, installation and design business. It includes a Filament admin panel that the company uses to manage content and incoming quote requests.
+**Bilingual (Arabic / English) website and admin platform for a natural stone, marble and granite company in Saudi Arabia.**
 
-| | |
+[![CI](https://github.com/m77mdabdo/riyadat_al_jawhara/actions/workflows/ci.yml/badge.svg)](https://github.com/m77mdabdo/riyadat_al_jawhara/actions/workflows/ci.yml)
+![PHP 8.4+](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)
+![Laravel 12](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)
+![Filament 3](https://img.shields.io/badge/Filament-3-FDAE4B)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)
+![License: Proprietary](https://img.shields.io/badge/License-Proprietary-lightgrey)
+
+| Home (Arabic) | Home (English) |
 |---|---|
-| Framework | Laravel 12 · PHP **8.4+** |
-| Admin | Filament 3 (`/admin`) · Livewire 3 |
-| Media | Spatie Media Library (JPG/PNG/WebP, WebP responsive renditions) |
-| Roles | Spatie Permission (`admin`, `editor`) |
-| Frontend | Blade · Tailwind CSS 3 · Alpine.js · Vite 6 |
-| Database | MySQL (production) · SQLite `:memory:` (tests) |
+| ![Home page in Arabic](docs/images/home-ar.webp) | ![Home page in English](docs/images/home-en.webp) |
+| **Stone catalogue** | **Project page** |
+| ![Stone catalogue with filters](docs/images/stones.webp) | ![Project detail page](docs/images/project.webp) |
+| **Mobile** | **Admin dashboard** |
+| ![Home page on a phone](docs/images/mobile.webp) | ![Admin dashboard](docs/images/admin-dashboard.webp) |
 
-## What the site does
+<sub>Screenshots use demo data.</sub>
 
-**Public site (AR/EN, full RTL):** every page lives under `/ar/...` or `/en/...` (Arabic is the default; `/` redirects to `/ar`, and old un-prefixed URLs 301 to their `/ar` equivalent). hreflang alternates and per-language canonicals are set on every page.
-- **Home:** hero slides, why-choose-us, services, stone-category tiles, featured projects, process, statistics (only when real figures are entered), heritage strip, testimonials, FAQ.
-- **Services** and **Stones** (catalogue): stone pages show specifications (finish, colour, size/thickness, application, local/imported), a gallery and related projects. `/stones` filters by category and specification; a category filter shows that category's image and description.
-- **Catalogue PDF:** `/{locale}/stones/catalogue.pdf` (whole catalogue) and a per-stone spec sheet, generated in Arabic (RTL) or English and cached until stone data changes.
-- **Projects** (portfolio): filters by service, stone and sector; before/after comparison slider; gallery lightbox; materials used; similar projects. The client name shows only when "show client name" is on for that project.
-- **Gallery** (`/{locale}/gallery`): masonry grid of project and stone photos with filters and the shared lightbox.
-- **Search** (`/{locale}/search`): services, stones, projects, blog posts and FAQs in both languages (results are `noindex`).
-- **Blog:** categories, tags and search; threaded comments that appear only after moderation.
-- **FAQ, About, Contact, Privacy Policy, Terms of Use.**
-- **Quote/contact form:** "Request a quote" buttons pre-fill the service, stone or project the visitor was viewing. The form includes PDPL consent, spam protection (rate limit + honeypot), and an email to the company for every lead. After sending, visitors land on a thank-you page (the conversion target).
-- **WhatsApp click tracking:** anonymous click counts; a click from a service/stone/project page also records a lead with source "WhatsApp".
-- **Analytics (optional):** GA4 or Plausible, loaded only after the visitor accepts the cookie banner. Off unless configured in `.env`.
-- **SEO:** canonical URLs, hreflang, Open Graph / Twitter cards, JSON-LD (LocalBusiness, Article, BreadcrumbList, FAQPage), per-page meta title/description overrides, `/sitemap.xml` (both languages), dynamic `/robots.txt`.
-- **Performance / PWA:** self-hosted fonts, WebP responsive images, cached home sections and sitemap, web app manifest with maskable icons.
+---
 
-**Admin (`/admin`):**
-- **Leads:** status pipeline, assignee, follow-up date, internal notes, "follow-ups due" dashboard stat, and CSV export (admins only).
-- **Content:** projects, services, stones, stone categories, stone attributes, hero slides, testimonials, team, FAQs, blog posts, categories, tags, comment moderation.
-- **Settings** (admins only): contact details, map, social links, legal pages, logo and share image.
-- **Users** (admins only), password reset, and a profile page (the current password is required to change email or password).
-- **Arabic or English admin:** each user picks the panel language from the user menu or profile page (saved per user; RTL in Arabic).
-- **Activity log** (admins only): who created, changed or deleted which record, with before/after values. Visitor IPs and passwords are never logged.
-- **Privacy retention:** a daily scheduled job removes IP address and browser details from comments and leads older than `PRIVACY_RETENTION_DAYS` (default 180).
+## About
 
-| Role | Can do |
+Riyadat Al-Jawhara Al-Ibdaeya supplies and installs marble, granite, quartz and natural stone for residential and commercial projects across Saudi Arabia. This platform is the company's website and back office in one:
+
+- **Presentation:** services, the stone catalogue and the project portfolio, in Arabic (right-to-left) and English.
+- **Catalogue:** every stone with its specifications, gallery, related projects and a downloadable PDF spec sheet.
+- **Portfolio:** completed projects with before/after comparisons and the materials used.
+- **Lead generation:** quote requests and WhatsApp clicks captured with their context, followed up by the team in the admin panel.
+
+## Features
+
+**Public site**
+- Home page with hero slides, services, stone categories, featured projects, process, statistics (only when real figures are set), testimonials and FAQ.
+- Services, stones, projects, gallery, blog (categories, tags, moderated comments), FAQ, about, contact, privacy policy and terms.
+- Site-wide search across services, stones, projects, posts and FAQs, in both languages.
+
+**Catalogue and filters**
+- Filter stones by category, finish, colour, application and origin (local / imported).
+- Downloadable catalogue PDF and per-stone spec sheets, in Arabic (correctly shaped, RTL) and English.
+
+**Portfolio**
+- Filter projects by service, stone and sector; before/after slider; lightbox gallery; similar projects.
+- A project's client name is shown only when that client has agreed.
+
+**Leads and CRM workflow**
+- "Request a quote" buttons pre-fill the service, stone or project the visitor was viewing.
+- Lead status pipeline, assignee, follow-up dates, internal notes, follow-ups-due filter and CSV export.
+- WhatsApp button clicks are counted; clicks from a service, stone or project page also create a lead.
+
+**Notifications**
+- Branded HTML + plain-text emails in Arabic and English: new lead (team), confirmation (visitor), daily follow-up digest, comments awaiting review, admin password reset.
+- In-panel notification bell. Every email is queued and retried; a mail problem never breaks a visitor's request.
+- Admin "Email previews" page and `app:mail-test` for checking every template.
+
+**Bilingual / RTL**
+- Every page under `/ar/…` or `/en/…` (Arabic is the default), with a language switch that keeps the current page.
+- Full RTL layout, Arabic typography (Cairo + Reem Kufi), English typography (Inter + Marcellus).
+- Arabic or English admin panel, chosen per user.
+
+**SEO**
+- Canonical URLs, hreflang, Open Graph and Twitter cards, JSON-LD (LocalBusiness, Article, BreadcrumbList, FAQPage).
+- Per-page title/description overrides, bilingual `/sitemap.xml`, dynamic `/robots.txt`.
+
+**Admin panel and roles**
+- Filament admin for all content, leads, settings, users and the activity log (who changed what).
+- Two roles: admin and editor (see the matrix below).
+
+**Security**
+- Content Security Policy and security headers, rate limits on every public form and download, spam honeypots, upload whitelist (JPG/PNG/WebP).
+- Consent-gated analytics (nothing loads before consent), privacy retention job that clears old IP addresses and browser details.
+
+**Performance**
+- Self-hosted, subset fonts; responsive WebP images; cached home sections and sitemap; preloaded hero image.
+- Lighthouse mobile 94–97 on the key pages with server compression enabled.
+
+## Tech stack
+
+| Area | Technology |
 |---|---|
-| `admin` | Everything, including deleting records, Users, Settings, lead export and the activity log |
-| `editor` | Create and edit content, handle leads and notes. Cannot delete, manage users or change Settings |
+| Backend | PHP 8.4+, Laravel 12 |
+| Admin | Filament 3, Livewire 3 |
+| Frontend | Blade, Tailwind CSS 3, Alpine.js, Vite 6 |
+| Media | Spatie Media Library (WebP renditions) |
+| Roles / audit | Spatie Permission, Spatie Activitylog |
+| PDF | mPDF |
+| Database | MySQL 8 / MariaDB 10.6+ (SQLite in-memory for tests) |
+| Quality | PHPUnit, Laravel Pint, Larastan (level 6), GitHub Actions |
 
-## Local setup
+## Architecture
+
+Thin controllers call single-purpose **Actions** (`app/Actions`); status and type values are **Enums**; authorization lives in **Policies**; swappable infrastructure sits behind **Contracts** (catalogue PDF generator, stock-photo providers). Bilingual columns (`name_ar` / `name_en`) are read through one trait with automatic fallback.
+
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the request lifecycle, conventions and step-by-step recipes (new content type, stone attribute, notification, language).
+
+## Requirements
+
+- PHP **8.4+** with `mbstring`, `intl`, `pdo_mysql`, `exif`, `fileinfo`, `zip` and `gd` (with WebP support)
+- MySQL 8 or MariaDB 10.6+
+- Composer 2
+- Node.js LTS (20+) and npm, for building assets
+
+## Local installation
 
 ```bash
+git clone https://github.com/m77mdabdo/riyadat_al_jawhara.git
+cd riyadat_al_jawhara
+
 composer install
-npm install
-cp .env.example .env          # then set DB_* for your local MySQL
+npm ci
+
+cp .env.example .env               # then set DB_* for your local MySQL
 php artisan key:generate
 php artisan migrate
+php artisan db:seed --class=ProductionSeeder        # roles only
+php artisan db:seed --class=DemoSeeder              # optional: fake demo content
 php artisan storage:link
+php artisan app:create-admin       # prompts for name, email and a hidden password
 
-# Optional fake demo content (services, stones, projects, blog, leads...).
-# Without PEXELS_API_KEY it creates no images (placeholders are shown).
-php artisan db:seed --class=DemoSeeder
-
-# Create your admin login (prompts for a hidden password)
-php artisan app:create-admin
-
-npm run dev                   # or: npm run build
-php artisan serve             # site: http://127.0.0.1:8000/ar
+npm run dev                        # or: npm run build
+php artisan serve                  # http://127.0.0.1:8000/ar
 ```
 
-- `php artisan db:seed` on its own runs **ProductionSeeder** (roles only) and is safe everywhere. **DemoSeeder** is fake content: never run it in production.
-- No seeder creates user accounts or contains passwords. Use `app:create-admin`.
-- Lead emails are queued. Locally, either run `php artisan queue:work` or set `QUEUE_CONNECTION=sync`. With `MAIL_MAILER=log`, emails are written to `storage/logs/laravel.log`.
+`DemoSeeder` creates invented content (testimonials, team, leads); never run it on production.
 
-## Tests
+## Environment variables
+
+Only placeholders live in `.env.example`; set real values in `.env` on each machine.
+
+| Key | Purpose | Required |
+|---|---|---|
+| `APP_ENV`, `APP_DEBUG`, `APP_URL`, `APP_KEY` | Environment, debug mode, public URL (used for absolute links and images), encryption key | Yes |
+| `APP_LOCALE` | Default language of the admin panel, CLI and queued jobs | Yes |
+| `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | Database | Yes |
+| `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` | Outgoing mail (SMTP or provider) | Yes (production) |
+| `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME` | Sender; use an address on the company domain | Yes (production) |
+| `MAIL_TEST_RECIPIENT` | The only address test emails may be sent to | Optional |
+| `QUEUE_CONNECTION` | `database` (with a worker or cron) or `sync` | Yes |
+| `CACHE_STORE`, `SESSION_DRIVER` | Cache and session storage | Yes |
+| `ANALYTICS_GA4_ID` or `ANALYTICS_PLAUSIBLE_DOMAIN` (+ `ANALYTICS_PLAUSIBLE_SRC`) | Consent-gated analytics; empty = off | Optional |
+| `PRIVACY_RETENTION_DAYS` | Days to keep IP/browser details on leads and comments (default 180) | Optional |
+| `PEXELS_API_KEY`, `PIXABAY_API_KEY`, `UNSPLASH_ACCESS_KEY` | Demo/stock-image tooling only; leave empty in production | Optional |
+| `LOG_STACK`, `LOG_LEVEL`, `LOG_DAILY_DAYS` | Logging | Optional |
+
+## Tests and quality checks
 
 ```bash
-php artisan config:clear   # ALWAYS first -- see warning below
+php artisan config:clear      # always first: tests use an in-memory SQLite database
 php artisan test
-./vendor/bin/pint --test
+./vendor/bin/pint --test      # code style
+composer analyse              # Larastan level 6
+npm run build
 ```
 
-`phpunit.xml` forces an in-memory SQLite database. **Never run tests while `config:cache` is active:** a cached config ignores that override, and `RefreshDatabase` would wipe your real database. Tests also fake the `public` disk, so they never write into `storage/app/public`.
+Never run the tests while `config:cache` is active: a cached config ignores the test database setting.
 
-CI (`.github/workflows/ci.yml`) runs Pint, the full PHPUnit suite and a production asset build on every push and pull request.
+GitHub Actions (`.github/workflows/ci.yml`) runs Pint, Larastan, the full test suite and a production asset build on every push and pull request.
 
-## Project structure (the parts specific to this project)
+## Queue and scheduler
+
+- **Queue:** lead, follow-up, comment and password-reset notifications are queued. Run a worker (`php artisan queue:work`), a cron-driven worker on shared hosting, or set `QUEUE_CONNECTION=sync`.
+- **Scheduler:** one cron entry, `* * * * * php artisan schedule:run`, runs:
+
+| Command | When |
+|---|---|
+| `privacy:prune` | Daily 03:15: clears IP address and browser details on leads and comments older than the retention period |
+| `leads:follow-up-digest` | Daily 08:00 (Asia/Riyadh): follow-up reminders for staff |
+| `activitylog:clean` | Weekly: removes activity-log entries older than a year |
+
+## Deployment
+
+Production steps, caching, queue options, email DNS (SPF, DKIM, DMARC), backups and web-server tuning are in [`DEPLOY.md`](DEPLOY.md). Everything the owner has to provide or do before launch is in [`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md).
+
+## Project structure
 
 ```
 app/
-  Console/Commands/CreateAdmin.php      app:create-admin
-  Console/Commands/FetchStockMedia.php  fetch:stock-media (dev/demo only)
-  Filament/                             admin resources, Settings page, widgets
-  Filament/Support/ImageUpload.php      the only allowed admin image upload field
-  Http/Middleware/SetLocale.php         locale from the /{locale} URL prefix (config/locales.php)
-  Http/Middleware/SetAdminLocale.php    admin panel language per user
-  Support/LocalizedUrl.php              same page in the other language, canonical URLs
-  Support/FragmentCache.php             cached home sections + sitemap (auto-flushed)
-  Support/SiteImages.php                static site images (config/site-images.php)
-  Services/CataloguePdf.php             catalogue / spec-sheet PDFs (mPDF)
-  Console/Commands/PrunePersonalData.php privacy:prune (scheduled)
-  Console/Commands/SiteImages*.php      site-images:candidates|pick|review|variants
-  Http/Middleware/SecurityHeaders.php   CSP and security headers (site + admin)
-  Models/Concerns/                      HasTranslations (AR/EN fallback), media helpers
-  Notifications/NewLeadNotification.php email to the company per lead
-  Support/                              ServiceIcon list, LeadCsvExporter
-database/seeders/ProductionSeeder.php   roles only
-database/seeders/DemoSeeder.php         fake demo content
-lang/{ar,en}/site.php                   all public UI strings (kept in parity)
-lang/ar.json                            Arabic admin labels + framework strings
-resources/views/components/             layout, cards, media-image, lightbox, ...
-docs/                                   work log, image inventory
+  Actions/        business operations (leads, comments, catalogue)
+  Contracts/      interfaces for swappable services
+  Enums/          status and type values
+  Filament/       admin panel (resources, pages, widgets)
+  Http/           controllers, form requests, middleware
+  Models/         Eloquent models and shared traits
+  Notifications/  emails and admin-bell notifications
+  Policies/       authorization
+  Services/       PDF generation, stock-photo providers
+  Support/        small helpers (URLs, caching, images, search)
+config/site.php   limits, page sizes, cache lifetimes, notification settings
+database/         migrations, factories, seeders
+lang/             ar/ and en/ translations, ar.json (admin labels)
+resources/        Blade views, CSS, JS, email templates
+routes/           web.php (public + localized), console.php (schedule)
+tests/            Feature and Unit tests
+docs/             architecture, launch checklist, image credits
 ```
 
-## Documentation
+## Roles and permissions
 
-- [`DEPLOY.md`](DEPLOY.md): server requirements, first deploy, updates, queue, backups, logs.
-- [`docs/MISSING_IMAGES.md`](docs/MISSING_IMAGES.md): every image slot and which real photos the company must supply.
-- [`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md): everything the owner must provide or do before launch.
-- [`docs/IMAGE_CREDITS.md`](docs/IMAGE_CREDITS.md): source and licence of every static stock image.
+| Area | Admin | Editor |
+|---|:---:|:---:|
+| Content (services, stones, projects, blog, FAQ, slides, team, testimonials): view, create, edit | ✓ | ✓ |
+| Delete any record | ✓ | – |
+| Leads: view, edit, notes, assign | ✓ | ✓ |
+| Lead CSV export | ✓ | – |
+| Comment moderation | ✓ | ✓ |
+| Edit or delete another user's lead notes | ✓ | – |
+| Settings, users, activity log, email previews | ✓ | – |
+
+## Localization
+
+- URLs: `/ar/...` and `/en/...`; `/` redirects to `/ar`. Older un-prefixed URLs redirect permanently to their Arabic version.
+- Public interface strings: `lang/ar/site.php` and `lang/en/site.php` (a test checks both files have the same keys). Enum labels: `lang/*/enums.php`. Admin labels: `lang/ar.json`.
+- Content is entered in both languages in the admin (Arabic and English tabs); an empty translation falls back to the other language.
+- Adding a language is described in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md#add-a-language-example-french).
+
+## Third-party licences
+
+- **mPDF** is licensed under **GPL-2.0-only** and is used server-side to generate the catalogue PDFs.
+- Stock images used on the site are listed with their sources and licences in [`docs/IMAGE_CREDITS.md`](docs/IMAGE_CREDITS.md).
+- Other dependencies are listed in `composer.json` and `package.json` under their own licences.
+
+## License
+
+Proprietary — All rights reserved.
+
+## Author
+
+Developed by **Mohamed Abdo** — Full Stack Developer · [GitHub](https://github.com/m77mdabdo)
+
+---
+
+## نبذة بالعربية
+
+**ريادة الجوهرة الإبداعية** شركة متخصصة في توريد وتركيب الرخام والجرانيت والكوارتز والحجر الطبيعي للمشاريع السكنية والتجارية في المملكة العربية السعودية. هذا المشروع هو موقع الشركة ولوحة إدارتها معًا:
+
+- **موقع ثنائي اللغة** (العربية افتراضيًا مع دعم كامل للاتجاه من اليمين لليسار، والإنجليزية) يعرض الخدمات وكتالوج الأحجار ومعرض المشاريع والمدونة.
+- **كتالوج أحجار** بمواصفات قابلة للتصفية (التشطيب، اللون، الاستخدام، المنشأ) وملف PDF قابل للتنزيل بالعربية والإنجليزية.
+- **جذب العملاء المحتملين:** طلبات عرض السعر ونقرات واتساب تُسجَّل مع سياقها، ويتابعها الفريق من لوحة التحكم (الحالة، المسؤول، موعد المتابعة، الملاحظات، التصدير).
+- **إشعارات** بريدية بتصميم الهوية وبلغة المستلم، مع جرس إشعارات داخل لوحة التحكم.
+- **لوحة تحكم** بالعربية أو الإنجليزية لكل مستخدم، بصلاحيتين: مدير ومحرر.
+
+للتثبيت والتشغيل راجع قسم «Local installation» أعلاه، وللنشر راجع [`DEPLOY.md`](DEPLOY.md) و[`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md).
+
+تطوير: **محمد عبده** — مطوّر Full Stack · [GitHub](https://github.com/m77mdabdo)

@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, 'fix/**', 'feature/**']
+    branches: [main, 'fix/**', 'feature/**', 'upgrade/**', 'refactor/**']
   pull_request:
 
 concurrency:
@@ -27,6 +27,27 @@ jobs:
 
       - name: Check code style
         run: vendor/bin/pint --test
+
+  static-analysis:
+    name: Static analysis (Larastan level 6)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, intl, gd, exif, zip
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Run Larastan
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          vendor/bin/phpstan analyse --no-progress --memory-limit=2G
 
   tests:
     name: Tests (PHP ${{ matrix.php }})
