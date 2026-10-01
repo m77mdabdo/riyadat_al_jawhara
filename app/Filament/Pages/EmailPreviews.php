@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\AdminNavigationGroup;
 use App\Models\Setting;
 use App\Support\EmailPreviews as Previews;
 use Filament\Actions\Action;
@@ -16,13 +17,9 @@ use Throwable;
  */
 class EmailPreviews extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-envelope';
-
     protected static string $view = 'filament.pages.email-previews';
 
-    protected static ?string $navigationGroup = 'Administration';
-
-    protected static ?int $navigationSort = 95;
+    protected static ?int $navigationSort = 40;
 
     public string $template = 'lead_new';
 
@@ -40,7 +37,7 @@ class EmailPreviews extends Page
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Administration');
+        return AdminNavigationGroup::Administration->value;
     }
 
     public function getTitle(): string

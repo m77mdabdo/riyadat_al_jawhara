@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\TagResource\Pages;
 use App\Filament\Support\Localized;
@@ -19,9 +20,9 @@ class TagResource extends Resource
 
     protected static ?string $model = Tag::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $navigationGroup = AdminNavigationGroup::Blog->value;
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?int $navigationSort = 30;
 
     public static function form(Form $form): Form
     {
@@ -42,7 +43,7 @@ class TagResource extends Resource
                         Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('name_ar')
-                                    ->label(__('الاسم (AR)'))
+                                    ->label(__('Name (AR)'))
                                     ->required()
                                     ->maxLength(255),
                             ]),

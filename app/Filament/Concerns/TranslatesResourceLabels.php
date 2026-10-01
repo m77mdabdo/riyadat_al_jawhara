@@ -28,9 +28,10 @@ trait TranslatesResourceLabels
         return static::$navigationLabel ? __(static::$navigationLabel) : static::getTitleCasePluralModelLabel();
     }
 
+    /** Group key (App\Enums\AdminNavigationGroup); its label is translated by the panel. */
     public static function getNavigationGroup(): ?string
     {
-        return static::$navigationGroup ? __(static::$navigationGroup) : null;
+        return static::$navigationGroup;
     }
 
     public static function getNavigationBadgeTooltip(): ?string

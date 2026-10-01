@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\TeamMemberResource\Pages;
 use App\Filament\Support\ImageUpload;
@@ -20,9 +21,9 @@ class TeamMemberResource extends Resource
 
     protected static ?string $model = TeamMember::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationGroup = AdminNavigationGroup::WebsiteContent->value;
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?int $navigationSort = 70;
 
     public static function form(Form $form): Form
     {
@@ -44,11 +45,11 @@ class TeamMemberResource extends Resource
                         Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('name_ar')
-                                    ->label(__('الاسم (AR)'))
+                                    ->label(__('Name (AR)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('position_ar')
-                                    ->label(__('المنصب (AR)'))
+                                    ->label(__('Position (AR)'))
                                     ->maxLength(255),
                             ]),
                     ]),

@@ -2,6 +2,16 @@
 
 return [
 
+    'nav' => [
+        'leads' => 'Leads & CRM',
+        'catalogue' => 'Catalogue',
+        'portfolio' => 'Portfolio',
+        'website-content' => 'Website Content',
+        'blog' => 'Blog',
+        'settings' => 'Settings',
+        'administration' => 'Administration',
+    ],
+
     'activity' => [
         'label' => 'Activity',
         'plural' => 'Activity log',

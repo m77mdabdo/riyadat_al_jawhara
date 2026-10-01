@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Enums\CommentStatus;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\CommentResource\Pages;
@@ -20,9 +21,9 @@ class CommentResource extends Resource
 
     protected static ?string $model = Comment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+    protected static ?string $navigationGroup = AdminNavigationGroup::Blog->value;
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?int $navigationSort = 40;
 
     public static function getNavigationBadge(): ?string
     {

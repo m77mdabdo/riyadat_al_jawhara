@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\ServiceResource\Pages;
 use App\Filament\Support\ImageUpload;
@@ -23,9 +24,9 @@ class ServiceResource extends Resource
 
     protected static ?string $model = Service::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
+    protected static ?string $navigationGroup = AdminNavigationGroup::Catalogue->value;
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {
@@ -50,11 +51,11 @@ class ServiceResource extends Resource
                         Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('name_ar')
-                                    ->label(__('الاسم (AR)'))
+                                    ->label(__('Name (AR)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\Textarea::make('description_ar')
-                                    ->label(__('الوصف (AR)'))
+                                    ->label(__('Description (AR)'))
                                     ->rows(4)
                                     ->columnSpanFull(),
                             ]),

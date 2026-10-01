@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\ActivityResource\Pages;
 use App\Models\User;
@@ -24,11 +25,9 @@ class ActivityResource extends Resource
 
     protected static ?string $model = Activity::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $navigationGroup = AdminNavigationGroup::Administration->value;
 
-    protected static ?string $navigationGroup = 'Administration';
-
-    protected static ?int $navigationSort = 90;
+    protected static ?int $navigationSort = 30;
 
     public static function getModelLabel(): string
     {

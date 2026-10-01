@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Enums\AdminNavigationGroup;
 use App\Filament\Pages\Auth\EditProfile;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetAdminLocale;
@@ -13,6 +14,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Infolists\Components\Entry;
 use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -51,6 +53,10 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile(EditProfile::class, isSimple: false)
             ->brandName('JRA Admin')
+            // Sidebar groups in a fixed order; labels follow the admin's language.
+            ->navigationGroups(collect(AdminNavigationGroup::cases())->mapWithKeys(fn (AdminNavigationGroup $group) => [
+                $group->value => NavigationGroup::make()->label(fn (): string => $group->getLabel())->icon($group->getIcon()),
+            ])->all())
             // Bell icon: new leads, follow-ups due, comments awaiting review.
             ->databaseNotifications()
             ->databaseNotificationsPolling('60s')

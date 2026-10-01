@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Enums\ProjectSector;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\ProjectResource\Pages;
@@ -25,9 +26,9 @@ class ProjectResource extends Resource
 
     protected static ?string $model = Project::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-photo';
+    protected static ?string $navigationGroup = AdminNavigationGroup::Portfolio->value;
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {
@@ -58,17 +59,17 @@ class ProjectResource extends Resource
                         Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('title_ar')
-                                    ->label(__('العنوان (AR)'))
+                                    ->label(__('Title (AR)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('location_ar')
-                                    ->label(__('الموقع (AR)'))
+                                    ->label(__('Location (AR)'))
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('city_ar')
-                                    ->label(__('المدينة (AR)'))
+                                    ->label(__('City (AR)'))
                                     ->maxLength(255),
                                 Forms\Components\Textarea::make('description_ar')
-                                    ->label(__('الوصف (AR)'))
+                                    ->label(__('Description (AR)'))
                                     ->rows(4)
                                     ->columnSpanFull(),
                             ]),

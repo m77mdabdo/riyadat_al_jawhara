@@ -2,6 +2,16 @@
 
 return [
 
+    'nav' => [
+        'leads' => 'العملاء والمتابعة',
+        'catalogue' => 'الكتالوج',
+        'portfolio' => 'معرض الأعمال',
+        'website-content' => 'محتوى الموقع',
+        'blog' => 'المدونة',
+        'settings' => 'الإعدادات',
+        'administration' => 'الإدارة',
+    ],
+
     'activity' => [
         'label' => 'نشاط',
         'plural' => 'سجل النشاط',

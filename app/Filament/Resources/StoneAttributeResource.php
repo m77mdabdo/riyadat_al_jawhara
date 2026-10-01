@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Enums\StoneAttributeType;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\StoneAttributeResource\Pages;
@@ -22,9 +23,9 @@ class StoneAttributeResource extends Resource
 
     protected static ?string $model = StoneAttribute::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';
+    protected static ?string $navigationGroup = AdminNavigationGroup::Catalogue->value;
 
-    protected static ?string $navigationGroup = 'Stones';
+    protected static ?int $navigationSort = 40;
 
     protected static ?string $navigationLabel = 'Stone Attributes';
 
@@ -44,7 +45,7 @@ class StoneAttributeResource extends Resource
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug((string) $state))),
                 Forms\Components\TextInput::make('name_ar')
-                    ->label(__('الاسم (AR)'))
+                    ->label(__('Name (AR)'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('slug')

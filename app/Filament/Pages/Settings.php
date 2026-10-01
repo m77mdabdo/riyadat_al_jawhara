@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\AdminNavigationGroup;
 use App\Filament\Support\ImageUpload;
 use App\Models\Setting;
 use Filament\Forms;
@@ -17,8 +18,6 @@ class Settings extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
-
     protected static string $view = 'filament.pages.settings';
 
     /** @var array<string, mixed>|null */
@@ -29,6 +28,11 @@ class Settings extends Page implements HasForms
      * so only admins may open (or save) this page. Filament checks this for
      * navigation, direct URL access and Livewire requests alike.
      */
+    public static function getNavigationGroup(): ?string
+    {
+        return AdminNavigationGroup::Settings->value;
+    }
+
     public static function getNavigationLabel(): string
     {
         return __('Settings');
@@ -97,8 +101,8 @@ class Settings extends Page implements HasForms
                                     ]),
                                 Forms\Components\Tabs\Tab::make(__('Arabic'))
                                     ->schema([
-                                        Forms\Components\TextInput::make('address_ar')->label(__('العنوان (AR)')),
-                                        Forms\Components\TextInput::make('working_hours_ar')->label(__('ساعات العمل (AR)')),
+                                        Forms\Components\TextInput::make('address_ar')->label(__('Address (AR)')),
+                                        Forms\Components\TextInput::make('working_hours_ar')->label(__('Working Hours (AR)')),
                                     ]),
                             ]),
                         Forms\Components\TextInput::make('map_lat')->numeric()->label(__('Map Latitude')),
@@ -118,9 +122,9 @@ class Settings extends Page implements HasForms
                                     ]),
                                 Forms\Components\Tabs\Tab::make(__('Arabic'))
                                     ->schema([
-                                        Forms\Components\Textarea::make('about_ar')->label(__('من نحن (AR)'))->rows(3),
-                                        Forms\Components\Textarea::make('vision_ar')->label(__('الرؤية (AR)'))->rows(2),
-                                        Forms\Components\Textarea::make('mission_ar')->label(__('الرسالة (AR)'))->rows(2),
+                                        Forms\Components\Textarea::make('about_ar')->label(__('About (AR)'))->rows(3),
+                                        Forms\Components\Textarea::make('vision_ar')->label(__('Vision (AR)'))->rows(2),
+                                        Forms\Components\Textarea::make('mission_ar')->label(__('Mission (AR)'))->rows(2),
                                     ]),
                             ]),
                     ]),
@@ -137,8 +141,8 @@ class Settings extends Page implements HasForms
                                     ]),
                                 Forms\Components\Tabs\Tab::make(__('Arabic'))
                                     ->schema([
-                                        Forms\Components\RichEditor::make('privacy_policy_ar')->label(__('سياسة الخصوصية (AR)')),
-                                        Forms\Components\RichEditor::make('terms_ar')->label(__('شروط الاستخدام (AR)')),
+                                        Forms\Components\RichEditor::make('privacy_policy_ar')->label(__('Privacy Policy (AR)')),
+                                        Forms\Components\RichEditor::make('terms_ar')->label(__('Terms of Use (AR)')),
                                     ]),
                             ]),
                     ]),

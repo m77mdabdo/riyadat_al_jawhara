@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\TestimonialResource\Pages;
 use App\Filament\Support\ImageUpload;
@@ -21,9 +22,9 @@ class TestimonialResource extends Resource
 
     protected static ?string $model = Testimonial::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+    protected static ?string $navigationGroup = AdminNavigationGroup::Portfolio->value;
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?int $navigationSort = 20;
 
     public static function form(Form $form): Form
     {
@@ -53,7 +54,7 @@ class TestimonialResource extends Resource
                         Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\Textarea::make('comment_ar')
-                                    ->label(__('التعليق (AR)'))
+                                    ->label(__('Comment (AR)'))
                                     ->required()
                                     ->rows(4),
                             ]),

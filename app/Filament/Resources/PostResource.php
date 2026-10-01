@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Support\ImageUpload;
@@ -22,9 +23,9 @@ class PostResource extends Resource
 
     protected static ?string $model = Post::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-newspaper';
+    protected static ?string $navigationGroup = AdminNavigationGroup::Blog->value;
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {
@@ -52,15 +53,15 @@ class PostResource extends Resource
                         Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('title_ar')
-                                    ->label(__('العنوان (AR)'))
+                                    ->label(__('Title (AR)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\Textarea::make('excerpt_ar')
-                                    ->label(__('المقتطف (AR)'))
+                                    ->label(__('Excerpt (AR)'))
                                     ->rows(2)
                                     ->columnSpanFull(),
                                 Forms\Components\RichEditor::make('body_ar')
-                                    ->label(__('المحتوى (AR)'))
+                                    ->label(__('Body (AR)'))
                                     ->columnSpanFull(),
                             ]),
                     ]),

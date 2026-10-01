@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\FaqResource\Pages;
 use App\Filament\Support\Localized;
@@ -18,9 +19,9 @@ class FaqResource extends Resource
 
     protected static ?string $model = Faq::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
+    protected static ?string $navigationGroup = AdminNavigationGroup::WebsiteContent->value;
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?int $navigationSort = 60;
 
     public static function form(Form $form): Form
     {
@@ -43,11 +44,11 @@ class FaqResource extends Resource
                         Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('question_ar')
-                                    ->label(__('السؤال (AR)'))
+                                    ->label(__('Question (AR)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\Textarea::make('answer_ar')
-                                    ->label(__('الإجابة (AR)'))
+                                    ->label(__('Answer (AR)'))
                                     ->required()
                                     ->rows(4),
                             ]),

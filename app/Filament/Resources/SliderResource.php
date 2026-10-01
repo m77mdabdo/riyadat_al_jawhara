@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\SliderResource\Pages;
 use App\Filament\Support\ImageUpload;
@@ -20,9 +21,9 @@ class SliderResource extends Resource
 
     protected static ?string $model = Slider::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-photo';
+    protected static ?string $navigationGroup = AdminNavigationGroup::WebsiteContent->value;
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?int $navigationSort = 30;
 
     public static function form(Form $form): Form
     {
@@ -47,14 +48,14 @@ class SliderResource extends Resource
                         Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('title_ar')
-                                    ->label(__('العنوان (AR)'))
+                                    ->label(__('Title (AR)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('subtitle_ar')
-                                    ->label(__('العنوان الفرعي (AR)'))
+                                    ->label(__('Subtitle (AR)'))
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('button_text_ar')
-                                    ->label(__('نص الزر (AR)'))
+                                    ->label(__('Button Text (AR)'))
                                     ->maxLength(255),
                             ]),
                     ]),

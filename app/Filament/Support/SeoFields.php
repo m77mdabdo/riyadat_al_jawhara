@@ -16,9 +16,9 @@ class SeoFields
             ->collapsed()
             ->schema([
                 Forms\Components\TextInput::make('meta_title_en')->label(__('Meta title (EN)'))->maxLength(70)->helperText(__('Up to about 60 characters.')),
-                Forms\Components\TextInput::make('meta_title_ar')->label(__('عنوان الصفحة (AR)'))->maxLength(70),
+                Forms\Components\TextInput::make('meta_title_ar')->label(__('Meta title (AR)'))->maxLength(70),
                 Forms\Components\Textarea::make('meta_description_en')->label(__('Meta description (EN)'))->rows(2)->maxLength(170)->helperText(__('Up to about 155 characters.')),
-                Forms\Components\Textarea::make('meta_description_ar')->label(__('وصف الصفحة (AR)'))->rows(2)->maxLength(170),
+                Forms\Components\Textarea::make('meta_description_ar')->label(__('Meta description (AR)'))->rows(2)->maxLength(170),
             ])->columns(2)->columnSpanFull();
     }
 }

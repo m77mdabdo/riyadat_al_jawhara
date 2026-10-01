@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
@@ -20,9 +21,9 @@ class UserResource extends Resource
 
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationGroup = AdminNavigationGroup::Administration->value;
 
-    protected static ?string $navigationGroup = 'Administration';
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {

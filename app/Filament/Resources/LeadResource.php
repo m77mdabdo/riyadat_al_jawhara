@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Enums\LeadSource;
 use App\Enums\LeadStatus;
 use App\Filament\Concerns\TranslatesResourceLabels;
@@ -28,9 +29,9 @@ class LeadResource extends Resource
 
     protected static ?string $model = Lead::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-inbox-arrow-down';
+    protected static ?string $navigationGroup = AdminNavigationGroup::Leads->value;
 
-    protected static ?string $navigationGroup = 'Leads';
+    protected static ?int $navigationSort = 10;
 
     protected static ?string $navigationBadgeTooltip = 'New leads';
 

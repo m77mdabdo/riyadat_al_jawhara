@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AdminNavigationGroup;
 use App\Enums\StoneOriginType;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\StoneTypeResource\Pages;
@@ -25,9 +26,9 @@ class StoneTypeResource extends Resource
 
     protected static ?string $model = StoneType::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-cube';
+    protected static ?string $navigationGroup = AdminNavigationGroup::Catalogue->value;
 
-    protected static ?string $navigationGroup = 'Stones';
+    protected static ?int $navigationSort = 20;
 
     public static function form(Form $form): Form
     {
@@ -60,14 +61,14 @@ class StoneTypeResource extends Resource
                         Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('name_ar')
-                                    ->label(__('الاسم (AR)'))
+                                    ->label(__('Name (AR)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('origin_ar')
-                                    ->label(__('المنشأ (AR)'))
+                                    ->label(__('Origin (AR)'))
                                     ->maxLength(255),
                                 Forms\Components\Textarea::make('description_ar')
-                                    ->label(__('الوصف (AR)'))
+                                    ->label(__('Description (AR)'))
                                     ->rows(4)
                                     ->columnSpanFull(),
                             ]),
