@@ -12,7 +12,7 @@ class AboutController extends Controller
     {
         return view('about', [
             'settings' => Setting::current(),
-            'teamMembers' => TeamMember::active()->ordered()->get(),
+            'teamMembers' => TeamMember::active()->ordered()->with('media')->get(),
         ]);
     }
 }

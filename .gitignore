@@ -21,3 +21,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/docs/screenshots
+/storage/app/stock-candidates
+/docs/visual-review/shots

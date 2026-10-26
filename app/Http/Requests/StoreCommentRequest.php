@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -13,7 +14,7 @@ class StoreCommentRequest extends FormRequest
     }
 
     /**
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -21,7 +22,8 @@ class StoreCommentRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
+            // not_regex: see StoreLeadRequest (control characters, defence in depth).
+            'email' => ['required', 'email', 'max:255', 'not_regex:/[\x00-\x1F\x7F]/'],
             'body' => ['required', 'string', 'max:2000'],
             'parent_id' => ['nullable', Rule::exists('comments', 'id')->where('post_id', $post->id)],
             'website' => ['nullable', 'string', 'max:255'],

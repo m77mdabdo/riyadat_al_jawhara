@@ -2,10 +2,19 @@
 
 namespace App\Models;
 
+use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasCoverImage;
+use App\Models\Concerns\HasSeoOverrides;
+use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasWebpConversions;
+use App\Models\Concerns\LogsAdminActivity;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -14,7 +23,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class StoneType extends Model implements HasMedia
 {
-    use HasActiveScope, HasSlug, InteractsWithMedia;
+    use HasActiveScope, HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
         'stone_category_id',
@@ -23,6 +32,7 @@ class StoneType extends Model implements HasMedia
         'slug',
         'origin_ar',
         'origin_en',
+        'origin_type',
         'description_ar',
         'description_en',
         'is_active',
@@ -33,6 +43,15 @@ class StoneType extends Model implements HasMedia
         'is_active' => 'boolean',
     ];
 
+    public const ORIGIN_LOCAL = 'local';
+
+    public const ORIGIN_IMPORTED = 'imported';
+
+    /**
+     * @var array<int, string>
+     */
+    public const ORIGIN_TYPES = [self::ORIGIN_LOCAL, self::ORIGIN_IMPORTED];
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
@@ -42,12 +61,13 @@ class StoneType extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('cover')->singleFile();
-        $this->addMediaCollection('gallery');
+        $this->addMediaCollection('cover')->singleFile()->acceptsMimeTypes(ImageUpload::MIME_TYPES);
+        $this->addMediaCollection('gallery')->acceptsMimeTypes(ImageUpload::MIME_TYPES);
     }
 
     public function registerMediaConversions(?Media $media = null): void
     {
+        $this->registerWebpConversions();
         $this->addMediaConversion('thumb')->width(400)->height(300)->nonQueued();
         $this->addMediaConversion('medium')->width(1200)->height(700)->nonQueued();
     }
@@ -57,6 +77,11 @@ class StoneType extends Model implements HasMedia
         return $this->belongsTo(StoneCategory::class);
     }
 
+    /**
+     * Projects where this is the primary stone (projects.stone_type_id).
+     * Use Project::usingStone() to include projects that list it as an
+     * additional material.
+     */
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class);
@@ -67,18 +92,60 @@ class StoneType extends Model implements HasMedia
         return $this->hasMany(Lead::class);
     }
 
+    /**
+     * All specification values. The per-type relations below are what the
+     * admin form and views use; they share the same pivot table.
+     */
+    public function stoneAttributes(): BelongsToMany
+    {
+        return $this->belongsToMany(StoneAttribute::class)->orderBy('stone_attributes.order');
+    }
+
+    public function finishes(): BelongsToMany
+    {
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::FINISH);
+    }
+
+    public function colours(): BelongsToMany
+    {
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::COLOUR);
+    }
+
+    public function sizes(): BelongsToMany
+    {
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::SIZE);
+    }
+
+    public function applications(): BelongsToMany
+    {
+        return $this->stoneAttributes()->where('stone_attributes.type', StoneAttribute::APPLICATION);
+    }
+
+    /**
+     * Active specification values grouped by type, for the detail page.
+     *
+     * @return Collection<string, Collection<int, StoneAttribute>>
+     */
+    public function specificationGroups(): Collection
+    {
+        return $this->stoneAttributes
+            ->where('is_active', true)
+            ->groupBy('type')
+            ->sortBy(fn ($group, string $type) => array_search($type, array_keys(StoneAttribute::TYPES), true));
+    }
+
     public function getNameAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->name_ar : $this->name_en;
+        return $this->translated('name') ?? '';
     }
 
     public function getOriginAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->origin_ar : $this->origin_en;
+        return $this->translated('origin');
     }
 
     public function getDescriptionAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->description_ar : $this->description_en;
+        return $this->translated('description');
     }
 }

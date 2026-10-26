@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsAdminActivity;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Comment extends Model
 {
+    use HasFactory, LogsAdminActivity;
+
+    /** Audit moderation only; comments are created by visitors. */
+    protected array $activityLogOnly = ['status'];
+
+    protected static array $recordEvents = ['updated', 'deleted'];
+
     protected $fillable = [
         'post_id',
         'parent_id',
@@ -38,5 +47,15 @@ class Comment extends Model
     public function replies(): HasMany
     {
         return $this->hasMany(Comment::class, 'parent_id');
+    }
+
+    /**
+     * Replies that are safe to show publicly. Anything rendered on the site
+     * must go through this relation -- `replies()` also returns pending and
+     * spam comments and is only meant for the admin panel.
+     */
+    public function approvedReplies(): HasMany
+    {
+        return $this->replies()->where('status', 'approved');
     }
 }

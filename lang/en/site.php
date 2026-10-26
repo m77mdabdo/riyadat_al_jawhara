@@ -17,6 +17,18 @@ return [
         '500_message' => "We're already looking into it. Please try again in a moment, or reach out if the problem continues.",
         'back_home' => 'Back to Homepage',
         'quick_links' => 'Or try one of these:',
+        '403_title' => 'Access denied',
+        '403_heading' => 'You don\'t have access to this page',
+        '403_message' => 'This page isn\'t available to you. If you think this is a mistake, please contact us.',
+        '419_title' => 'Page expired',
+        '419_heading' => 'This page has expired',
+        '419_message' => 'For your security the form expired. Please go back, refresh the page and try again.',
+        '429_title' => 'Too many requests',
+        '429_heading' => 'Please slow down',
+        '429_message' => 'You sent several requests in a short time. Please wait a minute and try again.',
+        '503_title' => 'Back soon',
+        '503_heading' => 'We\'ll be right back',
+        '503_message' => 'The site is briefly down for maintenance. Please try again in a few minutes.',
     ],
 
     'nav' => [
@@ -28,6 +40,7 @@ return [
         'contact' => 'Contact Us',
         'blog' => 'News',
         'faq' => 'FAQ',
+        'gallery' => 'Gallery',
     ],
 
     'common' => [
@@ -57,6 +70,10 @@ return [
         'switch_to_arabic' => 'Switch to Arabic',
         'switch_to_english' => 'Switch to English',
         'skip_to_content' => 'Skip to content',
+        'main_navigation' => 'Main navigation',
+        'slideshow' => 'Featured slides',
+        'pause_slideshow' => 'Pause slideshow',
+        'play_slideshow' => 'Play slideshow',
     ],
 
     'home' => [
@@ -69,6 +86,33 @@ return [
         'faq' => 'Frequently Asked Questions',
         'cta_title' => 'Ready to Start Your Project?',
         'cta_subtitle' => 'Get a free consultation and quote from our team today',
+        'why_choose_us_subtitle' => 'One team for your stone, from the first idea to the final finish',
+        'why_items' => [
+            ['icon' => 'heroicon-o-arrows-right-left', 'title' => 'Supply to installation', 'description' => 'Sourcing, fabrication, installation and design handled by one accountable team.'],
+            ['icon' => 'heroicon-o-squares-2x2', 'title' => 'A curated stone collection', 'description' => 'Marble, granite, quartz and natural stone, with finishes and sizes for each application.'],
+            ['icon' => 'heroicon-o-scale', 'title' => 'Quality and precision', 'description' => 'Careful measurement, cutting and finishing, for a result that fits your space.'],
+            ['icon' => 'heroicon-o-clipboard-document-check', 'title' => 'A clear process', 'description' => 'From consultation and site measurement to handover, you know every next step.'],
+        ],
+        'categories_title' => 'Explore by stone',
+        'categories_subtitle' => 'Start from the material and see what suits your project',
+        'categories_cta' => 'Browse :name',
+        'stones_count' => '{0} Coming soon|{1} :count stone|[2,*] :count stones',
+        'heritage_title' => 'Heritage in stone',
+        'heritage_subtitle' => 'The stone traditions of the Kingdom that inspire our work',
+        'heritage_note' => 'Inspiration imagery. These are not projects by our company.',
+        'heritage_items' => [
+            'jeddah' => ['name' => 'Jeddah Al-Balad', 'caption' => 'Coral-stone houses and wooden rawasheen'],
+            'diriyah' => ['name' => 'Diriyah', 'caption' => 'Najdi mud-brick architecture of At-Turaif'],
+            'alula' => ['name' => 'AlUla', 'caption' => 'Sandstone cliffs shaped over millennia'],
+            'najdi' => ['name' => 'Najdi architecture', 'caption' => 'Triangular friezes and earthen walls'],
+        ],
+        'stats_title' => 'In numbers',
+        'stats' => [
+            'projects' => 'Projects completed',
+            'years' => 'Years of experience',
+            'cities' => 'Cities served',
+            'clients' => 'Clients served',
+        ],
     ],
 
     'process' => [
@@ -88,6 +132,37 @@ return [
         'our_vision' => 'Our Vision',
         'our_mission' => 'Our Mission',
         'our_team' => 'Our Team',
+        'hero_alt' => 'Designers reviewing a floor plan on a white marble table',
+        'banner_alt' => 'Granite and marble slabs stored upright in a stone workshop',
+    ],
+
+    'gallery' => [
+        'title' => 'Gallery',
+        'subtitle' => 'Stone in detail: textures, finishes and completed spaces',
+        'filter_type' => 'Filter by type',
+        'filter_stone' => 'Filter by stone',
+        'projects' => 'Projects',
+        'stones' => 'Stones',
+        'any_stone' => 'Any stone',
+        'empty' => 'No images yet for this selection.',
+    ],
+
+    'search' => [
+        'title' => 'Search',
+        'subtitle' => 'Services, stones, projects, articles and FAQs',
+        'label' => 'Search the site',
+        'placeholder' => 'e.g. marble flooring',
+        'button' => 'Search',
+        'results' => '{0} No results for “:term”|{1} 1 result for “:term”|[2,*] :count results for “:term”',
+        'too_short' => 'Type at least 2 characters.',
+        'hint' => 'Try a stone name, a service or a city.',
+        'types' => [
+            'service' => 'Service',
+            'stone' => 'Stone',
+            'project' => 'Project',
+            'post' => 'Article',
+            'faq' => 'FAQ',
+        ],
     ],
 
     'faq' => [
@@ -100,12 +175,33 @@ return [
     'services' => [
         'title' => 'Our Services',
         'related_projects' => 'Related Projects',
+        'meta_description' => 'Natural stone and marble services: supply, installation, facade design and interior stone decor across Saudi Arabia.',
     ],
 
     'stones' => [
         'title' => 'Stones & Marble',
         'origin' => 'Origin',
         'category' => 'Category',
+        'specifications' => 'Specifications',
+        'finish' => 'Finish',
+        'colour' => 'Colour',
+        'size' => 'Size / Thickness',
+        'application' => 'Application',
+        'origin_type' => 'Local / Imported',
+        'filter_by' => 'Filter stones',
+        'any' => 'Any',
+        'clear_filters' => 'Clear filters',
+        'results_count' => ':count stones',
+        'meta_description' => 'Browse our marble, granite, quartz and natural stone collection by finish, colour and application.',
+    ],
+
+    'catalogue' => [
+        'title' => 'Stone catalogue',
+        'download' => 'Download the catalogue (PDF)',
+        'spec_sheet' => 'Download spec sheet (PDF)',
+        'generated' => 'Updated :date',
+        'disclaimer' => 'Natural stone varies in colour and veining; please confirm with a sample before ordering.',
+        'page' => 'Page {PAGENO} of {nbpg}',
     ],
 
     'projects' => [
@@ -120,6 +216,21 @@ return [
         'gallery' => 'Gallery',
         'drag_to_compare' => 'Drag to compare',
         'before_after_slider' => 'Before and after comparison slider',
+        'sector' => 'Sector',
+        'area' => 'Area',
+        'area_value' => ':area m²',
+        'city' => 'City',
+        'materials' => 'Materials used',
+        'details' => 'Project details',
+        'similar' => 'Similar projects',
+        'sectors' => [
+            'residential' => 'Residential',
+            'commercial' => 'Commercial',
+            'hospitality' => 'Hospitality',
+            'government' => 'Government',
+            'industrial' => 'Industrial',
+        ],
+        'meta_description' => 'Residential and commercial stone and marble projects completed by our team across Saudi Arabia.',
     ],
 
     'blog' => [
@@ -161,16 +272,61 @@ return [
         'choose_service' => 'Choose a service',
         'choose_stone_type' => 'Choose a stone type',
         'success_message' => 'Thank you! Your request has been received. Our team will contact you shortly.',
+        'throttled' => 'You have sent several messages in a short time. Please wait a minute and try again — your message has been kept below.',
+        'consent_label' => 'I agree that my details may be used to respond to this request, as described in the :link.',
+        'consent_attribute' => 'consent',
+        'regarding_project' => 'Regarding project:',
+        'phone_hint' => 'Include your country code, e.g.',
         'get_in_touch' => 'Get in Touch',
         'our_location' => 'Our Location',
         'working_hours' => 'Working Hours',
         'get_directions' => 'Get Directions',
+        'thanks_title' => 'Thank you',
+        'thanks_heading' => 'We received your request',
+        'thanks_next' => 'What happens next',
+        'thanks_browse' => 'Meanwhile, explore our work',
+        'thanks_back' => 'Back to home',
+        'thanks_steps' => [
+            'Our team reviews your request.',
+            'We contact you by phone or WhatsApp to discuss the details.',
+            'If needed, we arrange a site visit and prepare your quote.',
+        ],
+    ],
+
+    'lead_mail' => [
+        'subject' => 'New quote request from :name',
+        'greeting' => 'New website inquiry',
+        'intro' => 'A visitor has submitted the contact / quote form. Details:',
+        'name' => 'Name',
+        'phone' => 'Phone',
+        'email' => 'Email',
+        'city' => 'City',
+        'service' => 'Service',
+        'stone_type' => 'Stone type',
+        'project' => 'Related project',
+        'message' => 'Message',
+        'language' => 'Submitted in',
+        'view_in_admin' => 'Open lead in admin',
     ],
 
     'legal' => [
         'privacy_policy_title' => 'Privacy Policy',
         'terms_title' => 'Terms of Use',
         'content_missing' => 'This page has not been filled in yet.',
+    ],
+
+    'pagination' => [
+        'label' => 'Pagination',
+        'summary' => 'Showing :from–:to of :total',
+        'go_to_page' => 'Go to page :page',
+    ],
+
+    'consent' => [
+        'title' => 'Cookies and privacy',
+        'message' => 'With your consent we use analytics cookies to understand how the site is used and improve it. Nothing is loaded until you accept.',
+        'accept' => 'Accept analytics',
+        'decline' => 'Decline',
+        'settings' => 'Cookie settings',
     ],
 
     'footer' => [

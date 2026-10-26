@@ -2,7 +2,12 @@
 
 namespace App\Models;
 
+use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasWebpConversions;
+use App\Models\Concerns\LogsAdminActivity;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -10,7 +15,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class TeamMember extends Model implements HasMedia
 {
-    use HasActiveScope, InteractsWithMedia;
+    use HasActiveScope, HasFactory, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
         'name_ar',
@@ -29,21 +34,22 @@ class TeamMember extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('photo')->singleFile();
+        $this->addMediaCollection('photo')->singleFile()->acceptsMimeTypes(ImageUpload::MIME_TYPES);
     }
 
     public function registerMediaConversions(?Media $media = null): void
     {
+        $this->registerWebpConversions();
         $this->addMediaConversion('thumb')->width(300)->height(300)->nonQueued();
     }
 
     public function getNameAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->name_ar : $this->name_en;
+        return $this->translated('name') ?? '';
     }
 
     public function getPositionAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->position_ar : $this->position_en;
+        return $this->translated('position');
     }
 }

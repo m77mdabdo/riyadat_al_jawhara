@@ -1,4 +1,4 @@
-<x-layout :title="$post->title" :description="$post->excerpt">
+<x-layout :title="$post->seoTitle($post->title)" :description="$post->seoDescription($post->excerpt ?: $post->body)" :image="$post->coverImageUrl()" type="article" :published-at="$post->published_at" :modified-at="$post->updated_at" :breadcrumbs="[['name' => __('site.blog.title'), 'url' => route('blog.index')], ['name' => $post->title, 'url' => route('blog.show', $post)]]">
     @push('head')
         @php
             $articleLd = array_filter([
@@ -12,7 +12,7 @@
                     '@type' => 'Person',
                     'name' => $post->author->name,
                 ] : null,
-                'image' => $post->getFirstMediaUrl('cover') ?: null,
+                'image' => $post->coverImageUrl(),
                 'mainEntityOfPage' => url()->current(),
             ]);
         @endphp
@@ -21,26 +21,26 @@
 
     <section class="py-16 bg-white border-b border-stone-200">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            @if ($post->getFirstMediaUrl('cover'))
-                <div class="aspect-[21/9] rounded-xl overflow-hidden mb-8">
-                    <img src="{{ $post->getFirstMediaUrl('cover', 'medium') }}" alt="{{ $post->title }}" loading="eager" fetchpriority="high" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
+            @if ($post->getFirstMedia('cover'))
+                <div class="aspect-[16/9] sm:aspect-[21/9] rounded-xl overflow-hidden mb-8">
+                    <x-media-image :model="$post" :alt="$post->title" :eager="true" sizes="(min-width: 768px) 720px, 100vw" class="h-full w-full" />
                 </div>
             @endif
 
             @if ($post->blogCategory)
-                <a href="{{ route('blog.index', ['category' => $post->blogCategory->slug]) }}" class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-charcoal text-cream mb-4">
+                <a href="{{ route('blog.index', ['category' => $post->blogCategory->slug]) }}" class="inline-flex min-h-11 sm:min-h-0 items-center text-sm sm:text-xs font-semibold px-4 sm:px-3 py-1 rounded-full bg-charcoal text-cream mb-4">
                     {{ $post->blogCategory->name }}
                 </a>
             @endif
 
-            <h1 class="text-3xl sm:text-4xl font-bold text-charcoal">{{ $post->title }}</h1>
+            <h1 class="text-page-title font-bold text-charcoal break-words">{{ $post->title }}</h1>
 
             <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-600">
                 @if ($post->author)
                     <span>{{ __('site.blog.by') }} <span class="font-semibold text-charcoal">{{ $post->author->name }}</span></span>
                 @endif
                 @if ($post->published_at)
-                    <span><bdi>{{ $post->published_at->format('Y-m-d') }}</bdi></span>
+                    <span><time datetime="{{ $post->published_at->toDateString() }}"><bdi>{{ $post->published_at->format('Y-m-d') }}</bdi></time></span>
                 @endif
                 <span class="inline-flex items-center gap-1">
                     <x-heroicon-o-eye class="h-4 w-4" />
@@ -49,13 +49,13 @@
             </div>
 
             <div class="prose prose-stone max-w-none mt-8 rtl:leading-loose">
-                {!! $post->body !!}
+                {!! str($post->body)->sanitizeHtml() !!}
             </div>
 
             @if ($post->tags->isNotEmpty())
                 <div class="mt-8 flex flex-wrap gap-2">
                     @foreach ($post->tags as $tag)
-                        <a href="{{ route('blog.index', ['tag' => $tag->slug]) }}" class="text-xs font-medium px-3 py-1 rounded-full bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors">
+                        <a href="{{ route('blog.index', ['tag' => $tag->slug]) }}" class="inline-flex min-h-11 sm:min-h-0 items-center text-sm sm:text-xs font-medium px-4 sm:px-3 py-1 rounded-full bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors">
                             #{{ $tag->name }}
                         </a>
                     @endforeach
@@ -67,40 +67,29 @@
     @if ($related->isNotEmpty())
         <section class="py-16 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-8">{{ __('site.blog.related_articles') }}</h2>
+                <h2 class="text-section-title font-bold text-charcoal mb-8">{{ __('site.blog.related_articles') }}</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($related as $relatedPost)
-                        <a href="{{ route('blog.show', $relatedPost) }}" class="group block rounded-xl overflow-hidden border border-stone-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all">
-                            <div class="aspect-[4/3] bg-stone-200 overflow-hidden">
-                                @if ($relatedPost->getFirstMediaUrl('cover'))
-                                    <img src="{{ $relatedPost->getFirstMediaUrl('cover', 'medium') }}" alt="" loading="lazy" class="h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04] group-hover:scale-105 transition-transform duration-500">
-                                @else
-                                    <x-image-placeholder class="h-full w-full" />
-                                @endif
-                            </div>
-                            <div class="p-5">
-                                <h3 class="font-semibold text-charcoal">{{ $relatedPost->title }}</h3>
-                            </div>
-                        </a>
+                        <x-cards.post :post="$relatedPost" heading-tag="h3" :compact="true" />
                     @endforeach
                 </div>
             </div>
         </section>
     @endif
 
-    <section id="comments" class="py-16 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" x-data="{ replyTo: null }">
-        <h2 class="text-2xl sm:text-3xl font-bold text-charcoal mb-8">
+    <section id="comments" class="py-16 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24" x-data="{ replyTo: @js($errors->any() && old('parent_id') ? (int) old('parent_id') : null) }">
+        <h2 class="text-section-title font-bold text-charcoal mb-8">
             {{ __('site.blog.comments') }} ({{ $post->approvedComments->count() }})
         </h2>
 
         @if (session('success'))
-            <div class="mb-8 rounded-lg bg-green-50 border border-green-200 text-green-800 px-5 py-4 text-sm">
+            <div role="status" class="mb-8 rounded-lg bg-green-50 border border-green-200 text-green-800 px-5 py-4 text-sm">
                 {{ session('success') }}
             </div>
         @endif
 
         @if ($errors->any())
-            <div class="mb-8 rounded-lg bg-red-50 border border-red-200 text-red-700 px-5 py-4 text-sm">
+            <div role="alert" class="mb-8 rounded-lg bg-red-50 border border-red-200 text-red-700 px-5 py-4 text-sm">
                 <ul class="list-disc ps-5 space-y-1">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>

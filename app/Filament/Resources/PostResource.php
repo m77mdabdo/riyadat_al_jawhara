@@ -3,19 +3,23 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\PostResource\Pages;
+use App\Filament\Support\ImageUpload;
+use App\Filament\Support\Localized;
+use App\Filament\Support\SeoFields;
 use App\Models\Post;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class PostResource extends Resource
 {
-    use RestrictsDeletionToAdmins;
+    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
 
     protected static ?string $model = Post::class;
 
@@ -30,34 +34,34 @@ class PostResource extends Resource
                 Forms\Components\Tabs::make('Translations')
                     ->columnSpanFull()
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('English')
+                        Forms\Components\Tabs\Tab::make(__('English'))
                             ->schema([
                                 Forms\Components\TextInput::make('title_en')
-                                    ->label('Title (EN)')
+                                    ->label(__('Title (EN)'))
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
                                 Forms\Components\Textarea::make('excerpt_en')
-                                    ->label('Excerpt (EN)')
+                                    ->label(__('Excerpt (EN)'))
                                     ->rows(2)
                                     ->columnSpanFull(),
                                 Forms\Components\RichEditor::make('body_en')
-                                    ->label('Body (EN)')
+                                    ->label(__('Body (EN)'))
                                     ->columnSpanFull(),
                             ]),
-                        Forms\Components\Tabs\Tab::make('Arabic')
+                        Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('title_ar')
-                                    ->label('العنوان (AR)')
+                                    ->label(__('العنوان (AR)'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\Textarea::make('excerpt_ar')
-                                    ->label('المقتطف (AR)')
+                                    ->label(__('المقتطف (AR)'))
                                     ->rows(2)
                                     ->columnSpanFull(),
                                 Forms\Components\RichEditor::make('body_ar')
-                                    ->label('المحتوى (AR)')
+                                    ->label(__('المحتوى (AR)'))
                                     ->columnSpanFull(),
                             ]),
                     ]),
@@ -66,12 +70,12 @@ class PostResource extends Resource
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
                 Forms\Components\Select::make('blog_category_id')
-                    ->label('Category')
-                    ->relationship('blogCategory', 'name_en')
+                    ->label(__('Category'))
+                    ->relationship('blogCategory', Localized::column('name'))
                     ->searchable()
                     ->preload(),
                 Forms\Components\Select::make('tags')
-                    ->relationship('tags', 'name_en')
+                    ->relationship('tags', Localized::column('name'))
                     ->multiple()
                     ->searchable()
                     ->preload(),
@@ -85,14 +89,13 @@ class PostResource extends Resource
                     ->default(false),
                 Forms\Components\DateTimePicker::make('published_at'),
                 Forms\Components\Select::make('author_id')
-                    ->label('Author')
+                    ->label(__('Author'))
                     ->relationship('author', 'name')
                     ->searchable()
                     ->default(fn () => auth()->id()),
-                SpatieMediaLibraryFileUpload::make('cover')
-                    ->collection('cover')
-                    ->image()
+                ImageUpload::make('cover')
                     ->columnSpanFull(),
+                SeoFields::section(),
             ]);
     }
 
@@ -100,20 +103,20 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                SpatieMediaLibraryImageColumn::make('cover')->collection('cover')->label('Cover'),
-                Tables\Columns\TextColumn::make('title_en')->label('Title')->searchable(['title_en', 'title_ar']),
-                Tables\Columns\TextColumn::make('blogCategory.name_en')->label('Category'),
+                SpatieMediaLibraryImageColumn::make('cover')->collection('cover')->label(__('Cover')),
+                Tables\Columns\TextColumn::make(Localized::column('title'))->label(__('Title'))->searchable(['title_en', 'title_ar']),
+                Tables\Columns\TextColumn::make('blogCategory.'.Localized::column('name'))->label(__('Category')),
                 Tables\Columns\IconColumn::make('is_published')->boolean(),
                 Tables\Columns\TextColumn::make('published_at')->dateTime()->sortable(),
                 Tables\Columns\TextColumn::make('author.name'),
-                Tables\Columns\TextColumn::make('views_count')->label('Views')->numeric()->sortable(),
+                Tables\Columns\TextColumn::make('views_count')->label(__('Views'))->numeric()->sortable(),
             ])
             ->defaultSort('published_at', 'desc')
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_published')->label('Published'),
+                Tables\Filters\TernaryFilter::make('is_published')->label(__('Published')),
                 Tables\Filters\SelectFilter::make('blog_category_id')
-                    ->label('Category')
-                    ->relationship('blogCategory', 'name_en'),
+                    ->label(__('Category'))
+                    ->relationship('blogCategory', Localized::column('name')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

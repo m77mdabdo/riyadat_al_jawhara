@@ -2,8 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\HasActiveScope;
+use App\Filament\Support\ImageUpload;
+use App\Models\Concerns\HasCoverImage;
+use App\Models\Concerns\HasSeoOverrides;
+use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasWebpConversions;
+use App\Models\Concerns\LogsAdminActivity;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -16,7 +22,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Post extends Model implements HasMedia
 {
-    use HasActiveScope, HasSlug, InteractsWithMedia;
+    use HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
         'title_ar',
@@ -53,11 +59,12 @@ class Post extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('cover')->singleFile();
+        $this->addMediaCollection('cover')->singleFile()->acceptsMimeTypes(ImageUpload::MIME_TYPES);
     }
 
     public function registerMediaConversions(?Media $media = null): void
     {
+        $this->registerWebpConversions();
         $this->addMediaConversion('thumb')->width(400)->height(300)->nonQueued();
         $this->addMediaConversion('medium')->width(1200)->height(700)->nonQueued();
     }
@@ -89,16 +96,16 @@ class Post extends Model implements HasMedia
 
     public function getTitleAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->title_ar : $this->title_en;
+        return $this->translated('title') ?? '';
     }
 
     public function getExcerptAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->excerpt_ar : $this->excerpt_en;
+        return $this->translated('excerpt');
     }
 
     public function getBodyAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->body_ar : $this->body_en;
+        return $this->translated('body');
     }
 }

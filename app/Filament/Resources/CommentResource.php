@@ -3,7 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\CommentResource\Pages;
+use App\Filament\Support\Localized;
 use App\Models\Comment;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -14,7 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CommentResource extends Resource
 {
-    use RestrictsDeletionToAdmins;
+    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
 
     protected static ?string $model = Comment::class;
 
@@ -38,9 +40,9 @@ class CommentResource extends Resource
                 Forms\Components\Textarea::make('body')->required()->rows(4)->columnSpanFull(),
                 Forms\Components\Select::make('status')
                     ->options([
-                        'pending' => 'Pending',
-                        'approved' => 'Approved',
-                        'spam' => 'Spam',
+                        'pending' => __('Pending'),
+                        'approved' => __('Approved'),
+                        'spam' => __('Spam'),
                     ])
                     ->required(),
             ]);
@@ -50,22 +52,22 @@ class CommentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('post.title_en')
-                    ->label('Post')
+                Tables\Columns\TextColumn::make('post.'.Localized::column('title'))
+                    ->label(__('Post'))
                     ->limit(30)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->label('Email')
+                    ->label(__('Email'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('body')
-                    ->label('Comment')
+                    ->label(__('Comment'))
                     ->limit(60)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('parent.body')
-                    ->label('Replying To')
+                    ->label(__('Replying To'))
                     ->limit(40)
                     ->placeholder('—')
                     ->toggleable(),
@@ -78,7 +80,7 @@ class CommentResource extends Resource
                         default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Submitted')
+                    ->label(__('Submitted'))
                     ->dateTime()
                     ->sortable(),
             ])
@@ -86,9 +88,9 @@ class CommentResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
-                        'pending' => 'Pending',
-                        'approved' => 'Approved',
-                        'spam' => 'Spam',
+                        'pending' => __('Pending'),
+                        'approved' => __('Approved'),
+                        'spam' => __('Spam'),
                     ]),
                 Tables\Filters\Filter::make('created_at')
                     ->form([
@@ -103,13 +105,13 @@ class CommentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('approve')
-                    ->label('Approve')
+                    ->label(__('Approve'))
                     ->icon('heroicon-o-check')
                     ->color('success')
                     ->visible(fn (Comment $record) => $record->status !== 'approved')
                     ->action(fn (Comment $record) => $record->update(['status' => 'approved'])),
                 Tables\Actions\Action::make('spam')
-                    ->label('Mark as Spam')
+                    ->label(__('Mark as Spam'))
                     ->icon('heroicon-o-no-symbol')
                     ->color('danger')
                     ->visible(fn (Comment $record) => $record->status !== 'spam')

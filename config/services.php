@@ -28,6 +28,20 @@ return [
         'key' => env('RESEND_KEY'),
     ],
 
+    // Stock-media APIs used only by the fetch:stock-media command and demo
+    // seeders. Read through config() so they still work after config:cache.
+    'pexels' => [
+        'key' => env('PEXELS_API_KEY'),
+    ],
+
+    'pixabay' => [
+        'key' => env('PIXABAY_API_KEY'),
+    ],
+
+    'unsplash' => [
+        'key' => env('UNSPLASH_ACCESS_KEY'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

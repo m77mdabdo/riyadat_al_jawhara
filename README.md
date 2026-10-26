@@ -1,68 +1,117 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Riyadat Al-Jawhara (JRA) — Website & Admin
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Bilingual (Arabic / English, full RTL) company website for **Riyadat Al-Jawhara Al-Ibdaeya**, a natural stone, marble and granite supply, installation and design business. It includes a Filament admin panel that the company uses to manage content and incoming quote requests.
 
-## About Laravel
+| | |
+|---|---|
+| Framework | Laravel 12 · PHP **8.4+** |
+| Admin | Filament 3 (`/admin`) · Livewire 3 |
+| Media | Spatie Media Library (JPG/PNG/WebP, WebP responsive renditions) |
+| Roles | Spatie Permission (`admin`, `editor`) |
+| Frontend | Blade · Tailwind CSS 3 · Alpine.js · Vite 6 |
+| Database | MySQL (production) · SQLite `:memory:` (tests) |
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## What the site does
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Public site (AR/EN, full RTL):** every page lives under `/ar/...` or `/en/...` (Arabic is the default; `/` redirects to `/ar`, and old un-prefixed URLs 301 to their `/ar` equivalent). hreflang alternates and per-language canonicals are set on every page.
+- **Home:** hero slides, why-choose-us, services, stone-category tiles, featured projects, process, statistics (only when real figures are entered), heritage strip, testimonials, FAQ.
+- **Services** and **Stones** (catalogue): stone pages show specifications (finish, colour, size/thickness, application, local/imported), a gallery and related projects. `/stones` filters by category and specification; a category filter shows that category's image and description.
+- **Catalogue PDF:** `/{locale}/stones/catalogue.pdf` (whole catalogue) and a per-stone spec sheet, generated in Arabic (RTL) or English and cached until stone data changes.
+- **Projects** (portfolio): filters by service, stone and sector; before/after comparison slider; gallery lightbox; materials used; similar projects. The client name shows only when "show client name" is on for that project.
+- **Gallery** (`/{locale}/gallery`): masonry grid of project and stone photos with filters and the shared lightbox.
+- **Search** (`/{locale}/search`): services, stones, projects, blog posts and FAQs in both languages (results are `noindex`).
+- **Blog:** categories, tags and search; threaded comments that appear only after moderation.
+- **FAQ, About, Contact, Privacy Policy, Terms of Use.**
+- **Quote/contact form:** "Request a quote" buttons pre-fill the service, stone or project the visitor was viewing. The form includes PDPL consent, spam protection (rate limit + honeypot), and an email to the company for every lead. After sending, visitors land on a thank-you page (the conversion target).
+- **WhatsApp click tracking:** anonymous click counts; a click from a service/stone/project page also records a lead with source "WhatsApp".
+- **Analytics (optional):** GA4 or Plausible, loaded only after the visitor accepts the cookie banner. Off unless configured in `.env`.
+- **SEO:** canonical URLs, hreflang, Open Graph / Twitter cards, JSON-LD (LocalBusiness, Article, BreadcrumbList, FAQPage), per-page meta title/description overrides, `/sitemap.xml` (both languages), dynamic `/robots.txt`.
+- **Performance / PWA:** self-hosted fonts, WebP responsive images, cached home sections and sitemap, web app manifest with maskable icons.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Admin (`/admin`):**
+- **Leads:** status pipeline, assignee, follow-up date, internal notes, "follow-ups due" dashboard stat, and CSV export (admins only).
+- **Content:** projects, services, stones, stone categories, stone attributes, hero slides, testimonials, team, FAQs, blog posts, categories, tags, comment moderation.
+- **Settings** (admins only): contact details, map, social links, legal pages, logo and share image.
+- **Users** (admins only), password reset, and a profile page (the current password is required to change email or password).
+- **Arabic or English admin:** each user picks the panel language from the user menu or profile page (saved per user; RTL in Arabic).
+- **Activity log** (admins only): who created, changed or deleted which record, with before/after values. Visitor IPs and passwords are never logged.
+- **Privacy retention:** a daily scheduled job removes IP address and browser details from comments and leads older than `PRIVACY_RETENTION_DAYS` (default 180).
 
-## Learning Laravel
+| Role | Can do |
+|---|---|
+| `admin` | Everything, including deleting records, Users, Settings, lead export and the activity log |
+| `editor` | Create and edit content, handle leads and notes. Cannot delete, manage users or change Settings |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Local setup
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+composer install
+npm install
+cp .env.example .env          # then set DB_* for your local MySQL
+php artisan key:generate
+php artisan migrate
+php artisan storage:link
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Optional fake demo content (services, stones, projects, blog, leads...).
+# Without PEXELS_API_KEY it creates no images (placeholders are shown).
+php artisan db:seed --class=DemoSeeder
 
-## Laravel Sponsors
+# Create your admin login (prompts for a hidden password)
+php artisan app:create-admin
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+npm run dev                   # or: npm run build
+php artisan serve             # site: http://127.0.0.1:8000/ar
+```
 
-### Premium Partners
+- `php artisan db:seed` on its own runs **ProductionSeeder** (roles only) and is safe everywhere. **DemoSeeder** is fake content: never run it in production.
+- No seeder creates user accounts or contains passwords. Use `app:create-admin`.
+- Lead emails are queued. Locally, either run `php artisan queue:work` or set `QUEUE_CONNECTION=sync`. With `MAIL_MAILER=log`, emails are written to `storage/logs/laravel.log`.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## Tests
 
-## Contributing
+```bash
+php artisan config:clear   # ALWAYS first -- see warning below
+php artisan test
+./vendor/bin/pint --test
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+`phpunit.xml` forces an in-memory SQLite database. **Never run tests while `config:cache` is active:** a cached config ignores that override, and `RefreshDatabase` would wipe your real database. Tests also fake the `public` disk, so they never write into `storage/app/public`.
 
-## Code of Conduct
+CI (`.github/workflows/ci.yml`) runs Pint, the full PHPUnit suite and a production asset build on every push and pull request.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Project structure (the parts specific to this project)
 
-## Security Vulnerabilities
+```
+app/
+  Console/Commands/CreateAdmin.php      app:create-admin
+  Console/Commands/FetchStockMedia.php  fetch:stock-media (dev/demo only)
+  Filament/                             admin resources, Settings page, widgets
+  Filament/Support/ImageUpload.php      the only allowed admin image upload field
+  Http/Middleware/SetLocale.php         locale from the /{locale} URL prefix (config/locales.php)
+  Http/Middleware/SetAdminLocale.php    admin panel language per user
+  Support/LocalizedUrl.php              same page in the other language, canonical URLs
+  Support/FragmentCache.php             cached home sections + sitemap (auto-flushed)
+  Support/SiteImages.php                static site images (config/site-images.php)
+  Services/CataloguePdf.php             catalogue / spec-sheet PDFs (mPDF)
+  Console/Commands/PrunePersonalData.php privacy:prune (scheduled)
+  Console/Commands/SiteImages*.php      site-images:candidates|pick|review|variants
+  Http/Middleware/SecurityHeaders.php   CSP and security headers (site + admin)
+  Models/Concerns/                      HasTranslations (AR/EN fallback), media helpers
+  Notifications/NewLeadNotification.php email to the company per lead
+  Support/                              ServiceIcon list, LeadCsvExporter
+database/seeders/ProductionSeeder.php   roles only
+database/seeders/DemoSeeder.php         fake demo content
+lang/{ar,en}/site.php                   all public UI strings (kept in parity)
+lang/ar.json                            Arabic admin labels + framework strings
+resources/views/components/             layout, cards, media-image, lightbox, ...
+docs/                                   work log, image inventory
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Documentation
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# riyadat_al_jawhara
-# riyadat_al_jawhara
+- [`DEPLOY.md`](DEPLOY.md): server requirements, first deploy, updates, queue, backups, logs.
+- [`PROJECT_AUDIT_REPORT.md`](PROJECT_AUDIT_REPORT.md): the original technical audit (baseline).
+- [`docs/WORK_LOG.md`](docs/WORK_LOG.md): what was changed, phase by phase, plus pending migrations and open questions.
+- [`docs/MISSING_IMAGES.md`](docs/MISSING_IMAGES.md): every image slot and which real photos the company must supply.
+- [`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md): everything the owner must provide or do before launch.
+- [`docs/IMAGE_CREDITS.md`](docs/IMAGE_CREDITS.md): source and licence of every static stock image; [`docs/visual-review/index.html`](docs/visual-review/index.html) for picking alternatives.

@@ -2,7 +2,12 @@
 
 namespace App\Models;
 
+use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasWebpConversions;
+use App\Models\Concerns\LogsAdminActivity;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
@@ -11,7 +16,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Testimonial extends Model implements HasMedia
 {
-    use HasActiveScope, InteractsWithMedia;
+    use HasActiveScope, HasFactory, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
         'client_name',
@@ -30,11 +35,12 @@ class Testimonial extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('client_photo')->singleFile();
+        $this->addMediaCollection('client_photo')->singleFile()->acceptsMimeTypes(ImageUpload::MIME_TYPES);
     }
 
     public function registerMediaConversions(?Media $media = null): void
     {
+        $this->registerWebpConversions();
         $this->addMediaConversion('thumb')->width(200)->height(200)->nonQueued();
     }
 
@@ -45,6 +51,6 @@ class Testimonial extends Model implements HasMedia
 
     public function getCommentAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->comment_ar : $this->comment_en;
+        return $this->translated('comment') ?? '';
     }
 }

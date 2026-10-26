@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsAdminActivity;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,8 +14,11 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasRoles, Notifiable;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, HasRoles, LogsAdminActivity, Notifiable;
+
+    /** Never log password hashes or tokens. */
+    protected array $activityLogOnly = ['name', 'email'];
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +29,7 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'locale',
     ];
 
     /**

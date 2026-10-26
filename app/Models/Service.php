@@ -2,7 +2,15 @@
 
 namespace App\Models;
 
+use App\Filament\Support\ImageUpload;
 use App\Models\Concerns\HasActiveScope;
+use App\Models\Concerns\HasCoverImage;
+use App\Models\Concerns\HasSeoOverrides;
+use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\HasWebpConversions;
+use App\Models\Concerns\LogsAdminActivity;
+use App\Support\ServiceIcon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
@@ -13,7 +21,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Service extends Model implements HasMedia
 {
-    use HasActiveScope, HasSlug, InteractsWithMedia;
+    use HasActiveScope, HasCoverImage, HasFactory, HasSeoOverrides, HasSlug, HasTranslations, HasWebpConversions, InteractsWithMedia, LogsAdminActivity;
 
     protected $fillable = [
         'name_ar',
@@ -39,11 +47,12 @@ class Service extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('cover')->singleFile();
+        $this->addMediaCollection('cover')->singleFile()->acceptsMimeTypes(ImageUpload::MIME_TYPES);
     }
 
     public function registerMediaConversions(?Media $media = null): void
     {
+        $this->registerWebpConversions();
         $this->addMediaConversion('thumb')->width(400)->height(300)->nonQueued();
         $this->addMediaConversion('medium')->width(1200)->height(700)->nonQueued();
     }
@@ -58,13 +67,22 @@ class Service extends Model implements HasMedia
         return $this->hasMany(Lead::class);
     }
 
+    /**
+     * The icon component to render publicly. Falls back to the default icon
+     * for empty or unknown values so a bad value can never break a page.
+     */
+    public function getSafeIconAttribute(): string
+    {
+        return ServiceIcon::resolve($this->icon);
+    }
+
     public function getNameAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->name_ar : $this->name_en;
+        return $this->translated('name') ?? '';
     }
 
     public function getDescriptionAttribute(): ?string
     {
-        return app()->getLocale() === 'ar' ? $this->description_ar : $this->description_en;
+        return $this->translated('description');
     }
 }

@@ -3,17 +3,21 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Concerns\RestrictsDeletionToAdmins;
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\StoneCategoryResource\Pages;
+use App\Filament\Support\ImageUpload;
+use App\Filament\Support\Localized;
 use App\Models\StoneCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class StoneCategoryResource extends Resource
 {
-    use RestrictsDeletionToAdmins;
+    use RestrictsDeletionToAdmins, TranslatesResourceLabels;
 
     protected static ?string $model = StoneCategory::class;
 
@@ -28,21 +32,29 @@ class StoneCategoryResource extends Resource
                 Forms\Components\Tabs::make('Translations')
                     ->columnSpanFull()
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('English')
+                        Forms\Components\Tabs\Tab::make(__('English'))
                             ->schema([
                                 Forms\Components\TextInput::make('name_en')
-                                    ->label('Name (EN)')
+                                    ->label(__('Name (EN)'))
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                                    ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                                Forms\Components\Textarea::make('description_en')
+                                    ->label(__('Description (EN)'))
+                                    ->rows(3)
+                                    ->maxLength(2000),
                             ]),
-                        Forms\Components\Tabs\Tab::make('Arabic')
+                        Forms\Components\Tabs\Tab::make(__('Arabic'))
                             ->schema([
                                 Forms\Components\TextInput::make('name_ar')
-                                    ->label('الاسم (AR)')
+                                    ->label(__('الاسم (AR)'))
                                     ->required()
                                     ->maxLength(255),
+                                Forms\Components\Textarea::make('description_ar')
+                                    ->label(__('الوصف (AR)'))
+                                    ->rows(3)
+                                    ->maxLength(2000),
                             ]),
                     ]),
                 Forms\Components\TextInput::make('slug')
@@ -52,6 +64,10 @@ class StoneCategoryResource extends Resource
                 Forms\Components\TextInput::make('order')
                     ->numeric()
                     ->default(0),
+                ImageUpload::make('cover')
+                    ->label(__('Category image'))
+                    ->helperText(__('Shown on the home tiles and the category landing section. JPG, PNG or WebP, up to 5 MB. Without it, a stone texture is used.'))
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -59,8 +75,8 @@ class StoneCategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name_en')->label('Name')->searchable(['name_en', 'name_ar']),
-                Tables\Columns\TextColumn::make('stoneTypes_count')->counts('stoneTypes')->label('Stone Types'),
+                Tables\Columns\TextColumn::make(Localized::column('name'))->label(__('Name'))->searchable(['name_en', 'name_ar']),
+                Tables\Columns\TextColumn::make('stoneTypes_count')->counts('stoneTypes')->label(__('Stone Types')),
                 Tables\Columns\TextColumn::make('order')->numeric()->sortable(),
             ])
             ->defaultSort('order')

@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslations;
+use App\Models\Concerns\LogsAdminActivity;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Sluggable\HasSlug;
@@ -10,7 +13,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class BlogCategory extends Model
 {
-    use HasSlug;
+    use HasFactory, HasSlug, HasTranslations, LogsAdminActivity;
 
     protected $fillable = [
         'name_ar',
@@ -38,6 +41,6 @@ class BlogCategory extends Model
 
     public function getNameAttribute(): string
     {
-        return app()->getLocale() === 'ar' ? $this->name_ar : $this->name_en;
+        return $this->translated('name') ?? '';
     }
 }

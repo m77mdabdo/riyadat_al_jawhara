@@ -7,25 +7,15 @@ use Illuminate\Database\Seeder;
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * A plain `php artisan db:seed` only seeds what production needs (roles).
+     * Demo content is opt-in so it can never reach production by accident:
+     *
+     *   php artisan db:seed --class=DemoSeeder
      */
     public function run(): void
     {
         $this->call([
-            RoleSeeder::class,
-            SettingSeeder::class,
-            SliderSeeder::class,
-            ServiceSeeder::class,
-            StoneCategorySeeder::class,
-            ProjectSeeder::class,
-            TestimonialSeeder::class,
-            TeamMemberSeeder::class,
-            FaqSeeder::class,
-            LeadSeeder::class,
-            BlogCategorySeeder::class,
-            TagSeeder::class,
-            PostSeeder::class,
-            CommentSeeder::class,
+            ProductionSeeder::class,
         ]);
     }
 }

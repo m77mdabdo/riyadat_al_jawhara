@@ -1,17 +1,25 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "jra/riyadat-al-jawhara",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
-    "license": "MIT",
+    "description": "Riyadat Al-Jawhara (JRA) — bilingual (AR/EN) company website and admin panel for a natural stone, marble and granite supply & installation business.",
+    "keywords": [
+        "laravel",
+        "filament",
+        "marble",
+        "natural-stone",
+        "bilingual"
+    ],
+    "license": "proprietary",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
-        "laravel/framework": "^11.31",
+        "laravel/framework": "^12.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
+        "mpdf/mpdf": "^8.3",
+        "spatie/laravel-activitylog": "^4.12",
         "spatie/laravel-medialibrary": "^11.23",
         "spatie/laravel-permission": "^6.25",
         "spatie/laravel-sluggable": "^3.8"

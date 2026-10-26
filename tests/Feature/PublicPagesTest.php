@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\StoneType;
+use Database\Seeders\DemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,17 +17,17 @@ class PublicPagesTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed();
+        $this->seed(DemoSeeder::class);
     }
 
     public function test_core_public_pages_return_ok(): void
     {
-        $this->get('/')->assertOk();
-        $this->get('/services')->assertOk();
-        $this->get('/stones')->assertOk();
-        $this->get('/projects')->assertOk();
-        $this->get('/about')->assertOk();
-        $this->get('/contact')->assertOk();
+        $this->get(route('home'))->assertOk();
+        $this->get('/en/services')->assertOk();
+        $this->get('/en/stones')->assertOk();
+        $this->get('/en/projects')->assertOk();
+        $this->get('/en/about')->assertOk();
+        $this->get('/en/contact')->assertOk();
         $this->get('/sitemap.xml')->assertOk();
     }
 
@@ -36,16 +37,16 @@ class PublicPagesTest extends TestCase
         $stoneType = StoneType::first();
         $project = Project::first();
 
-        $this->get("/services/{$service->slug}")->assertOk();
-        $this->get("/stones/{$stoneType->slug}")->assertOk();
-        $this->get("/projects/{$project->slug}")->assertOk();
+        $this->get("/en/services/{$service->slug}")->assertOk();
+        $this->get("/en/stones/{$stoneType->slug}")->assertOk();
+        $this->get("/en/projects/{$project->slug}")->assertOk();
     }
 
-    public function test_locale_switch_persists_across_requests(): void
+    public function test_arabic_pages_render_rtl(): void
     {
-        $this->get('/lang/ar');
+        $this->useLocale('ar');
 
-        $response = $this->get('/');
+        $response = $this->get(route('home'));
 
         $response->assertOk();
         $response->assertSee('dir="rtl"', false);
@@ -53,17 +54,18 @@ class PublicPagesTest extends TestCase
 
     public function test_contact_form_requires_name_phone_and_message(): void
     {
-        $response = $this->post('/contact', []);
+        $response = $this->post('/en/contact', []);
 
         $response->assertSessionHasErrors(['name', 'phone', 'message']);
     }
 
     public function test_contact_form_stores_a_lead_on_valid_submission(): void
     {
-        $response = $this->post('/contact', [
+        $response = $this->post('/en/contact', [
             'name' => 'Test User',
             'phone' => '0500000000',
             'message' => 'Test message content',
+            'consent' => '1',
         ]);
 
         $response->assertSessionHasNoErrors();
