@@ -44,7 +44,7 @@ export default {
                     200: '#F8F6F3',
                     300: '#EFEBE4',
                 },
-                // Warm accents (Phase 10). Contrast on cream #F8F6F3:
+                // Warm accents. Contrast on cream #F8F6F3:
                 // sand-700 5.2, gold-600 4.3 (icons/lines), gold-700 6.2,
                 // terracotta-600 5.5. gold-400/500 are decorative only on
                 // light backgrounds (use gold-400 on charcoal: 6.0).

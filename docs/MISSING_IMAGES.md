@@ -49,10 +49,10 @@ The counts are a **read-only** query of the local database on 2026-09-29. Every 
 ## 3. Code-level guarantees (verified)
 
 - Every public `<img>` has `alt` (meaningful, or empty when decorative/duplicated by adjacent text), `width`/`height` or an aspect-ratio box, `decoding="async"`, and `loading="lazy"` except above-the-fold images (hero, detail-page covers), which use `loading="eager"` + `fetchpriority="high"`.
-- No `<img src="">` and no `:src="null"`: the stone preview now renders the placeholder when a stone has no cover (U3).
+- No `<img src="">` and no `:src="null"`: the stone preview now renders the placeholder when a stone has no cover.
 - Playwright run over 15 pages × 11 widths × 2 locales: **0 broken images, 0 empty `src`** (with an empty media table, so every slot exercised the fallback path).
-- Uploads through Settings → Branding accept JPG/PNG/WebP only, max 2 MB. The same whitelist for every other upload field is Phase 5.
+- Every upload field accepts JPG/PNG/WebP only (5 MB; 2 MB for branding files).
 
-## 4. Not done (stop point)
+## 4. Still needed
 
-No stock images were downloaded and `fetch:stock-media` was not run. Replacing the stock photos above requires **real company photography** (STOP POINT 3).
+Replacing the stock photos above requires **real company photography**. Each slot can then be replaced from the admin (Website Content → Site images, or the record's own image fields) without code.

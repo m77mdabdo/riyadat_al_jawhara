@@ -25,9 +25,6 @@ yarn-error.log
 /storage/app/stock-candidates
 /docs/visual-review/shots
 
-# Local-only working notes (not part of the project)
-/.internal/
-/.kilo/
 /storage/framework/phpstan
 /storage/media-library/
 

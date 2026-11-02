@@ -21,8 +21,8 @@
 | The pick command records the choice (candidate ID, source, photographer...)
 | in resources/data/site-images.json and regenerates docs/IMAGE_CREDITS.md.
 |
-| Rules (docs/MASTER_TASK.md §10c): no flag, emblem, Vision 2030 logo, holy
-| sites, identifiable faces or brand names; never used as "our projects".
+| Image rules: no flag, emblem, Vision 2030 logo, holy sites, identifiable
+| faces or brand names; never used as "our projects".
 */
 
 return [
