@@ -12,6 +12,7 @@ use App\Models\Lead;
 use App\Models\Post;
 use App\Models\Project;
 use App\Models\Service;
+use App\Models\Setting;
 use App\Models\Slider;
 use App\Models\StoneAttribute;
 use App\Models\StoneCategory;
@@ -148,12 +149,27 @@ class ArabicAdminTest extends TestCase
         $this->from('https://evil.example/')->post(route('admin.locale', 'en'))->assertRedirect(url('/admin'));
     }
 
-    public function test_switch_requires_panel_access(): void
+    public function test_signed_in_users_need_panel_access_to_switch(): void
     {
-        $this->post(route('admin.locale', 'ar'))->assertForbidden();
-
         $this->actingAs(User::factory()->create());
         $this->post(route('admin.locale', 'ar'))->assertForbidden();
+    }
+
+    public function test_sign_in_page_has_the_linked_logo_and_a_language_switch(): void
+    {
+        $this->get('/admin/login')
+            ->assertOk()
+            ->assertSee(route('home', ['locale' => app()->getLocale()]), false)
+            ->assertSee(route('admin.locale', 'ar'), false)
+            ->assertSee(route('admin.locale', 'en'), false)
+            ->assertSee(Setting::current()->logoUrl(), false);
+
+        // A guest's choice is kept in the session and changes the page language.
+        $this->from('/admin/login')->post(route('admin.locale', 'ar'))->assertRedirect('/admin/login');
+        $this->get('/admin/login')->assertSee('dir="rtl"', false)->assertSee('العودة إلى الموقع');
+
+        $this->post(route('admin.locale', 'en'));
+        $this->get('/admin/login')->assertSee('Back to the website')->assertSee(route('home', ['locale' => 'en']), false);
     }
 
     public function test_public_site_language_is_not_affected(): void

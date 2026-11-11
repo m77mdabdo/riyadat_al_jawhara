@@ -9,6 +9,7 @@ use App\Filament\Support\InitialsAvatarProvider;
 use App\Http\Middleware\RequirePasswordChange;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetAdminLocale;
+use App\Models\Setting;
 use Filament\FontProviders\LocalFontProvider;
 use Filament\Forms\Components\Field;
 use Filament\Http\Middleware\Authenticate;
@@ -56,6 +57,10 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile(EditProfile::class, isSimple: false)
             ->brandName('JRA Admin')
+            // The company logo from Branding (dark-mode variant: the light logo).
+            ->brandLogo(fn (): string => Setting::current()->logoUrl())
+            ->darkModeBrandLogo(fn (): string => Setting::current()->logoLightUrl())
+            ->brandLogoHeight(fn (): string => auth()->check() ? '2.75rem' : '5rem')
             ->defaultAvatarProvider(InitialsAvatarProvider::class)
             // Sidebar groups in a fixed order; labels follow the admin's language.
             ->navigationGroups(collect(AdminNavigationGroup::cases())->mapWithKeys(fn (AdminNavigationGroup $group) => [
@@ -69,6 +74,7 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('60s')
             // Self-hosted fonts (resources/css/admin.css): Inter / Cairo in RTL.
             ->font('Inter Variable', provider: LocalFontProvider::class)
+            ->renderHook(PanelsRenderHook::SIMPLE_PAGE_START, fn (): string => view('filament.auth.language-switch')->render())
             ->renderHook(PanelsRenderHook::HEAD_END, fn (): string => Blade::render("@vite('resources/css/admin.css')"))
             ->userMenuItems([
                 'help' => MenuItem::make()
