@@ -9,6 +9,8 @@ use App\Models\StoneCategory;
 use App\Models\StoneType;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\File;
+use Mpdf\Config\ConfigVariables;
+use Mpdf\Config\FontVariables;
 use Mpdf\Mpdf;
 
 /**
@@ -76,6 +78,7 @@ class MpdfCatalogueGenerator implements CatalogueGenerator
         $sources = [
             resource_path('views/pdf/catalogue.blade.php'),
             resource_path('views/pdf/footer.blade.php'),
+            resource_path('views/pdf/partials/specs.blade.php'),
             lang_path('ar/site.php'),
             lang_path('en/site.php'),
         ];
@@ -112,23 +115,32 @@ class MpdfCatalogueGenerator implements CatalogueGenerator
         try {
             File::ensureDirectoryExists(storage_path('app/mpdf-tmp'));
 
+            $defaults = (new ConfigVariables)->getDefaults();
+            $fonts = (new FontVariables)->getDefaults();
+
+            // Brand fonts (SIL Open Font Licence, resources/fonts/pdf): Cairo for
+            // text in both languages; Cairo Black (Arabic) and Marcellus (English)
+            // for headings. Reem Kufi is not used: mPDF cannot read its GSUB tables.
             $mpdf = new Mpdf([
                 'mode' => 'utf-8',
                 'format' => 'A4',
                 'tempDir' => storage_path('app/mpdf-tmp'),
-                'default_font' => 'dejavusans',
-                'margin_top' => 18,
-                'margin_bottom' => 18,
+                'fontDir' => [...$defaults['fontDir'], resource_path('fonts/pdf')],
+                'fontdata' => $fonts['fontdata'] + [
+                    'cairo' => ['R' => 'Cairo-Regular.ttf', 'B' => 'Cairo-Bold.ttf', 'useOTL' => 0xFF],
+                    'cairoblack' => ['R' => 'Cairo-Black.ttf', 'B' => 'Cairo-Black.ttf', 'useOTL' => 0xFF],
+                    'marcellus' => ['R' => 'Marcellus-Regular.ttf', 'B' => 'Marcellus-Regular.ttf'],
+                ],
+                'default_font' => 'cairo',
                 'autoScriptToLang' => true,
-                'autoLangToFont' => true,
+                'autoLangToFont' => false,
             ]);
             $mpdf->SetDirectionality($locale === 'ar' ? 'rtl' : 'ltr');
             $mpdf->SetTitle(__('site.catalogue.title'));
             $mpdf->SetAuthor(__('site.meta.site_name'));
-            // HTML footer instead of SetFooter(): mPDF's default footer is italic,
-            // which fakes a slant on Arabic (the font has no italic). A phrase
-            // instead of "2 / 3" because the slash would be reordered in RTL.
-            $mpdf->SetHTMLFooter(view('pdf.footer', ['rtl' => $locale === 'ar'])->render());
+            // Header and footer are <htmlpageheader>/<htmlpagefooter> in the
+            // template (none on the cover pages). The footer uses a phrase instead
+            // of "2 / 3" because the slash would be reordered in RTL.
 
             $mpdf->WriteHTML(view('pdf.catalogue', [
                 'categories' => $categories,

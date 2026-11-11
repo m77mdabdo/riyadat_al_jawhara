@@ -14,7 +14,7 @@
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)
 ![Alpine.js](https://img.shields.io/badge/Alpine.js-3-8BC0D0?logo=alpinedotjs&logoColor=white)
 <br>
-![Tests](https://img.shields.io/badge/tests-479_passing-2EA043)
+![Tests](https://img.shields.io/badge/tests-480_passing-2EA043)
 ![Larastan](https://img.shields.io/badge/Larastan-level_6-6C4BFF)
 ![Lighthouse](https://img.shields.io/badge/Lighthouse-95–98-F44B21?logo=lighthouse&logoColor=white)
 ![Accessibility](https://img.shields.io/badge/axe-0_serious_issues-2EA043)
@@ -42,7 +42,7 @@
 | 📈 **Lead generation** | Quote requests and WhatsApp clicks captured *with the page the visitor came from*, followed up in a built-in CRM. |
 | 🛠️ **No-code CMS** | Menus, homepage sections, page content, images, every interface text, branding and SEO — all editable from the admin, in both languages. |
 
-> Built to production standards: strict Content Security Policy, WCAG AA accessibility, Lighthouse 95+ on mobile, 479 automated tests and static analysis in CI.
+> Built to production standards: strict Content Security Policy, WCAG AA accessibility, Lighthouse 95+ on mobile, 480 automated tests and static analysis in CI.
 
 ---
 
@@ -93,7 +93,7 @@
 - Services, stones, projects, gallery, blog (categories, tags, moderated comments), FAQ, about, contact, privacy policy and terms.
 - Site-wide search across services, stones, projects, posts and FAQs, in both languages.
 - Stone filters by category, finish, colour, application and origin; project filters by service, stone and sector.
-- Catalogue PDF and per-stone spec sheets, correctly shaped in Arabic (RTL) and English.
+- Branded catalogue PDF (photo cover, category bands, contact back cover) and one-page spec sheets per stone, in the brand fonts (Cairo, Marcellus), correctly shaped in Arabic (RTL) and English.
 - Before/after slider, lightbox galleries, similar projects; a client's name is shown only with their consent.
 
 </details>
@@ -232,7 +232,7 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the request lifecycle, co
 
 | Check | Result |
 |---|---|
-| Automated tests | **479** tests, ~3,100 assertions (feature, Livewire, policy, cache, query-budget and translation-coverage tests) |
+| Automated tests | **480** tests, ~3,150 assertions (feature, Livewire, policy, cache, query-budget and translation-coverage tests) |
 | Static analysis | Larastan **level 6**, no baseline |
 | Lighthouse (mobile, production-like) | **95–98** performance · **100** accessibility · **100** best practices · **100** SEO |
 | Accessibility (axe-core) | **0** serious or critical issues across 72 page scans (390 / 1440 px, AR + EN) |
@@ -404,11 +404,13 @@ docs/             architecture, admin guide, launch checklist, image credits
 ## Third-party licences
 
 - **mPDF** is licensed under **GPL-2.0-only** and runs server-side to generate the catalogue PDFs.
+- The PDF fonts (Cairo, Marcellus) are under the SIL Open Font Licence; see [`resources/fonts/pdf/README.md`](resources/fonts/pdf/README.md).
 - Stock images are listed with their sources and licences in [`docs/IMAGE_CREDITS.md`](docs/IMAGE_CREDITS.md).
 - Other dependencies are listed in `composer.json` and `package.json` under their own licences.
 
 ## Changelog
 
+- **2026-11-11** — Catalogue and spec-sheet PDFs redesigned in the company identity: black-and-gold cover with a stone photo and the white logo, running header with the logo, category bands, stone entries with photo, origin, description and specifications, a contact back cover, and a one-page spec sheet with a large photo, specifications table and gallery. Embedded brand fonts (Cairo, Marcellus) instead of DejaVu. 480 tests.
 - **2026-11-11** — Team members are invited by email from **Administration → Users** and choose their own password from a time-limited link (resend / new link from the list; new *Team invitation* email in both languages and in Email previews). Cinematic home page: new *From the quarry to your space* section (editable chapters and photos, its own place in the homepage layout), hero push-in and scroll-out, and the scroll reveals now run on every page (they were outside an Alpine scope before). Stone catalogue covers replaced with commercially licensed Pexels/Pixabay photos, credited on each media item and in `docs/IMAGE_CREDITS.md` (`php artisan site-images:attach-stones`). Sections added in a later version keep their built-in place in a saved homepage order. 479 tests.
 
 ## License
@@ -451,7 +453,7 @@ Designed and developed by **Mohamed Abdo** — Full-Stack Developer · [GitHub](
 
 ### الجودة بالأرقام
 
-- **479** اختبارًا آليًا، وتحليل ثابت Larastan بالمستوى 6.
+- **480** اختبارًا آليًا، وتحليل ثابت Larastan بالمستوى 6.
 - **Lighthouse على الجوال:** أداء 95–98، وإمكانية الوصول وأفضل الممارسات وSEO **100**.
 - **0** مشاكل وصول جدية (axe)، و**0** مخالفات لسياسة أمان المحتوى، ولا تمرير أفقي من 320 إلى 1920 بكسل.
 

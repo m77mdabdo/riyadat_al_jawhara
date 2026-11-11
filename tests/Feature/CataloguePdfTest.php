@@ -138,4 +138,27 @@ class CataloguePdfTest extends TestCase
         $this->assertFileDoesNotExist($first, 'settings change flushes the cached file');
         $this->assertNotSame($first, $pdf->catalogue('en'));
     }
+
+    public function test_documents_use_the_brand_fonts_and_layout(): void
+    {
+        $stone = StoneType::factory()->create(['name_en' => 'Carrara', 'name_ar' => 'كرارا']);
+        $stone->addMedia(UploadedFile::fake()->image('c.jpg', 800, 600))->toMediaCollection('cover');
+
+        foreach (['en' => 'Marcellus', 'ar' => 'Cairo-Black'] as $locale => $display) {
+            $this->useLocale($locale);
+            $pdf = file_get_contents($this->get(route('stones.catalogue'))->assertOk()->getFile()->getPathname());
+            // Cairo for text in both languages, the display face for headings.
+            $this->assertMatchesRegularExpression('~/BaseFont /[A-Z]{6}\+Cairo~', $pdf);
+            $this->assertMatchesRegularExpression('~/BaseFont /[A-Z]{6}\+'.preg_quote($display, '~').'~', $pdf);
+            $this->assertStringNotContainsString('DejaVu', $pdf);
+        }
+
+        // Cover, category band and back cover with the contact details.
+        $html = $this->catalogueHtml('en');
+        $this->assertStringContainsString('class="cover"', $html);
+        $this->assertStringContainsString('class="band"', $html);
+        $this->assertStringContainsString('page-selector="back"', $html);
+        $this->assertStringContainsString(__('site.catalogue.contact_title', [], 'en'), $html);
+        $this->assertStringContainsString('1 stone', $html);
+    }
 }
