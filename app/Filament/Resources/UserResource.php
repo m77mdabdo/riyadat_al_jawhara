@@ -6,6 +6,7 @@ use App\Enums\AdminNavigationGroup;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
+use App\Support\StaffAccess;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -40,6 +41,13 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
+                Forms\Components\Toggle::make('send_invitation')
+                    ->label(__('Send an invitation email'))
+                    ->helperText(__('The person receives a link to choose their own password. Turn off to set a password here instead.'))
+                    ->default(true)
+                    ->live()
+                    ->dehydrated(false)
+                    ->visibleOn('create'),
                 Forms\Components\TextInput::make('password')
                     ->label(__('Password'))
                     ->password()
@@ -47,8 +55,9 @@ class UserResource extends Resource
                     ->rule(Password::defaults())
                     ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                     ->dehydrated(fn (?string $state): bool => filled($state))
-                    ->required(fn (string $operation): bool => $operation === 'create')
-                    ->helperText(__('Leave blank to keep the current password.')),
+                    ->required(fn (string $operation, Forms\Get $get): bool => $operation === 'create' && ! $get('send_invitation'))
+                    ->visible(fn (string $operation, Forms\Get $get): bool => $operation !== 'create' || ! $get('send_invitation'))
+                    ->helperText(fn (string $operation) => $operation === 'create' ? null : __('Leave blank to keep the current password.')),
                 // Options must come from the relationship itself so the stored
                 // state is role IDs; overriding them with name keys made
                 // sync() insert role names into model_has_roles.role_id.
@@ -90,6 +99,17 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('sendAccessLink')
+                        ->label(fn (User $record) => $record->last_login_at ? __('Email a password link') : __('Resend invitation'))
+                        ->icon('heroicon-o-envelope')
+                        ->requiresConfirmation()
+                        ->modalDescription(__('The person receives an email with a time-limited link to choose a new password.'))
+                        ->visible(fn (User $record) => $record->is_active && $record->isNot(auth()->user()))
+                        ->action(fn (User $record) => self::notifyAccessResult(
+                            StaffAccess::send($record, invitation: ! $record->last_login_at),
+                            $record,
+                            invitation: ! $record->last_login_at,
+                        )),
                     Tables\Actions\Action::make('requirePassword')
                         ->label(__('Ask for a new password'))
                         ->icon('heroicon-o-key')
@@ -115,6 +135,13 @@ class UserResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function notifyAccessResult(bool $sent, User $user, bool $invitation): void
+    {
+        $sent
+            ? Notification::make()->title($invitation ? __('Invitation sent to :email', ['email' => $user->email]) : __('Password link sent to :email', ['email' => $user->email]))->success()->send()
+            : Notification::make()->title(__('The email could not be sent'))->body(__('The account is saved. Check the mail settings, then use “Resend invitation”.'))->danger()->persistent()->send();
     }
 
     public static function getRelations(): array

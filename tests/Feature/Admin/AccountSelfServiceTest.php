@@ -130,7 +130,7 @@ class AccountSelfServiceTest extends TestCase
 
         $this->actingAs(tap(User::factory()->create())->assignRole('admin'));
         Livewire::test(CreateUser::class)
-            ->fillForm(['name' => 'X', 'email' => 'x@example.test', 'password' => 'onlyletterspassword', 'roles' => [Role::findByName('editor')->id]])
+            ->fillForm(['send_invitation' => false, 'name' => 'X', 'email' => 'x@example.test', 'password' => 'onlyletterspassword', 'roles' => [Role::findByName('editor')->id]])
             ->call('create')
             ->assertHasFormErrors(['password']);
     }

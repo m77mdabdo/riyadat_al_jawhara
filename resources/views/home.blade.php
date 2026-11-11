@@ -25,7 +25,8 @@
     @endpush
 
     {{-- Hero --}}
-    <section class="relative bg-charcoal text-cream overflow-hidden min-h-hero flex flex-col"
+    <section class="hero-cinema relative bg-charcoal text-cream overflow-hidden min-h-hero flex flex-col"
+        x-cinema data-cinema="exit"
         aria-roledescription="carousel"
         aria-label="{{ __('site.common.slideshow') }}"
         x-data="{
@@ -59,8 +60,8 @@
         }"
         @mousemove="if (cursorFx) { const r = $el.getBoundingClientRect(); mx = ((event.clientX - r.left) / r.width) * 100; my = ((event.clientY - r.top) / r.height) * 100; }"
     >
-        <div class="absolute inset-0" x-data="{ showVideo: false }" x-init="showVideo = {{ $useVideo ? "window.matchMedia('(min-width: 640px)').matches" : 'false' }}">
-            <img src="{{ $heroFallback }}" @if ($heroSrcset) srcset="{{ $heroSrcset }}" sizes="100vw" @endif alt="" width="1920" height="1280" decoding="async" class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]" @if ($firstSlideImage) loading="lazy" @else loading="eager" fetchpriority="high" @endif>
+        <div class="hero-layer absolute inset-0" x-data="{ showVideo: false }" x-init="showVideo = {{ $useVideo ? "window.matchMedia('(min-width: 640px)').matches" : 'false' }}">
+            <img src="{{ $heroFallback }}" @if ($heroSrcset) srcset="{{ $heroSrcset }}" sizes="100vw" @endif alt="" width="1920" height="1280" decoding="async" class="hero-push absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]" @if ($firstSlideImage) loading="lazy" @else loading="eager" fetchpriority="high" @endif>
             @if ($useVideo)
                 <template x-if="showVideo">
                     <video autoplay muted loop playsinline class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
@@ -69,17 +70,17 @@
                 </template>
             @endif
             @foreach ($slideImages as $index => $imageUrl)
-                <img src="{{ $imageUrl }}" alt="" width="1920" height="1080" decoding="async" x-show="active === {{ $index }}" x-transition:enter="transition-opacity duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index === 0) fetchpriority="high" @else x-cloak loading="lazy" @endif class="absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
+                <img src="{{ $imageUrl }}" alt="" width="1920" height="1080" decoding="async" x-show="active === {{ $index }}" x-transition:enter="transition-opacity duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index === 0) fetchpriority="high" @else x-cloak loading="lazy" @endif class="hero-push absolute inset-0 h-full w-full object-cover saturate-[0.92] contrast-[1.03] sepia-[0.04]">
             @endforeach
             <div class="absolute inset-0 bg-gradient-to-t {{ \App\Support\HomeSections::overlay() }}"></div>
         </div>
 
         <div x-show="cursorFx" x-cloak class="absolute inset-0" :style="`background: radial-gradient(500px circle at ${mx}% ${my}%, rgba(248,246,243,0.10), transparent 60%)`"></div>
 
-        <div class="relative flex-1 flex items-center">
+        <div class="hero-copy relative flex-1 flex items-center">
             <div class="w-full">
                 @forelse ($sliders->values() as $index => $slider)
-                    <div x-show="active === {{ $index }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index > 0) x-cloak @endif role="group" aria-roledescription="slide" aria-label="{{ $index + 1 }} / {{ $sliders->count() }}" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
+                    <div x-show="active === {{ $index }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" @if ($index > 0) x-cloak @endif role="group" aria-roledescription="slide" aria-label="{{ $index + 1 }} / {{ $sliders->count() }}" class="hero-rise max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
                         {{-- One h1 per page: later slides use an h2 with the same styling. --}}
                         <{{ $index === 0 ? 'h1' : 'h2' }} class="text-hero font-bold ltr:tracking-tight break-words">{{ $slider->title }}</{{ $index === 0 ? 'h1' : 'h2' }}>
                         @if ($slider->subtitle)
@@ -99,7 +100,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
+                    <div class="hero-rise max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
                         <h1 class="text-hero font-bold ltr:tracking-tight break-words">{{ \App\Support\HomeSections::heroTitle() }}</h1>
                         <p class="mt-5 text-base sm:text-lg text-stone-300">{{ \App\Support\HomeSections::heroSubtitle() }}</p>
                         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -114,6 +115,12 @@
                 @endforelse
             </div>
         </div>
+
+        @if ($sliders->count() <= 1)
+            <div class="hero-cue relative flex flex-col items-center gap-2 pb-6 text-xs uppercase ltr:tracking-[0.3em] text-stone-300" aria-hidden="true">
+                <div class="h-10 w-px overflow-hidden bg-white/15"><span class="block h-full w-full bg-gold-400"></span></div>
+            </div>
+        @endif
 
         @if ($sliders->count() > 1)
             <div class="relative flex items-center justify-center gap-1 pb-6">

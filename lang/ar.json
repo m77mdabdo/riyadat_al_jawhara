@@ -584,5 +584,19 @@
     "Close": "إغلاق",
     "Help": "مساعدة",
     "Before and after": "قبل وبعد",
-    "Copyright line": "سطر حقوق النشر"
+    "Copyright line": "سطر حقوق النشر",
+    "Send an invitation email": "إرسال دعوة بالبريد الإلكتروني",
+    "The person receives a link to choose their own password. Turn off to set a password here instead.": "يصل للشخص رابط ليختار كلمة المرور بنفسه. أوقف هذا الخيار لتعيين كلمة المرور هنا بدلًا من ذلك.",
+    "Email a password link": "إرسال رابط كلمة مرور بالبريد",
+    "Resend invitation": "إعادة إرسال الدعوة",
+    "The person receives an email with a time-limited link to choose a new password.": "تصل للشخص رسالة فيها رابط محدود المدة لاختيار كلمة مرور جديدة.",
+    "Invitation sent to :email": "أُرسلت الدعوة إلى :email",
+    "Password link sent to :email": "أُرسل رابط كلمة المرور إلى :email",
+    "The email could not be sent": "تعذّر إرسال البريد",
+    "The account is saved. Check the mail settings, then use “Resend invitation”.": "تم حفظ الحساب. راجع إعدادات البريد ثم استخدم «إعادة إرسال الدعوة».",
+    "Invite a team member": "دعوة عضو فريق",
+    "Team invitation": "دعوة عضو فريق",
+    "Chapters": "الفصول",
+    "Add chapter": "إضافة فصل",
+    "Photos are replaced in Site images.": "تُستبدل الصور من صفحة صور الموقع."
 }

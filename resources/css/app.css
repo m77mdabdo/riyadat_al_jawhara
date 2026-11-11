@@ -267,3 +267,86 @@
         repeating-linear-gradient(-45deg, theme('colors.sand.300') 0 1px, transparent 1px 8px),
         theme('colors.sand.100');
 }
+
+/* Cinematic home page ------------------------------------------------------
+   [x-cinema] elements receive --p (0 → 1) while they cross the viewport. */
+.cinema-on .cinema-media {
+    transform: translate3d(0, calc((var(--p, 0.5) - 0.5) * -12%), 0) scale(calc(1.18 - var(--p, 0.5) * 0.18));
+    will-change: transform;
+}
+
+.cinema-on .cinema-copy {
+    opacity: 0;
+    transform: translate3d(0, 48px, 0);
+    transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1), transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cinema-on.cinema-in .cinema-copy {
+    opacity: 1;
+    transform: none;
+}
+
+.cinema-on .cinema-rule {
+    transform: scaleX(0);
+    transition: transform 1100ms cubic-bezier(0.16, 1, 0.3, 1) 250ms;
+}
+
+[dir='rtl'] .cinema-on .cinema-rule {
+    transform-origin: right;
+}
+
+[dir='ltr'] .cinema-on .cinema-rule {
+    transform-origin: left;
+}
+
+.cinema-on.cinema-in .cinema-rule {
+    transform: scaleX(1);
+}
+
+/* Hero: slow push-in on the photo, staggered entrance of the copy and a scroll cue. */
+@keyframes hero-push {
+    from { transform: scale(1.12); }
+    to { transform: scale(1); }
+}
+
+@keyframes hero-rise {
+    from { opacity: 0; transform: translate3d(0, 28px, 0); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes cue-drop {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+}
+
+.hero-push {
+    animation: hero-push 9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-rise > * {
+    animation: hero-rise 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-rise > :nth-child(2) { animation-delay: 160ms; }
+.hero-rise > :nth-child(3) { animation-delay: 320ms; }
+
+.hero-cue span {
+    animation: cue-drop 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+/* The hero's scroll-out: photo drifts, copy fades (driven by --p on the hero). */
+.cinema-on.hero-cinema .hero-layer {
+    transform: translate3d(0, calc(var(--p, 0) * 18%), 0);
+}
+
+.cinema-on.hero-cinema .hero-copy {
+    opacity: calc(1.6 - var(--p, 0) * 2.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-push,
+    .hero-rise > *,
+    .hero-cue span {
+        animation: none !important;
+    }
+}

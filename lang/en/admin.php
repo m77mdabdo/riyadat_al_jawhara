@@ -69,11 +69,15 @@ return [
         'heritage-diriyah' => ['label' => 'Heritage: Diriyah', 'used' => 'Home page, heritage strip (inspiration photo)'],
         'heritage-alula' => ['label' => 'Heritage: AlUla', 'used' => 'Home page, heritage strip (inspiration photo)'],
         'heritage-najdi' => ['label' => 'Heritage: Najdi architecture', 'used' => 'Home page, heritage strip (inspiration photo)'],
+        'cinema-quarry' => ['label' => 'Journey: the quarry', 'used' => 'Home page, cinematic journey (full-width photo)'],
+        'cinema-craft' => ['label' => 'Journey: cutting and finishing', 'used' => 'Home page, cinematic journey (full-width photo)'],
+        'cinema-space' => ['label' => 'Journey: installed', 'used' => 'Home page, cinematic journey (full-width photo)'],
         'logo-mobile' => ['label' => 'Logo on phones', 'used' => 'Header on small screens (transparent PNG)'],
     ],
 
     'home_sections' => [
         'why' => 'Why choose us',
+        'journey' => 'From the quarry to your space',
         'services' => 'Services',
         'categories' => 'Stone categories',
         'projects' => 'Featured projects',

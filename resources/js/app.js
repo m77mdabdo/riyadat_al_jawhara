@@ -2,6 +2,7 @@ import './bootstrap';
 import './tracking';
 import './analytics';
 import Alpine from 'alpinejs';
+import { registerCinema } from './cinema';
 
 Alpine.directive('reveal', (el) => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -27,6 +28,8 @@ Alpine.directive('reveal', (el) => {
 
     observer.observe(el);
 });
+
+registerCinema(Alpine);
 
 window.Alpine = Alpine;
 Alpine.start();

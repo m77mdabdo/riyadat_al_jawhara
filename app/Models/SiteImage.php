@@ -43,6 +43,9 @@ class SiteImage extends Model implements HasMedia
         'heritage-diriyah' => ['size' => '1880×1253', 'ratio' => '3:2', 'fallback' => null],
         'heritage-alula' => ['size' => '1880×1253', 'ratio' => '3:2', 'fallback' => null],
         'heritage-najdi' => ['size' => '1880×1253', 'ratio' => '3:2', 'fallback' => null],
+        'cinema-quarry' => ['size' => '1880×1253', 'ratio' => '3:2', 'fallback' => null],
+        'cinema-craft' => ['size' => '1880×1253', 'ratio' => '3:2', 'fallback' => null],
+        'cinema-space' => ['size' => '1880×1253', 'ratio' => '3:2', 'fallback' => null],
         'logo-mobile' => ['size' => '212×128', 'ratio' => null, 'fallback' => 'logo-monogram-header-black@2x.png', 'original' => true],
     ];
 

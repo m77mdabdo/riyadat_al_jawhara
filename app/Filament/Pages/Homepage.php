@@ -34,6 +34,7 @@ class Homepage extends Page implements HasForms
     /** Section => its title/subtitle site-text keys. */
     private const SECTION_TEXTS = [
         'why' => ['site.home.why_choose_us', 'site.home.why_choose_us_subtitle'],
+        'journey' => ['site.home.journey_title', 'site.home.journey_subtitle'],
         'services' => ['site.home.our_services', 'site.home.our_services_subtitle'],
         'categories' => ['site.home.categories_title', 'site.home.categories_subtitle'],
         'projects' => ['site.home.featured_projects'],
@@ -165,6 +166,21 @@ class Homepage extends Page implements HasForms
                     ->reorderableWithDragAndDrop()->collapsible()->collapsed()->maxItems(8)
                     ->addActionLabel(__('Add card')),
             ]),
+            $section('journey', [
+                Forms\Components\Repeater::make('home_sections.sections.journey.items')
+                    ->label(__('Chapters'))
+                    ->schema([
+                        Forms\Components\Select::make('slot')->label(__('Image'))
+                            ->options(fn () => collect(SiteImage::SLOTS)->keys()->filter(fn (string $slot) => str_starts_with($slot, 'cinema-'))
+                                ->mapWithKeys(fn (string $slot) => [$slot => __('admin.site_image_slots.'.$slot.'.label')])->all())
+                            ->helperText(__('Photos are replaced in Site images.')),
+                        $bilingual('title', 'Title'),
+                        $bilingual('description', 'Text', area: true),
+                    ])
+                    ->itemLabel(fn (array $state) => $state['title_'.(app()->getLocale() === 'ar' ? 'ar' : 'en')] ?? null)
+                    ->reorderableWithDragAndDrop()->collapsible()->collapsed()->maxItems(5)
+                    ->addActionLabel(__('Add chapter')),
+            ]),
             $section('services'),
             $section('categories'),
             $section('projects'),
@@ -225,7 +241,9 @@ class Homepage extends Page implements HasForms
             'why' => fn (string $locale) => array_values((array) __('site.home.why_items', [], $locale)),
             'process' => fn (string $locale) => array_values((array) __('site.process.steps', [], $locale)),
             'heritage' => fn (string $locale) => array_values((array) __('site.home.heritage_items', [], $locale)),
+            'journey' => fn (string $locale) => array_values((array) __('site.home.journey_items', [], $locale)),
         ];
+        $journeySlots = array_map(fn ($key) => 'cinema-'.$key, array_keys((array) __('site.home.journey_items', [], 'en')));
         $slots = array_map(fn ($key) => 'heritage-'.$key, array_keys((array) __('site.home.heritage_items', [], 'en')));
         foreach ($defaults as $section => $items) {
             if (! empty(data_get($saved, "sections.{$section}.items"))) {
@@ -247,6 +265,9 @@ class Homepage extends Page implements HasForms
                 }
                 if ($section === 'heritage') {
                     $row['slot'] = $slots[$index] ?? null;
+                }
+                if ($section === 'journey') {
+                    $row['slot'] = $journeySlots[$index] ?? null;
                 }
                 $rows[] = $row;
             }

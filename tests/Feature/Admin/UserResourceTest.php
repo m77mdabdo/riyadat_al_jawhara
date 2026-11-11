@@ -39,6 +39,7 @@ class UserResourceTest extends TestCase
             ->fillForm([
                 'name' => 'New Editor',
                 'email' => 'new.editor@example.test',
+                'send_invitation' => false,
                 'password' => 'a-strong-password-123',
                 'roles' => [$this->editorRole->id],
             ])

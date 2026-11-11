@@ -109,6 +109,13 @@ return [
             'alula' => ['name' => 'AlUla', 'caption' => 'Sandstone cliffs shaped over millennia'],
             'najdi' => ['name' => 'Najdi architecture', 'caption' => 'Triangular friezes and earthen walls'],
         ],
+        'journey_title' => 'From the quarry to your space',
+        'journey_subtitle' => 'Every slab we supply travels the same careful path',
+        'journey_items' => [
+            'quarry' => ['title' => 'Chosen with care', 'description' => 'Marble, granite, quartz and natural stone, chosen for colour, veining and quality.'],
+            'craft' => ['title' => 'Cut and finished with precision', 'description' => 'Slabs are cut to your measurements and given the finish your space calls for: polished, honed or textured.'],
+            'space' => ['title' => 'Installed and handed over', 'description' => 'Our installation team fits every piece on site and hands over a finished space.'],
+        ],
         'stats_title' => 'In numbers',
         'stats' => [
             'projects' => 'Projects completed',
@@ -361,6 +368,24 @@ return [
             'action' => 'Choose a new password',
             'expiry' => 'This link expires in :count minutes.',
             'ignore' => 'If you did not ask for this, you can ignore this email; your password stays the same.',
+        ],
+        'staff' => [
+            'greeting' => 'Hello :name,',
+            'invite' => [
+                'subject' => 'You are invited to the :app dashboard',
+                'preheader' => 'Choose your password to start using the dashboard.',
+                'intro' => 'You have been added to the website dashboard as: :roles.',
+                'account' => 'Your sign-in email is :email.',
+                'action' => 'Choose your password',
+            ],
+            'link' => [
+                'subject' => 'Your :app dashboard access link',
+                'preheader' => 'Use the button below to choose a new password.',
+                'intro' => 'An administrator sent you a link to choose a new password for the dashboard (your role: :roles).',
+                'action' => 'Choose a new password',
+            ],
+            'expiry' => 'For your security this link expires in :count minutes. If it has expired, ask an administrator to send a new one.',
+            'ignore' => 'If you were not expecting this email, you can ignore it.',
         ],
         'test' => [
             'subject' => 'Test email (:template, :locale)',

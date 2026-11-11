@@ -31,6 +31,8 @@ return [
     'state_path' => resource_path('data/site-images.json'),
     'credits_path' => base_path('docs/IMAGE_CREDITS.md'),
     'review_path' => storage_path('app/site-images/review.html'),
+    // Earlier stone covers are copied here by site-images:attach-stones before being replaced.
+    'backup_path' => storage_path('app/media-backup'),
 
     'slots' => [
         'hero' => [
@@ -96,6 +98,56 @@ return [
             'query' => 'Masmak fortress Riyadh',
             'max_kb' => 250,
             'text_space' => false,
+        ],
+        // Stone types: catalogue covers (attached with site-images:attach-stones).
+        'stone-carrara-marble' => [
+            'used' => 'Carrara Marble: catalogue cover',
+            'query' => 'carrara white marble slab grey veins',
+            'max_kb' => 220,
+            'text_space' => false,
+        ],
+        'stone-tuscany-marble' => [
+            'used' => 'Tuscany Marble: catalogue cover',
+            'query' => 'beige marble slab texture',
+            'max_kb' => 220,
+            'text_space' => false,
+        ],
+        'stone-black-granite' => [
+            'used' => 'Black Granite: catalogue cover',
+            'query' => 'black granite countertop',
+            'max_kb' => 220,
+            'text_space' => false,
+        ],
+        'stone-engineered-white-quartz' => [
+            'used' => 'Engineered White Quartz: catalogue cover',
+            'query' => 'white quartz kitchen countertop',
+            'max_kb' => 220,
+            'text_space' => false,
+        ],
+        'stone-hashemi-stone' => [
+            'used' => 'Hashemi Stone: catalogue cover',
+            'query' => 'beige limestone facade building',
+            'max_kb' => 220,
+            'text_space' => false,
+        ],
+        // Cinematic homepage chapters.
+        'cinema-quarry' => [
+            'used' => 'Home: "From the quarry" chapter (full-bleed, parallax)',
+            'query' => 'marble quarry',
+            'max_kb' => 320,
+            'text_space' => true,
+        ],
+        'cinema-craft' => [
+            'used' => 'Home: "Cut and finished" chapter (full-bleed, parallax)',
+            'query' => 'stone slab cutting workshop',
+            'max_kb' => 320,
+            'text_space' => true,
+        ],
+        'cinema-space' => [
+            'used' => 'Home: "Installed" chapter (full-bleed, parallax)',
+            'query' => 'luxury marble lobby interior',
+            'max_kb' => 320,
+            'text_space' => true,
         ],
     ],
 

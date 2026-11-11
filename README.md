@@ -14,7 +14,7 @@
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)
 ![Alpine.js](https://img.shields.io/badge/Alpine.js-3-8BC0D0?logo=alpinedotjs&logoColor=white)
 <br>
-![Tests](https://img.shields.io/badge/tests-469_passing-2EA043)
+![Tests](https://img.shields.io/badge/tests-479_passing-2EA043)
 ![Larastan](https://img.shields.io/badge/Larastan-level_6-6C4BFF)
 ![Lighthouse](https://img.shields.io/badge/Lighthouse-95–98-F44B21?logo=lighthouse&logoColor=white)
 ![Accessibility](https://img.shields.io/badge/axe-0_serious_issues-2EA043)
@@ -42,7 +42,7 @@
 | 📈 **Lead generation** | Quote requests and WhatsApp clicks captured *with the page the visitor came from*, followed up in a built-in CRM. |
 | 🛠️ **No-code CMS** | Menus, homepage sections, page content, images, every interface text, branding and SEO — all editable from the admin, in both languages. |
 
-> Built to production standards: strict Content Security Policy, WCAG AA accessibility, Lighthouse 95+ on mobile, 469 automated tests and static analysis in CI.
+> Built to production standards: strict Content Security Policy, WCAG AA accessibility, Lighthouse 95+ on mobile, 479 automated tests and static analysis in CI.
 
 ---
 
@@ -88,6 +88,7 @@
 <details open>
 <summary><b>🌐 Public website</b></summary>
 
+- Cinematic home page: hero with a slow push-in and scroll-out, and a full-screen *From the quarry to your space* journey whose photos scale and drift with scroll (all motion off for visitors who prefer reduced motion).
 - Home page with hero slides, services, stone categories, featured projects, process, statistics (shown only once real figures are entered), heritage strip, testimonials and FAQ — **order and visibility controlled from the admin**.
 - Services, stones, projects, gallery, blog (categories, tags, moderated comments), FAQ, about, contact, privacy policy and terms.
 - Site-wide search across services, stones, projects, posts and FAQs, in both languages.
@@ -111,7 +112,7 @@
 <details open>
 <summary><b>✉️ Notifications</b></summary>
 
-- Branded HTML + plain-text emails in Arabic and English: new lead (team + extra recipients), confirmation to the visitor, follow-up digest, comments awaiting review, password reset.
+- Branded HTML + plain-text emails in Arabic and English: new lead (team + extra recipients), confirmation to the visitor, follow-up digest, comments awaiting review, password reset, team invitation.
 - Notification bell inside the admin. Every email is queued and retried; a mail problem never breaks a visitor's request.
 - "Email previews" page and `app:mail-test` for checking every template.
 
@@ -161,15 +162,15 @@ The admin (`/admin`, built with Filament) lets the company run the whole site wi
 
 | Area | What can be edited |
 |---|---|
-| **Homepage** | Section order and visibility, item counts, hero text, buttons and overlay, "why us" cards, process steps, heritage places, closing call-to-action |
+| **Homepage** | Section order and visibility, item counts, hero text, buttons and overlay, cinematic journey chapters (text and photo), "why us" cards, process steps, heritage places, closing call-to-action |
 | **Menus** | Header (with drop-downs), footer columns and mobile menu — links to pages, records or custom URLs; header button, language switch and search toggles |
 | **Pages** | Header title, subtitle and banner for 13 pages; content blocks (text, image + text, gallery, call to action, quote); SEO; contact-form fields shown / required |
 | **Site texts** | Every button, label, message and email text, Arabic and English side by side, with search and placeholder validation |
-| **Site images** | Hero, textures, heritage photos and mobile logo — upload, alt text in both languages, reset to built-in |
+| **Site images** | Hero, textures, heritage and journey photos and mobile logo — upload, alt text in both languages, reset to built-in |
 | **Branding · Footer · Floating** | Site name, logos, favicon set, share image; footer blocks and copyright; WhatsApp button, back-to-top, cookie-banner texts |
 | **Settings** | General, contact & map (live preview), social, SEO, analytics, notifications, statistics, legal pages |
 | **Content** | Services, stones, attributes, projects, testimonials, team, FAQs, slides, blog — with drag-and-drop ordering, duplicate, trash & restore, bulk activate, "view on site" and global search (`Ctrl/⌘ + K`) |
-| **People** | Users, custom roles with view / create / edit / delete per area, activity log |
+| **People** | Invite team members by email (they choose their own password from a time-limited link; resend or send a new link from the list), custom roles with view / create / edit / delete per area, activity log |
 
 Editing is built for two languages: Arabic and English tabs show a badge when a translation is missing and offer **"Copy from the other language"**; image fields show the recommended size, crop to the right ratio and take alt text in both languages.
 
@@ -231,7 +232,7 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the request lifecycle, co
 
 | Check | Result |
 |---|---|
-| Automated tests | **469** tests, ~3,000 assertions (feature, Livewire, policy, cache, query-budget and translation-coverage tests) |
+| Automated tests | **479** tests, ~3,100 assertions (feature, Livewire, policy, cache, query-budget and translation-coverage tests) |
 | Static analysis | Larastan **level 6**, no baseline |
 | Lighthouse (mobile, production-like) | **95–98** performance · **100** accessibility · **100** best practices · **100** SEO |
 | Accessibility (axe-core) | **0** serious or critical issues across 72 page scans (390 / 1440 px, AR + EN) |
@@ -386,6 +387,7 @@ docs/             architecture, admin guide, launch checklist, image credits
 - [x] Custom roles with per-area permissions, account deactivation, forced password change, last sign-in
 - [x] Trash & restore, duplicate, drag-and-drop ordering, bulk actions and global search across the admin
 - [x] Admin guide in Arabic and English, built into the panel
+- [x] Team invitations by email, cinematic home page, credited stock photos for every stone type
 
 ### 🔜 Next
 
@@ -404,6 +406,10 @@ docs/             architecture, admin guide, launch checklist, image credits
 - **mPDF** is licensed under **GPL-2.0-only** and runs server-side to generate the catalogue PDFs.
 - Stock images are listed with their sources and licences in [`docs/IMAGE_CREDITS.md`](docs/IMAGE_CREDITS.md).
 - Other dependencies are listed in `composer.json` and `package.json` under their own licences.
+
+## Changelog
+
+- **2026-11-11** — Team members are invited by email from **Administration → Users** and choose their own password from a time-limited link (resend / new link from the list; new *Team invitation* email in both languages and in Email previews). Cinematic home page: new *From the quarry to your space* section (editable chapters and photos, its own place in the homepage layout), hero push-in and scroll-out, and the scroll reveals now run on every page (they were outside an Alpine scope before). Stone catalogue covers replaced with commercially licensed Pexels/Pixabay photos, credited on each media item and in `docs/IMAGE_CREDITS.md` (`php artisan site-images:attach-stones`). Sections added in a later version keep their built-in place in a saved homepage order. 479 tests.
 
 ## License
 
@@ -445,7 +451,7 @@ Designed and developed by **Mohamed Abdo** — Full-Stack Developer · [GitHub](
 
 ### الجودة بالأرقام
 
-- **469** اختبارًا آليًا، وتحليل ثابت Larastan بالمستوى 6.
+- **479** اختبارًا آليًا، وتحليل ثابت Larastan بالمستوى 6.
 - **Lighthouse على الجوال:** أداء 95–98، وإمكانية الوصول وأفضل الممارسات وSEO **100**.
 - **0** مشاكل وصول جدية (axe)، و**0** مخالفات لسياسة أمان المحتوى، ولا تمرير أفقي من 320 إلى 1920 بكسل.
 

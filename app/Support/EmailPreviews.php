@@ -12,6 +12,7 @@ use App\Notifications\FollowUpDigestNotification;
 use App\Notifications\LeadAutoReplyNotification;
 use App\Notifications\Mail\PasswordResetMail;
 use App\Notifications\NewLeadNotification;
+use App\Notifications\StaffAccessNotification;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Mail\Markdown;
 use Illuminate\Notifications\AnonymousNotifiable;
@@ -27,7 +28,7 @@ use InvalidArgumentException;
  */
 class EmailPreviews
 {
-    public const TEMPLATES = ['lead_new', 'lead_auto_reply', 'follow_up_digest', 'comment_pending', 'password_reset'];
+    public const TEMPLATES = ['lead_new', 'lead_auto_reply', 'follow_up_digest', 'comment_pending', 'password_reset', 'staff_invitation'];
 
     /**
      * @return array<string, string> key => label
@@ -40,6 +41,7 @@ class EmailPreviews
             'follow_up_digest' => 'Follow-up digest (team)',
             'comment_pending' => 'Comment awaiting review (team)',
             'password_reset' => 'Admin password reset',
+            'staff_invitation' => 'Team invitation',
         ];
     }
 
@@ -112,6 +114,7 @@ class EmailPreviews
                     return ['mail'];
                 }
             },
+            'staff_invitation' => new StaffAccessNotification(url('/admin/password-reset/reset?token=sample-token'), invitation: true),
             default => throw new InvalidArgumentException("Unknown email template [{$template}]."),
         };
     }

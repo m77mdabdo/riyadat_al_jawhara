@@ -13,7 +13,7 @@ use App\Models\Setting;
 class HomeSections
 {
     /** Sections below the hero, in their built-in order. */
-    public const SECTIONS = ['why', 'services', 'categories', 'projects', 'stones', 'process', 'stats', 'heritage', 'testimonials', 'faq', 'cta'];
+    public const SECTIONS = ['why', 'journey', 'services', 'categories', 'projects', 'stones', 'process', 'stats', 'heritage', 'testimonials', 'faq', 'cta'];
 
     /** Icons offered for the why-choose-us cards. */
     public const ICONS = [
@@ -54,8 +54,16 @@ class HomeSections
     public static function order(): array
     {
         $saved = array_values(array_intersect((array) self::get('order', []), self::SECTIONS));
-        // Sections added in a later version than the saved order go last.
-        $order = array_merge($saved, array_diff(self::SECTIONS, $saved));
+        // Sections added in a later version than the saved order take their
+        // built-in place: right after the section that precedes them there.
+        $order = $saved;
+        foreach (self::SECTIONS as $index => $section) {
+            if (in_array($section, $order, true)) {
+                continue;
+            }
+            $after = $index > 0 ? array_search(self::SECTIONS[$index - 1], $order, true) : -1;
+            array_splice($order, $after === false ? count($order) : $after + 1, 0, [$section]);
+        }
 
         return array_values(array_filter($order, fn (string $section) => self::enabled($section)));
     }
@@ -112,6 +120,27 @@ class HomeSections
             $items = [];
             foreach ((array) __('site.home.heritage_items') as $key => $item) {
                 $items[] = $item + ['slot' => 'heritage-'.$key];
+            }
+
+            return $items;
+        }
+
+        return array_map(fn (array $item) => $item + ['slot' => (string) ($item['raw']['slot'] ?? '')], $items);
+    }
+
+    /**
+     * Cinematic "from quarry to your space" chapters; `slot` is the full-bleed
+     * photo (Website Content → Site images).
+     *
+     * @return list<array{title: string, description: string, slot: string}>
+     */
+    public static function journeyItems(): array
+    {
+        $items = self::items('sections.journey.items', ['title', 'description']);
+        if ($items === null) {
+            $items = [];
+            foreach ((array) __('site.home.journey_items') as $key => $item) {
+                $items[] = $item + ['slot' => 'cinema-'.$key];
             }
 
             return $items;

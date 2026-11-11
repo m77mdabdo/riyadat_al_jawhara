@@ -171,7 +171,7 @@
     <div class="min-h-screen flex flex-col">
         @include('partials.header')
 
-        <main id="main-content" class="flex-1">
+        <main id="main-content" class="flex-1" x-data>
             {{ $slot }}
 
             @if ($pageContent?->blocks)
