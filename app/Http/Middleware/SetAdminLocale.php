@@ -16,7 +16,7 @@ class SetAdminLocale
     public function handle(Request $request, Closure $next): Response
     {
         // Signed in: the saved preference; on the sign-in pages: the choice made there.
-        $locale = $request->user()?->locale ?? ($request->hasSession() ? $request->session()->get('admin_locale') : null);
+        $locale = $request->user()->locale ?? ($request->hasSession() ? $request->session()->get('admin_locale') : null);
 
         if (in_array($locale, config('locales.supported'), true)) {
             app()->setLocale($locale);
