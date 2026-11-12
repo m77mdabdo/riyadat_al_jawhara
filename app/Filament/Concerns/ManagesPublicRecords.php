@@ -176,6 +176,9 @@ trait ManagesPublicRecords
     {
         return Tables\Actions\ReplicateAction::make('duplicate')
             ->label(__('Duplicate'))
+            // Only for people who may create records here (ContentPolicy::replicate
+            // checks the same on the server).
+            ->visible(fn (Model $record): bool => auth()->user()?->can('create', $record::class) ?? false)
             ->excludeAttributes(['deleted_at', 'views_count', 'slug'])
             ->beforeReplicaSaved(function (Model $replica): void {
                 foreach (['name_en', 'title_en', 'question_en', 'client_name'] as $field) {

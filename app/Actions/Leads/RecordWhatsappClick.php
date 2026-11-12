@@ -16,7 +16,8 @@ use Illuminate\Support\Str;
  * Records a click on a WhatsApp button. Always stores an anonymous event.
  * Creates a lead (source=whatsapp) only when the page context is known -- a
  * service, stone or project -- and at most once per visitor session per
- * context, so repeated clicks don't flood the lead list.
+ * context, so repeated clicks don't flood the lead list, and at most
+ * site.whatsapp_daily_lead_cap a day in total (deleted ones included).
  */
 class RecordWhatsappClick
 {
@@ -52,6 +53,10 @@ class RecordWhatsappClick
             return Lead::find($session->get($sessionKey));
         }
 
+        if ($this->dailyCapReached()) {
+            return null;
+        }
+
         $label = $context->getAttribute($type === WhatsappContext::Project ? 'title_en' : 'name_en');
 
         $lead = Lead::create([
@@ -70,5 +75,13 @@ class RecordWhatsappClick
         $session->put($sessionKey, $lead->id);
 
         return $lead;
+    }
+
+    private function dailyCapReached(): bool
+    {
+        return Lead::withTrashed()
+            ->where('source', LeadSource::Whatsapp->value)
+            ->where('created_at', '>=', now()->startOfDay())
+            ->count() >= (int) config('site.whatsapp_daily_lead_cap');
     }
 }

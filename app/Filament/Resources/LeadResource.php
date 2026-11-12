@@ -181,7 +181,8 @@ class LeadResource extends Resource
                 Tables\Columns\TextColumn::make('project.'.Localized::column('title'))->label(__('Project'))->limit(30)->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('message')->limit(40)->tooltip(fn (Lead $record): ?string => $record->message)->toggleable(),
                 Tables\Columns\TextColumn::make('source')->badge()->formatStateUsing(fn (string $state): string => LeadSource::labelFor($state))->color(fn (string $state): string => LeadSource::tryFrom($state)?->getColor() ?? 'gray')->toggleable(),
-                Tables\Columns\SelectColumn::make('status')->options(LeadStatus::options())->selectablePlaceholder(false),
+                Tables\Columns\SelectColumn::make('status')->options(LeadStatus::options())->selectablePlaceholder(false)
+                    ->disabled(fn (Lead $record): bool => ! (auth()->user()?->can('update', $record) ?? false)),
                 Tables\Columns\TextColumn::make('assignee.name')->label(__('Assigned to'))->placeholder('—')->toggleable(),
                 Tables\Columns\TextColumn::make('follow_up_at')
                     ->label(__('Follow-up'))

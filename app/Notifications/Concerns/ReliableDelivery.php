@@ -2,7 +2,7 @@
 
 namespace App\Notifications\Concerns;
 
-use Illuminate\Support\Facades\Log;
+use App\Support\MailFailureLog;
 use Throwable;
 
 /**
@@ -29,9 +29,9 @@ trait ReliableDelivery
 
     public function failed(Throwable $exception): void
     {
-        Log::error('Notification could not be delivered', [
+        // Never with the recipient's address (MailFailureLog).
+        MailFailureLog::write('Notification could not be delivered', $exception, [
             'notification' => static::class,
-            'error' => $exception::class.': '.$exception->getMessage(),
         ]);
     }
 }

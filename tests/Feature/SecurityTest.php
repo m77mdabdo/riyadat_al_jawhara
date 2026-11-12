@@ -7,8 +7,10 @@ use App\Filament\Support\ImageUpload;
 use App\Models\Lead;
 use App\Models\Post;
 use App\Models\Project;
+use App\Models\SiteText;
 use App\Models\User;
 use App\Notifications\NewLeadNotification;
+use App\Support\SiteTexts;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\AnonymousNotifiable;
@@ -125,5 +127,22 @@ class SecurityTest extends TestCase
         $mail = (new NewLeadNotification($lead))->toMail(new AnonymousNotifiable);
 
         $this->assertSame([], $mail->replyTo);
+    }
+
+    public function test_the_consent_label_is_escaped_but_keeps_the_privacy_link(): void
+    {
+        $link = '<a href="'.e(route('legal.privacy')).'" target="_blank" class="font-semibold text-charcoal underline underline-offset-2 hover:no-underline">'.e(__('site.legal.privacy_policy_title')).'</a>';
+
+        // The shipped text renders exactly as before.
+        $html = $this->get(route('contact'))->assertOk()->getContent();
+        $this->assertStringContainsString('<span>'.__('site.contact.consent_label', ['link' => $link]).'</span>', $html);
+
+        // Text edited in the dashboard cannot add markup of its own.
+        SiteText::create(['key' => 'site.contact.consent_label', 'value_en' => '<img src=x onerror=alert(1)> I agree to the :link & terms', 'value_ar' => 'أوافق على :link']);
+        SiteTexts::flush();
+
+        $html = $this->get(route('contact'))->assertOk()->getContent();
+        $this->assertStringNotContainsString('<img src=x', $html);
+        $this->assertStringContainsString('&lt;img src=x onerror=alert(1)&gt; I agree to the '.$link.' &amp; terms', $html);
     }
 }

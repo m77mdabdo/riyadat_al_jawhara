@@ -3,16 +3,21 @@
 namespace App\Filament\Resources;
 
 use App\Enums\AdminNavigationGroup;
+use App\Enums\UserRole;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use App\Support\StaffAccess;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Spatie\Permission\Models\Role;
@@ -61,9 +66,20 @@ class UserResource extends Resource
                 // Options must come from the relationship itself so the stored
                 // state is role IDs; overriding them with name keys made
                 // sync() insert role names into model_has_roles.role_id.
+                // Only admins may hand out the admin role: for everyone else it
+                // is left out of the options and rejected if posted anyway
+                // (multi-selects on a relationship are not validated against
+                // their options).
                 Forms\Components\Select::make('roles')
                     ->label(__('Roles'))
-                    ->relationship('roles', 'name')
+                    ->relationship('roles', 'name', modifyQueryUsing: fn (Builder $query) => self::actorIsAdmin()
+                        ? $query
+                        : $query->where('name', '!=', UserRole::Admin->value))
+                    ->rule(fn () => function (string $attribute, mixed $value, Closure $fail): void {
+                        if (! self::actorIsAdmin() && self::includesAdminRole((array) $value)) {
+                            $fail(__('Only an administrator can give the administrator role.'));
+                        }
+                    })
                     ->getOptionLabelFromRecordUsing(fn (Role $record): string => RoleResource::roleLabel($record->name))
                     ->multiple()
                     ->preload()
@@ -105,6 +121,7 @@ class UserResource extends Resource
                         ->requiresConfirmation()
                         ->modalDescription(__('The person receives an email with a time-limited link to choose a new password.'))
                         ->visible(fn (User $record) => $record->is_active && $record->isNot(auth()->user()))
+                        ->authorize(fn (User $record) => auth()->user()?->can('update', $record) ?? false)
                         ->action(fn (User $record) => self::notifyAccessResult(
                             StaffAccess::send($record, invitation: ! $record->last_login_at),
                             $record,
@@ -116,6 +133,7 @@ class UserResource extends Resource
                         ->requiresConfirmation()
                         ->modalDescription(__('At the next sign-in this person must choose a new password before doing anything else.'))
                         ->visible(fn (User $record) => ! $record->password_change_required && $record->isNot(auth()->user()))
+                        ->authorize(fn (User $record) => auth()->user()?->can('update', $record) ?? false)
                         ->action(function (User $record) {
                             $record->update(['password_change_required' => true]);
                             Notification::make()->title(__('A new password will be required'))->success()->send();
@@ -126,15 +144,50 @@ class UserResource extends Resource
                         ->color(fn (User $record) => $record->is_active ? 'danger' : 'success')
                         ->requiresConfirmation()
                         ->visible(fn (User $record) => $record->isNot(auth()->user()))
+                        ->authorize(fn (User $record) => auth()->user()?->can('update', $record) ?? false)
                         ->action(fn (User $record) => $record->update(['is_active' => ! $record->is_active])),
-                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->hidden(fn (User $record) => $record->is(auth()->user())),
                 ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Each selected account is checked on its own: never the
+                    // signed-in account, never one the actor may not delete
+                    // (an administrator, for a non-administrator).
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->action(function (Tables\Actions\DeleteBulkAction $action, Collection $records): void {
+                            $records
+                                ->filter(fn (Model $record) => $record instanceof User && self::canDeleteAccount($record))
+                                ->each(fn (Model $record) => $record->delete());
+                            $action->success();
+                        }),
                 ]),
             ]);
+    }
+
+    /** Delete check that also holds for administrators (who pass every policy). */
+    public static function canDeleteAccount(User $record): bool
+    {
+        $actor = auth()->user();
+
+        return $actor instanceof User && $record->isNot($actor) && $actor->can('delete', $record);
+    }
+
+    private static function actorIsAdmin(): bool
+    {
+        $actor = auth()->user();
+
+        return $actor instanceof User && $actor->hasRole(UserRole::Admin->value);
+    }
+
+    /** @param  array<mixed>  $roleIds */
+    private static function includesAdminRole(array $roleIds): bool
+    {
+        return Role::query()
+            ->whereKey(array_filter($roleIds, fn ($id) => is_scalar($id)))
+            ->where('name', UserRole::Admin->value)
+            ->exists();
     }
 
     public static function notifyAccessResult(bool $sent, User $user, bool $invitation): void

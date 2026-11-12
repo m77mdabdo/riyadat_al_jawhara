@@ -52,6 +52,12 @@ abstract class ContentPolicy
         return $this->allows($user, 'update', $this->isStaff($user));
     }
 
+    /** Duplicating a record creates a new one. */
+    public function replicate(User $user, Model $record): bool
+    {
+        return $this->create($user);
+    }
+
     public function delete(User $user, Model $record): bool
     {
         return $this->allows($user, 'delete', false);

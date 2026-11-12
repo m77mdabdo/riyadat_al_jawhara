@@ -85,11 +85,38 @@ class WhatsappClickTest extends TestCase
 
     public function test_beacon_is_rate_limited(): void
     {
-        for ($i = 0; $i < 20; $i++) {
+        $this->assertSame(6, (int) config('site.throttle.beacons'));
+
+        for ($i = 0; $i < 6; $i++) {
             $this->click()->assertNoContent();
         }
 
         $this->click()->assertStatus(429);
+    }
+
+    public function test_automatic_whatsapp_leads_stop_at_the_daily_cap(): void
+    {
+        $this->assertSame(50, (int) config('site.whatsapp_daily_lead_cap'));
+        config(['site.whatsapp_daily_lead_cap' => 2]);
+        [$a, $b, $c, $d] = Service::factory()->count(4)->create()->all();
+
+        // Yesterday's leads do not count; a deleted one from today does.
+        Lead::factory()->create(['source' => 'whatsapp', 'created_at' => now()->subDay()]);
+        Lead::factory()->create(['source' => 'whatsapp'])->delete();
+
+        foreach ([$a, $b, $c] as $service) {
+            $this->click(['context_type' => 'service', 'context_id' => $service->id])->assertNoContent();
+        }
+
+        $this->assertSame(1, Lead::where('source', 'whatsapp')->where('created_at', '>=', today())->count());
+        $this->assertSame(3, WhatsappClick::count());
+        $this->assertSame([true, false, false], WhatsappClick::orderBy('id')->get()->map(fn ($click) => $click->lead_id !== null)->all());
+        $this->assertSame(3, WhatsappClick::where('context_type', 'service')->count());
+
+        // The next day the cap starts again.
+        $this->travel(1)->days();
+        $this->click(['context_type' => 'service', 'context_id' => $d->id])->assertNoContent();
+        $this->assertNotNull(WhatsappClick::latest('id')->first()->lead_id);
     }
 
     public function test_whatsapp_links_are_tagged_and_detail_pages_carry_context(): void

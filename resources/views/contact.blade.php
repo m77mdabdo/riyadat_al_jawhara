@@ -102,7 +102,17 @@
                 <div>
                     <label for="consent" class="flex min-h-11 items-start gap-3 text-sm text-stone-700 leading-prose cursor-pointer">
                         <input type="checkbox" name="consent" id="consent" value="1" @checked(old('consent')) @error('consent') aria-invalid="true" aria-describedby="consent-error" @enderror class="mt-1 h-5 w-5 shrink-0 rounded text-charcoal focus:ring-charcoal @error('consent') border-red-400 @else border-stone-300 @enderror">
-                        <span>{!! __('site.contact.consent_label', ['link' => '<a href="'.e(route('legal.privacy')).'" target="_blank" class="font-semibold text-charcoal underline underline-offset-2 hover:no-underline">'.e(__('site.legal.privacy_policy_title')).'</a>']) !!}</span>
+                        @php
+                            // The label is editable in the dashboard: escape all of it,
+                            // then put back only our own link markup at :link.
+                            $consentLinkToken = '__privacy_policy_link__';
+                            $consentLabel = str_replace(
+                                $consentLinkToken,
+                                '<a href="'.e(route('legal.privacy')).'" target="_blank" class="font-semibold text-charcoal underline underline-offset-2 hover:no-underline">'.e(__('site.legal.privacy_policy_title')).'</a>',
+                                e(__('site.contact.consent_label', ['link' => $consentLinkToken])),
+                            );
+                        @endphp
+                        <span>{!! $consentLabel !!}</span>
                     </label>
                     @error('consent') <p id="consent-error" class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                 </div>

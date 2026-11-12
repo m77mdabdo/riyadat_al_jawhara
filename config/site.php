@@ -16,10 +16,15 @@ return [
     'throttle' => [
         'contact' => 5,
         'comments' => 5,
-        'beacons' => 20,
+        'beacons' => 6,
         'catalogue' => 20,
         'search' => 60,
     ],
+
+    // Most WhatsApp-button leads created automatically per day (all visitors
+    // together). Past it, clicks are still counted but add no lead, so a
+    // script cannot flood the lead list.
+    'whatsapp_daily_lead_cap' => (int) env('WHATSAPP_DAILY_LEAD_CAP', 50),
 
     // Items per page on paginated listings.
     'pagination' => [

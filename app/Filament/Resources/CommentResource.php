@@ -101,12 +101,14 @@ class CommentResource extends Resource
                     ->icon('heroicon-o-check')
                     ->color('success')
                     ->visible(fn (Comment $record) => $record->status !== CommentStatus::Approved->value)
+                    ->authorize('update')
                     ->action(fn (Comment $record) => $record->update(['status' => CommentStatus::Approved->value])),
                 Tables\Actions\Action::make('spam')
                     ->label(__('Mark as Spam'))
                     ->icon('heroicon-o-no-symbol')
                     ->color('danger')
                     ->visible(fn (Comment $record) => $record->status !== CommentStatus::Spam->value)
+                    ->authorize('update')
                     ->action(fn (Comment $record) => $record->update(['status' => CommentStatus::Spam->value])),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),

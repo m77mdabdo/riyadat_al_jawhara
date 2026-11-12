@@ -32,6 +32,7 @@ use App\Services\StockMedia\PexelsProvider;
 use App\Services\StockMedia\PixabayProvider;
 use App\Services\StockMedia\UnsplashProvider;
 use App\Services\StockMediaFetcher;
+use App\Support\CanonicalUrl;
 use App\Support\PageContent;
 use App\Support\SiteImages;
 use App\Support\SiteTexts;
@@ -89,6 +90,7 @@ class AppServiceProvider extends ServiceProvider
         // Default {locale} for URLs generated outside a public request (CLI,
         // queued mail, sitemap); SetLocale overrides it per request.
         URL::defaults(['locale' => config('locales.default')]);
+        CanonicalUrl::apply($this->app);
 
         // Outside production, N+1 queries and fills of non-fillable attributes
         // fail loudly instead of passing silently.

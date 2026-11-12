@@ -15,6 +15,8 @@ tar -xzf "$ARCHIVE" -C "$RELEASE"
 rm -f "$ARCHIVE"
 
 # .env, uploads (storage/app/public), logs, caches and generated PDFs live outside the releases.
+# The shared .env holds the database and mail passwords: owner-only (re-applied every deploy).
+if [ -f "$APP/shared/.env" ]; then chmod 600 "$APP/shared/.env"; fi
 ln -sfn "$APP/shared/.env" "$RELEASE/.env"
 rm -rf "$RELEASE/storage" && ln -sfn "$APP/shared/storage" "$RELEASE/storage"
 rm -f "$RELEASE/public/storage" && ln -sfn "$APP/shared/storage/app/public" "$RELEASE/public/storage"

@@ -7,6 +7,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# The workflow only reads the repository; deploys go over SSH.
+permissions:
+  contents: read
+
 concurrency:
   group: production
   cancel-in-progress: false
